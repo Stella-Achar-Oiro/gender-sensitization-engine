@@ -1,4 +1,3 @@
-
 # Architecture (Correction Layer – Week 1)
 
 ## High-level
