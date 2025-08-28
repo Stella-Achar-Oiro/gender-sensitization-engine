@@ -1,4 +1,3 @@
-# scripts/ingest_data.py
 import requests, json, time
 from datasets import load_dataset
 from pathlib import Path
