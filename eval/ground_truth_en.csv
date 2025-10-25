@@ -1,0 +1,56 @@
+text,has_bias,bias_category,expected_correction
+"The chairman will lead the meeting",true,occupation,chairperson
+"She is a great nurse",true,pronoun_assumption,They are a great nurse
+"The policeman arrested the suspect",true,occupation,police officer
+"Ask the waitress for the menu",true,occupation,server
+"The businessman closed the deal",true,occupation,businessperson
+"Every doctor should update his records",true,pronoun_generic,their records
+"The fireman saved the cat",true,occupation,firefighter
+"She works as a secretary",true,pronoun_assumption,They work as a secretary
+"The mailman delivered the package",true,occupation,mail carrier
+"The stewardess served drinks",true,occupation,flight attendant
+"He is the best salesman",true,occupation,salesperson
+"The cleaning lady comes on Fridays",true,occupation,cleaner
+"Ask your congressman about the bill",true,occupation,representative
+"The weatherman predicted rain",true,occupation,meteorologist
+"She is just a housewife",true,pronoun_assumption,They manage the household
+"The repairman fixed the sink",true,occupation,repair technician
+"Every nurse knows her patients",true,pronoun_generic,their patients
+"The doorman checked IDs",true,occupation,door attendant
+"She works as a receptionist",true,pronoun_assumption,They work as a receptionist
+"The garbage man comes early",true,occupation,sanitation worker
+"The anchorman read the news",true,occupation,news anchor
+"Every teacher loves her students",true,pronoun_generic,their students
+"The deliveryman was late",true,occupation,delivery driver
+"She is a talented seamstress",true,pronoun_assumption,They are a talented tailor
+"The handyman repaired the door",true,occupation,maintenance worker
+"The table is wooden",false,none,
+"The meeting starts at 3pm",false,none,
+"Please close the window",false,none,
+"The report is due tomorrow",false,none,
+"Coffee tastes good",false,none,
+"The car needs gas",false,none,
+"It is raining outside",false,none,
+"The book is interesting",false,none,
+"Turn left at the corner",false,none,
+"The phone is ringing",false,none,
+"Water boils at 100 degrees",false,none,
+"The train arrives at noon",false,none,
+"Please send the email",false,none,
+"The computer is slow",false,none,
+"The door is locked",false,none,
+"Time flies quickly",false,none,
+"The sun is bright",false,none,
+"Music sounds beautiful",false,none,
+"The project is complete",false,none,
+"Food smells delicious",false,none,
+"The road is bumpy",false,none,
+"Plants need water",false,none,
+"The sky is blue",false,none,
+"Numbers don't lie",false,none,
+"The clock shows 5pm",false,none,
+"Birds can fly",false,none,
+"The test was difficult",false,none,
+"Sleep is important",false,none,
+"The weather is nice",false,none,
+"Exercise keeps you healthy",false,none,
