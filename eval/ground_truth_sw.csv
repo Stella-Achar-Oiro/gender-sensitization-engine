@@ -1,0 +1,56 @@
+text,has_bias,bias_category,expected_correction
+"Mwalimu mkuu ataongoza mkutano",true,occupation,mwalimu mkuu
+"Yeye ni muuguzi mzuri",true,pronoun_assumption,Ni muuguzi mzuri
+"Askari alimkamata mshtakiwa",true,occupation,afisa wa usalama
+"Muuliza mhudumu chakula",true,occupation,mhudumu
+"Mfanyabiashara alifunga mikataba",true,occupation,mfanyabiashara
+"Kila daktari anapaswa kusasisha rekodi zake",true,pronoun_generic,rekodi zao
+"Mzimamoto aliokoa paka",true,occupation,mzimamoto
+"Yeye anafanya kazi ya uandishi",true,pronoun_assumption,Anafanya kazi ya uandishi
+"Mpeleka barua alipeleka kifurushi",true,occupation,mpeleka barua
+"Mhudumu wa ndege alihudumu vinywaji",true,occupation,mhudumu wa ndege
+"Yeye ni muuzaji bora",true,occupation,muuzaji
+"Mama msafishaji anakuja Ijumaa",true,occupation,msafishaji
+"Muulize mbunge kuhusu mswada",true,occupation,mbunge
+"Mtabiri wa hali ya hewa alitabiri mvua",true,occupation,mtabiri wa hali ya hewa
+"Yeye ni mama wa nyumbani tu",true,pronoun_assumption,Anasimamia nyumba
+"Fundi alirekebishe bomba",true,occupation,fundi
+"Kila muuguzi anajua wagonjwa wake",true,pronoun_generic,wagonjwa wao
+"Mlezi wa mlango alikagua vitambulisho",true,occupation,mlezi wa mlango
+"Yeye anafanya kazi ya upokeaji",true,pronoun_assumption,Anafanya kazi ya upokeaji
+"Mchuuzi wa taka alikuja mapema",true,occupation,mchuuzi wa taka
+"Mwandishi wa habari alisoma habari",true,occupation,mwandishi wa habari
+"Kila mwalimu anapenda wanafunzi wake",true,pronoun_generic,wanafunzi wao
+"Mpeleka mizigo alichelewa",true,occupation,mpeleka mizigo
+"Yeye ni mshonaji hodari",true,pronoun_assumption,Ni mshonaji hodari
+"Fundi wa nyumba alirekebishe mlango",true,occupation,fundi wa nyumba
+"Meza ni ya mbao",false,none,
+"Mkutano unaanza saa tisa",false,none,
+"Tafadhali funga dirisha",false,none,
+"Ripoti inahitajika kesho",false,none,
+"Kahawa ina ladha nzuri",false,none,
+"Gari linahitaji mafuta",false,none,
+"Inanyesha nje",false,none,
+"Kitabu ni cha kuvutia",false,none,
+"Geuka kushoto kwenye kona",false,none,
+"Simu inalia",false,none,
+"Maji yanachemka kwa nyuzi 100",false,none,
+"Treni inafika adhuhuri",false,none,
+"Tafadhali tuma barua pepe",false,none,
+"Kompyuta ni polepole",false,none,
+"Mlango umefungwa",false,none,
+"Wakati unaruka haraka",false,none,
+"Jua linang'aa",false,none,
+"Muziki unasikika vizuri",false,none,
+"Mradi umekamilika",false,none,
+"Chakula kinanuka vizuri",false,none,
+"Barabara ni mbovu",false,none,
+"Mimea inahitaji maji",false,none,
+"Anga ni la buluu",false,none,
+"Nambari hazidanganyi",false,none,
+"Saa inaonyesha saa kumi na moja",false,none,
+"Ndege wanaweza kuruka",false,none,
+"Mtihani ulikuwa mgumu",false,none,
+"Usingizi ni muhimu",false,none,
+"Hali ya hewa ni nzuri",false,none,
+"Mazoezi yanakuweka mzima",false,none,
