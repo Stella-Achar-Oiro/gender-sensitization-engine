@@ -5,8 +5,8 @@
 **Name**: JuaKazi Gender Bias Evaluation Dataset
 **Version**: 1.0
 **Creation Date**: October 2024
-**Languages**: English (en), Swahili (sw)
-**Total Samples**: 100 (50 per language)
+**Languages**: English (en), Swahili (sw), Hausa (ha), Igbo (ig), Yoruba (yo)
+**Total Samples**: 250 (50 per language)
 
 ## Provenance
 
@@ -22,6 +22,9 @@
 |----------|-------|--------|------------|
 | English  | 50    | 25     | 25         |
 | Swahili  | 50    | 25     | 25         |
+| Hausa    | 50    | 25     | 25         |
+| Igbo     | 50    | 25     | 25         |
+| Yoruba   | 50    | 25     | 25         |
 
 ### Bias Categories
 - **occupation**: Gendered job titles (chairman, waitress)
@@ -48,7 +51,7 @@ text,has_bias,bias_category,expected_correction
 ## Ethical Considerations
 
 **Bias Representation**: Focuses on occupational and linguistic bias, not identity-based discrimination
-**Cultural Context**: Swahili examples adapted for East African professional contexts
+**Cultural Context**: African language examples adapted for regional professional contexts (East, West, and Central Africa)
 **Limitations**: Binary gender framework, professional domain focus
 **Harm Mitigation**: No personal identifiers or sensitive content
 
@@ -84,11 +87,11 @@ text,has_bias,bias_category,expected_correction
 **Coverage**: Limited to 4 bias categories
 **Scale**: Small sample size (50 per language)
 **Domain**: Professional/occupational bias focus
-**Language Variety**: Standard English/Swahili only
+**Language Variety**: Standard varieties only (English, Swahili, Hausa, Igbo, Yoruba)
 **Temporal**: Static snapshot, no temporal bias evolution
 
 ## Contact & Support
 
 **Maintainer**: JuaKazi development team
 **Issues**: Report via project repository
-**Updates**: Track via ENGINEERING_TASKS.md
+**Updates**: Track via Jira
