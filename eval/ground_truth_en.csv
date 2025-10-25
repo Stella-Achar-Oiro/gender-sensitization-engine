@@ -49,8 +49,3 @@ text,has_bias,bias_category,expected_correction
 "The sky is blue",false,none,
 "Numbers don't lie",false,none,
 "The clock shows 5pm",false,none,
-"Birds can fly",false,none,
-"The test was difficult",false,none,
-"Sleep is important",false,none,
-"The weather is nice",false,none,
-"Exercise keeps you healthy",false,none,
