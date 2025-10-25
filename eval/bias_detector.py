@@ -7,7 +7,7 @@ import re
 from typing import List, Dict, Any
 from pathlib import Path
 
-from .models_simple import Language, BiasDetectionResult
+from .models import Language, BiasDetectionResult
 from .data_loader import RulesLoader, DataLoadError
 
 
