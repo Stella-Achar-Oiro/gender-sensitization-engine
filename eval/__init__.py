@@ -18,7 +18,7 @@ Usage:
     results = orchestrator.run_evaluation()
 """
 
-from .models_simple import (
+from .models import (
     Language,
     BiasCategory,
     GroundTruthSample,
