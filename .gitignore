@@ -6,3 +6,6 @@ venv/
 *.env
 logs/
 audit_logs/
+eval/results/
+*.csv
+*.json
