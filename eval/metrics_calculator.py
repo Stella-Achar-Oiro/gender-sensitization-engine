@@ -6,7 +6,7 @@ This module provides clean interfaces for calculating evaluation metrics.
 from typing import List, Dict
 from collections import defaultdict
 
-from .models_simple import (
+from .models import (
     EvaluationMetrics, 
     LanguageEvaluationResult, 
     GroundTruthSample, 
