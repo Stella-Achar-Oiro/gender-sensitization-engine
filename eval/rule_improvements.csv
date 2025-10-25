@@ -1,0 +1,15 @@
+language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,example_biased,example_neutral
+en,businessman,businessperson,entrepreneur|business owner,gender|occupation,noun,business,formal,replace,The businessman closed the deal.,The businessperson closed the deal.
+en,fireman,firefighter,fire officer|emergency responder,gender|occupation,noun,emergency,formal,replace,The fireman saved the cat.,The firefighter saved the cat.
+en,mailman,mail carrier,postal worker|delivery person,gender|occupation,noun,postal,formal,replace,The mailman delivered the package.,The mail carrier delivered the package.
+en,stewardess,flight attendant,cabin crew|airline attendant,gender|occupation,noun,aviation,formal,replace,The stewardess served drinks.,The flight attendant served drinks.
+en,congressman,representative,legislator|member of congress,gender|occupation,noun,political,formal,replace,Ask your congressman about the bill.,Ask your representative about the bill.
+en,weatherman,meteorologist,weather forecaster|weather reporter,gender|occupation,noun,media,formal,replace,The weatherman predicted rain.,The meteorologist predicted rain.
+en,repairman,repair technician,maintenance worker|service technician,gender|occupation,noun,technical,formal,replace,The repairman fixed the sink.,The repair technician fixed the sink.
+en,doorman,door attendant,security guard|building attendant,gender|occupation,noun,security,formal,replace,The doorman checked IDs.,The door attendant checked IDs.
+en,anchorman,news anchor,anchor|news presenter,gender|occupation,noun,media,formal,replace,The anchorman read the news.,The news anchor read the news.
+en,deliveryman,delivery driver,courier|delivery person,gender|occupation,noun,logistics,formal,replace,The deliveryman was late.,The delivery driver was late.
+en,handyman,maintenance worker,repair person|service worker,gender|occupation,noun,technical,formal,replace,The handyman repaired the door.,The maintenance worker repaired the door.
+en,cleaning lady,cleaner,custodian|janitorial staff,gender|occupation,noun,service,formal,replace,The cleaning lady comes on Fridays.,The cleaner comes on Fridays.
+en,seamstress,tailor,clothing designer|garment worker,gender|occupation,noun,fashion,formal,replace,She is a talented seamstress.,They are a talented tailor.
+en,garbage man,sanitation worker,waste collector|refuse collector,gender|occupation,noun,municipal,formal,replace,The garbage man comes early.,The sanitation worker comes early.
