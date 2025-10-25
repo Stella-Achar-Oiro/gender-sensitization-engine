@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import List, Dict, Any
 
-from .models_simple import GroundTruthSample, Language, BiasCategory
+from .models import GroundTruthSample, Language, BiasCategory
 
 
 class DataLoadError(Exception):
