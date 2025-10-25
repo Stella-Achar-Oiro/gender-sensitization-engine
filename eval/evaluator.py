@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from .models_simple import Language, LanguageEvaluationResult
+from .models import Language, LanguageEvaluationResult
 from .data_loader import GroundTruthLoader, ResultsWriter, DataLoadError
 from .bias_detector import BiasDetector, BiasDetectionError
 from .metrics_calculator import MetricsCalculator, MetricsFormatter
@@ -66,7 +66,7 @@ class BiasEvaluationOrchestrator:
             EvaluationError: If evaluation fails
         """
         if languages is None:
-            languages = [Language.ENGLISH, Language.SWAHILI]
+            languages = [Language.ENGLISH, Language.SWAHILI, Language.HAUSA, Language.YORUBA, Language.IGBO]
         
         results = []
         
@@ -77,7 +77,14 @@ class BiasEvaluationOrchestrator:
                 results.append(result)
                 
                 # Print immediate results
-                lang_name = "English" if language == Language.ENGLISH else "Swahili"
+                lang_names = {
+                    Language.ENGLISH: "English",
+                    Language.SWAHILI: "Swahili", 
+                    Language.HAUSA: "Hausa",
+                    Language.YORUBA: "Yoruba",
+                    Language.IGBO: "Igbo"
+                }
+                lang_name = lang_names.get(language, language.value)
                 print(f"{lang_name} Results:")
                 print(f"  Overall F1: {result.overall_metrics.f1_score:.3f}")
                 print(f"  Precision: {result.overall_metrics.precision:.3f}")
