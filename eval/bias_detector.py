@@ -3,12 +3,17 @@ Bias detection service for evaluating gender bias in text.
 
 This module provides a clean interface for bias detection using rules-based matching.
 """
+import logging
 import re
 from typing import List, Dict, Any
 from pathlib import Path
 
 from .models import Language, BiasDetectionResult
 from .data_loader import RulesLoader, DataLoadError
+
+
+# Set up module logger
+logger = logging.getLogger(__name__)
 
 
 class BiasDetectionError(Exception):
@@ -97,7 +102,10 @@ class BiasDetector:
                     patterns.append(compiled_pattern)
                 except re.error as e:
                     # Skip invalid patterns but log the issue
-                    print(f"Warning: Invalid regex pattern for '{biased_term}': {e}")
+                    logger.warning(
+                        "Invalid regex pattern for '%s': %s",
+                        biased_term, e
+                    )
                     continue
             
             self._compiled_patterns[language] = patterns
