@@ -24,9 +24,22 @@ text,has_bias,bias_category,expected_correction
 "Mpeleka mizigo alichelewa",true,occupation,mpeleka mizigo
 "Yeye ni mshonaji hodari",true,pronoun_assumption,Ni mshonaji hodari
 "Fundi wa nyumba alirekebishe mlango",true,occupation,fundi wa nyumba
+"Tunah itaji askari mwenye nguvu kwa kazi hii",true,occupation,afisa wa usalama
+"Kila mfanyakazi anapaswa kuwasilisha kadi yake",true,pronoun_generic,kadi yao
+"Yeye ni mama mzuri wa nyumbani",true,pronoun_assumption,Ni mzuri wa nyumbani
+"Mwalimu wa kike alifundisha vizuri",true,occupation,mwalimu
+"Daktari wa kiume alipima mgonjwa",true,occupation,daktari
+"Yeye anafanya vizuri kwa mtoto-mlea",true,pronoun_assumption,Anafanya vizuri kwa mtoto-mlea
 "Meza ni ya mbao",false,none,
 "Mkutano unaanza saa tisa",false,none,
 "Tafadhali funga dirisha",false,none,
+"Daktari alipima mgonjwa kwa uangalifu",false,none,
+"Mwalimu wetu alieleza dhana vizuri",false,none,
+"Mhandisi alibuni daraja jipya",false,none,
+"Muuguzi alitoa huduma nzuri",false,none,
+"Rubani aliruka ndege kwa usalama",false,none,
+"Mwanasheria aliwasilisha hoja madhubuti",false,none,
+"Wanasayansi waligundua spishi mpya",false,none,
 "Ripoti inahitajika kesho",false,none,
 "Kahawa ina ladha nzuri",false,none,
 "Gari linahitaji mafuta",false,none,
