@@ -49,19 +49,44 @@ policeman → police officer
 
 ## Current Performance
 
-### Evaluation Results (Oct 25, 2024)
-| Language | Precision | Recall | F1 Score |
-|----------|-----------|--------|----------|
-| English  | 1.000     | 0.680  | 0.810    |
-| Swahili  | 1.000     | 0.600  | 0.750    |
-| Hausa    | 1.000     | 0.640  | 0.780    |
-| Igbo     | 1.000     | 0.520  | 0.684    |
-| Yoruba   | 1.000     | 0.880  | 0.936    |
+### Detection Results (Oct 28, 2025 - Enhanced Ground Truth)
+| Language | Precision | Recall | F1 Score | Status |
+|----------|-----------|--------|----------|---------|
+| English  | 1.000     | 0.618  | 0.764    | Good |
+| Swahili  | 1.000     | 0.516  | 0.681    | Moderate |
+| Hausa    | 1.000     | 0.640  | 0.780    | Good |
+| Igbo     | 1.000     | 0.520  | 0.684    | Moderate |
+| Yoruba   | 1.000     | 0.880  | 0.936    | Excellent |
+
+### Correction Effectiveness (Pre→Post Comparison)
+| Language | Detection Rate | Bias Removal Rate | Status |
+|----------|---------------|-------------------|---------|
+| English  | 61.8%         | **100.0%**        | Effective |
+| Swahili  | 51.6%         | 12.5%             | Needs Work |
+| Hausa    | 64.0%         | 68.8%             | Moderate |
+| Igbo     | 52.0%         | 69.2%             | Moderate |
+| Yoruba   | 88.0%         | 77.3%             | Effective |
+
+**Key Finding:** English achieves 100% bias removal rate - all detected biases successfully neutralized. Yoruba strong at 77.3%. Swahili requires significant lexicon expansion (12.5% removal rate indicates gaps).
 
 ### Analysis
-**Strengths**: Perfect precision (no false positives)
-**Limitations**: Low recall indicates rule coverage gaps
-**Priority**: Expand lexicon coverage for higher recall
+**Strengths**:
+- Perfect precision (1.000) - zero false positives across all languages
+- English correction: 100% bias removal (all detected→neutralized)
+- Yoruba: Excellent detection (88%) and correction (77.3%)
+- No over-corrections detected (preserves non-biased text)
+
+**Limitations**:
+- Recall gaps indicate lexicon coverage needs expansion
+- Swahili correction needs improvement (12.5% removal rate)
+- African language test sets may need more complexity
+- Generic pronoun category shows zero detection in English/Swahili
+
+**Priority Actions**:
+1. Expand Swahili correction lexicon urgently
+2. Add generic pronoun rules for English/Swahili
+3. Improve recall while maintaining perfect precision
+4. Validate correction naturalness with native speakers
 
 ## Assumptions & Constraints
 

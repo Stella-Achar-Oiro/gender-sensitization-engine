@@ -1,15 +1,26 @@
 # Weekly Metrics Log
 
-## Week of October 25, 2024
+## Week of October 28, 2025 (LATEST - Post Ground Truth Enhancement)
 
 ### Overall Performance Summary
 | Language | Overall F1 | Precision | Recall | Status |
 |----------|------------|-----------|--------|---------|
-| English  | 0.810      | 1.000     | 0.680  | Good |
-| Swahili  | 0.750      | 1.000     | 0.600  | Moderate |
-| Hausa    | 0.780      | 1.000     | 0.640  | Moderate |
-| Igbo     | 0.684      | 1.000     | 0.520  | Needs Work |
+| English  | 0.764      | 1.000     | 0.618  | Good |
+| Swahili  | 0.681      | 1.000     | 0.516  | Moderate |
+| Hausa    | 0.780      | 1.000     | 0.640  | Good |
+| Igbo     | 0.684      | 1.000     | 0.520  | Moderate |
 | Yoruba   | 0.936      | 1.000     | 0.880  | Excellent |
+
+**Note:** F1 scores decreased slightly (English: -0.046, Swahili: -0.069) due to enhanced ground truth with more diverse, challenging test cases. This represents more honest evaluation.
+
+### Correction Effectiveness (NEW - Pre→Post Analysis)
+| Language | Detection Rate | Bias Removal Rate | Status |
+|----------|---------------|-------------------|---------|
+| English  | 61.8%         | **100.0%**        | Excellent |
+| Swahili  | 51.6%         | 12.5%             | Urgent Work Needed |
+| Hausa    | 64.0%         | 68.8%             | Moderate |
+| Igbo     | 52.0%         | 69.2%             | Moderate |
+| Yoruba   | 88.0%         | 77.3%             | Good |
 
 ### Performance by Bias Category
 
@@ -46,13 +57,16 @@
 | pronoun_generic | 1.000 | 1.000 | 1.000 | Perfect performance |
 
 ### Key Insights
-1. **Perfect Precision**: All languages achieve 1.000 precision - no false positives
-2. **Recall Gaps**: Main limitation is rule coverage, especially for pronoun categories
-3. **Language Variation**: Yoruba performs best, Igbo needs most improvement
-4. **Category Gaps**: pronoun_generic completely missing in English/Swahili
+1. **Perfect Precision Maintained**: All languages achieve 1.000 precision - zero false positives
+2. **English Correction Excellence**: 100% bias removal rate (all detected biases neutralized)
+3. **Swahili Needs Urgent Attention**: 12.5% removal rate indicates major lexicon gaps
+4. **Ground Truth Quality**: Enhanced with diverse samples, reduced repetitive patterns
+5. **Honest Metrics**: Slightly lower F1 scores reflect more challenging evaluation
+6. **Category Gaps**: pronoun_generic still missing in English/Swahili
 
 ### Action Items for Next Week
-1. Add pronoun_generic rules for English and Swahili
-2. Expand occupation lexicons for Igbo and Hausa
-3. Improve pronoun_assumption coverage across all languages
-4. Target: +0.1 F1 improvement per language
+1. **URGENT:** Expand Swahili correction lexicon (12.5% → target 60%+)
+2. Add pronoun_generic rules for English and Swahili
+3. Continue recall improvement while maintaining perfect precision
+4. Validate African language corrections with native speakers
+5. Target: +0.1 F1 improvement per language + correction rate improvements

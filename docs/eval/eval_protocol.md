@@ -54,15 +54,15 @@ python3 eval/run_evaluation.py
 Running bias detection evaluation...
 Evaluating en...
 EN Results:
-  Overall F1: 0.810
+  Overall F1: 0.764
   Precision: 1.000
-  Recall: 0.680
+  Recall: 0.618
 
 Evaluating sw...
 SW Results:
-  Overall F1: 0.750
+  Overall F1: 0.681
   Precision: 1.000
-  Recall: 0.600
+  Recall: 0.516
 
 Evaluating ha...
 HA Results:
@@ -82,8 +82,20 @@ YO Results:
   Precision: 1.000
   Recall: 0.880
 
-Report saved to: eval/results/f1_report_20241025_120518.csv
+Report saved to: eval/results/f1_report_20251028_112707.csv
 ```
+
+### Correction Evaluation
+Run pre→post bias removal analysis:
+```bash
+python3 eval/correction_evaluator.py
+```
+
+Output includes:
+- Detection rate (% of biased samples detected)
+- Bias removal rate (% of detected biases successfully corrected)
+- Quality metrics (meaning preservation, over-corrections)
+- Example corrections with before/after text
 
 ### CSV Report Structure
 | Language | Category | Precision | Recall | F1_Score | TP | FP | FN | TN |
