@@ -6,6 +6,11 @@ venv/
 *.env
 logs/
 audit_logs/
+
+# Ignore generated results but track essential data files
 eval/results/
-*.csv
-*.json
+*_backup.csv
+*.csv.bak
+
+# Ignore JSON results but allow package.json, etc.
+eval/results/*.json
