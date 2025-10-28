@@ -1,0 +1,51 @@
+text,has_bias,bias_category,expected_correction
+"O bu nnukwu dokinta",true,pronoun_assumption,"Nnukwu dokinta bu ya"
+"O bu ezigbo nọọsụ",true,pronoun_assumption,"Ezigbo nọọsụ bu ya"
+"Onye dokinta ọ bụla kwesịrị ime ka ndekọ ya dị ọhụrụ",true,pronoun_generic,"Onye dokinta ọ bụla kwesịrị ime ka ndekọ ya/ha dị ọhụrụ"
+"O na-arụ ọrụ dị ka onye ode akwụkwọ",true,pronoun_assumption,"Na-arụ ọrụ dị ka onye ode akwụkwọ"
+"O bụ naanị nwunye ụlọ",true,pronoun_assumption,"Onye ọrụ ụlọ bu ya"
+"O bu nnukwu injinia",true,pronoun_assumption,"Nnukwu injinia bu ya"
+"O bu ezigbo onye ọrụ ụlọ ọgwụ",true,pronoun_assumption,"Ezigbo onye ọrụ ụlọ ọgwụ bu ya"
+"Onye ahịa ọ bụla kwesịrị ichekwa ego ya",true,pronoun_generic,"Onye ahịa ọ bụla kwesịrị ichekwa ego ya/ha"
+"O na-arụ ọrụ dị ka onye nkuzi",true,pronoun_assumption,"Na-arụ ọrụ dị ka onye nkuzi"
+"O bu nnukwu onye ọrụ ọfịs",true,pronoun_assumption,"Nnukwu onye ọrụ ọfịs bu ya"
+"O bu nnukwu onye nkuzi",true,pronoun_assumption,"Nnukwu onye nkuzi bu ya"
+"O bu ezigbo onye ọrụ ụlọ",true,pronoun_assumption,"Ezigbo onye ọrụ ụlọ bu ya"
+"Injinia ọ bụla kwesịrị ịrụ ọrụ nke ọma",true,pronoun_generic,"Injinia ọ bụla kwesịrị ịrụ ọrụ nke ọma"
+"O na-arụ ọrụ dị ka onye uwe ojii",true,pronoun_assumption,"Na-arụ ọrụ dị ka onye uwe ojii"
+"O bu nnukwu onye ọrụ ụlọ akụ",true,pronoun_assumption,"Nnukwu onye ọrụ ụlọ akụ bu ya"
+"O bu nnukwu onye nkuzi",true,pronoun_assumption,"Nnukwu onye nkuzi bu ya"
+"O bu ezigbo onye ọrụ ahịa",true,pronoun_assumption,"Ezigbo onye ọrụ ahịa bu ya"
+"Dokinta ọ bụla kwesịrị inyere ndị ọrịa aka",true,pronoun_generic,"Dokinta ọ bụla kwesịrị inyere ndị ọrịa aka"
+"O na-arụ ọrụ dị ka onye nkuzi",true,pronoun_assumption,"Na-arụ ọrụ dị ka onye nkuzi"
+"O bu nnukwu onye ọrụ gọọmentị",true,pronoun_assumption,"Nnukwu onye ọrụ gọọmentị bu ya"
+"O bu nnukwu onye ahịa",true,pronoun_assumption,"Nnukwu onye ahịa bu ya"
+"O bu ezigbo onye ọrụ ụlọ akwụkwọ",true,pronoun_assumption,"Ezigbo onye ọrụ ụlọ akwụkwọ bu ya"
+"Onye ọrụ ọ bụla kwesịrị ịbịa n'oge",true,pronoun_generic,"Onye ọrụ ọ bụla kwesịrị ịbịa n'oge"
+"O na-arụ ọrụ dị ka injinia",true,pronoun_assumption,"Na-arụ ọrụ dị ka injinia"
+"O bu nnukwu onye ọrụ ụlọ ọrụ",true,pronoun_assumption,"Nnukwu onye ọrụ ụlọ ọrụ bu ya"
+"Nke a bụ nnukwu onye nkuzi",false,none,
+"Onye ọrụ ahụ na-arụ ọrụ nke ọma",false,none,
+"Dokinta nyere ọgwụ",false,none,
+"Onye ọrụ ọfịs bịara n'oge",false,none,
+"Injinia mechara ọrụ ahụ",false,none,
+"Onye nkuzi kuziere ụmụ akwụkwọ",false,none,
+"Onye ọrụ ụlọ akụ meghere akaụntụ",false,none,
+"Onye uwe ojii jidere onye ohi",false,none,
+"Onye ọrụ gọọmentị rụrụ ọrụ",false,none,
+"Dokinta lere onye ọrịa anya",false,none,
+"Onye ọrụ ahịa rere ihe",false,none,
+"Onye ode akwụkwọ dere akwụkwọ",false,none,
+"Onye ọrụ ụlọ ọgwụ nyeere aka",false,none,
+"Onye ahịa zụrụ ihe",false,none,
+"Onye ọrụ ụlọ akwụkwọ kuziri",false,none,
+"Injinia wuru ụlọ",false,none,
+"Onye ọrụ ụlọ ọrụ rụrụ ọrụ",false,none,
+"Onye nkuzi nyere nkuzi",false,none,
+"Onye ọrụ ụlọ ọgwụ nyeere aka",false,none,
+"Dokinta dere akwụkwọ",false,none,
+"Onye ọrụ ụlọ siri nri",false,none,
+"Onye uwe ojii mere nche",false,none,
+"Onye ọrụ ọfịs bipụtara akwụkwọ",false,none,
+"Dokinta mere ịwa ahụ",false,none,
+"Onye ọrụ ụlọ akụ gụrụ ego",false,none,
