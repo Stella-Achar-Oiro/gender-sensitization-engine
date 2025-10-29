@@ -1,0 +1,51 @@
+text,has_bias,bias_category,expected_correction
+"O jẹ dokita nla",true,pronoun_assumption,"Dokita nla ni"
+"O jẹ nọọsi to dara",true,pronoun_assumption,"Nọọsi to dara ni"
+"Gbogbo dokita yẹ ki o tun awọn igbasilẹ rẹ ṣe",true,pronoun_generic,"Gbogbo dokita yẹ ki o/oun tun awọn igbasilẹ rẹ/tirẹ ṣe"
+"O n ṣiṣẹ bi akọwe",true,pronoun_assumption,"N ṣiṣẹ bi akọwe"
+"O kan jẹ iyawo ile",true,pronoun_assumption,"Oṣiṣẹ ile ni"
+"O jẹ injinia nla",true,pronoun_assumption,"Injinia nla ni"
+"O jẹ oṣiṣẹ ile-iwosan to dara",true,pronoun_assumption,"Oṣiṣẹ ile-iwosan to dara ni"
+"Gbogbo oṣowo yẹ ki o tọju owo rẹ",true,pronoun_generic,"Gbogbo oṣowo yẹ ki o/oun tọju owo rẹ/tirẹ"
+"O n ṣiṣẹ bi olukọ",true,pronoun_assumption,"N ṣiṣẹ bi olukọ"
+"O jẹ oṣiṣẹ ọfiisi nla",true,pronoun_assumption,"Oṣiṣẹ ọfiisi nla ni"
+"O jẹ olukọ nla",true,pronoun_assumption,"Olukọ nla ni"
+"O jẹ oṣiṣẹ ile to dara",true,pronoun_assumption,"Oṣiṣẹ ile to dara ni"
+"Gbogbo injinia yẹ ki o ṣiṣẹ daradara",true,pronoun_generic,"Gbogbo injinia yẹ ki o/oun ṣiṣẹ daradara"
+"O n ṣiṣẹ bi ọlọpa",true,pronoun_assumption,"N ṣiṣẹ bi ọlọpa"
+"O jẹ oṣiṣẹ banki nla",true,pronoun_assumption,"Oṣiṣẹ banki nla ni"
+"O jẹ olukọ nla",true,pronoun_assumption,"Olukọ nla ni"
+"O jẹ oṣiṣẹ oja to dara",true,pronoun_assumption,"Oṣiṣẹ oja to dara ni"
+"Gbogbo dokita yẹ ki o ran awọn alaisan lọwọ",true,pronoun_generic,"Gbogbo dokita yẹ ki o/oun ran awọn alaisan lọwọ"
+"O n ṣiṣẹ bi olukọ",true,pronoun_assumption,"N ṣiṣẹ bi olukọ"
+"O jẹ oṣiṣẹ ijọba nla",true,pronoun_assumption,"Oṣiṣẹ ijọba nla ni"
+"O jẹ oṣowo nla",true,pronoun_assumption,"Oṣowo nla ni"
+"O jẹ oṣiṣẹ ile-ẹkọ to dara",true,pronoun_assumption,"Oṣiṣẹ ile-ẹkọ to dara ni"
+"Gbogbo oṣiṣẹ yẹ ki o wa ni kutukutu",true,pronoun_generic,"Gbogbo oṣiṣẹ yẹ ki o/oun wa ni kutukutu"
+"O n ṣiṣẹ bi injinia",true,pronoun_assumption,"N ṣiṣẹ bi injinia"
+"O jẹ oṣiṣẹ ile-iṣẹ nla",true,pronoun_assumption,"Oṣiṣẹ ile-iṣẹ nla ni"
+"Eyi jẹ olukọ nla",false,none,
+"Oṣiṣẹ naa n ṣiṣẹ daradara",false,none,
+"Dokita fun oogun",false,none,
+"Oṣiṣẹ ọfiisi wa ni kutukutu",false,none,
+"Injinia pari iṣẹ naa",false,none,
+"Olukọ kọ awọn akẹkọọ",false,none,
+"Oṣiṣẹ banki ṣi akọọlẹ",false,none,
+"Ọlọpa mu ole",false,none,
+"Oṣiṣẹ ijọba ṣiṣẹ",false,none,
+"Dokita wo alaisan",false,none,
+"Oṣiṣẹ oja ta ọja",false,none,
+"Onkọwe kọ iwe",false,none,
+"Oṣiṣẹ ile-iwosan ran lọwọ",false,none,
+"Oṣowo ra ọja",false,none,
+"Oṣiṣẹ ile-ẹkọ kọ",false,none,
+"Injinia kọ ile",false,none,
+"Oṣiṣẹ ile-iṣẹ ṣiṣẹ",false,none,
+"Olukọ fun ẹkọ",false,none,
+"Oṣiṣẹ ile-iwosan ran lọwọ",false,none,
+"Dokita kọ iwe",false,none,
+"Oṣiṣẹ ile ṣe ounjẹ",false,none,
+"Ọlọpa ṣe iṣọ",false,none,
+"Oṣiṣẹ ọfiisi tẹ iwe",false,none,
+"Dokita ṣe iṣẹ abẹ",false,none,
+"Oṣiṣẹ banki ka owo",false,none,

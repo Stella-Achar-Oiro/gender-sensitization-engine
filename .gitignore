@@ -1,0 +1,16 @@
+.thelogicvault/
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.env
+logs/
+audit_logs/
+
+# Ignore generated results but track essential data files
+eval/results/
+*_backup.csv
+*.csv.bak
+
+# Ignore JSON results but allow package.json, etc.
+eval/results/*.json

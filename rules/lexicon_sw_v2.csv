@@ -1,0 +1,16 @@
+language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
+sw,askari,afisa wa usalama,askari wa usalama,gender|occupation,noun,law enforcement,formal,replace,1/2,sg,false,,,,,Askari alimkamata mshtakiwa,Afisa wa usalama alimkamata mshtakiwa
+sw,mfanyabiashara,mfanyabiashara,biashara,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Mfanyabiashara alifunga mikataba,Mfanyabiashara alifunga mikataba
+sw,mzimamoto,mzimamoto,afisa wa zima moto,gender|occupation,noun,emergency,formal,replace,1/2,sg,false,,,,,Mzimamoto aliokoa paka,Mzimamoto aliokoa paka
+sw,mpeleka barua,mpeleka barua,mtumishi wa posta,gender|occupation,noun,postal,formal,replace,1/2,sg,false,,,,,Mpeleka barua alipeleka kifurushi,Mpeleka barua alipeleka kifurushi
+sw,muuzaji,muuzaji,mfanyabiashara,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Yeye ni muuzaji bora,Ni muuzaji bora
+sw,msafishaji,msafishaji,mfanyakazi wa usafi,gender|occupation,noun,service,formal,replace,1/2,sg,false,,,,,Mama msafishaji anakuja Ijumaa,Msafishaji anakuja Ijumaa
+sw,mbunge,mbunge,mwakilishi,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Muulize mbunge kuhusu mswada,Muulize mbunge kuhusu mswada
+sw,mtabiri wa hali ya hewa,mtabiri wa hali ya hewa,mtaalamu wa hali ya hewa,gender|occupation,noun,media,formal,replace,1/2,sg,false,,,,,Mtabiri wa hali ya hewa alitabiri mvua,Mtabiri wa hali ya hewa alitabiri mvua
+sw,fundi,fundi,mtaalamu wa ujenzi,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Fundi alirekebishe bomba,Fundi alirekebishe bomba
+sw,mlezi wa mlango,mlezi wa mlango,askari wa usalama,gender|occupation,noun,security,formal,replace,1/2,sg,false,,,,,Mlezi wa mlango alikagua vitambulisho,Mlezi wa mlango alikagua vitambulisho
+sw,mchuuzi wa taka,mchuuzi wa taka,mfanyakazi wa mazingira,gender|occupation,noun,municipal,formal,replace,1/2,sg,false,,,,,Mchuuzi wa taka alikuja mapema,Mchuuzi wa taka alikuja mapema
+sw,mwandishi wa habari,mwandishi wa habari,mwandishi,gender|occupation,noun,media,formal,replace,1/2,sg,false,,,,,Mwandishi wa habari alisoma habari,Mwandishi wa habari alisoma habari
+sw,mpeleka mizigo,mpeleka mizigo,dereva wa utoaji,gender|occupation,noun,logistics,formal,replace,1/2,sg,false,,,,,Mpeleka mizigo alichelewa,Mpeleka mizigo alichelewa
+sw,mshonaji,mshonaji,mtaalamu wa nguo,gender|occupation,noun,fashion,formal,replace,1/2,sg,false,,,,,Yeye ni mshonaji hodari,Ni mshonaji hodari
+sw,fundi wa nyumba,fundi wa nyumba,mtaalamu wa ukarabati,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Fundi wa nyumba alirekebishe mlango,Fundi wa nyumba alirekebishe mlango
