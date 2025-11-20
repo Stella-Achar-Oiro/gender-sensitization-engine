@@ -1,0 +1,89 @@
+[tool.poetry]
+name = "juakazi"
+version = "0.1.0"
+description = "Gender bias detection and correction system for African languages"
+authors = ["AI BRIDGE Team <team@aibridge.org>"]
+packages = [{ include = "eval" }, { include = "api" }, { include = "review_ui" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+# Core dependencies (optional, not required for evaluation)
+fastapi = {version = ">=0.104.0", optional = true}
+uvicorn = {version = ">=0.24.0", extras = ["standard"], optional = true}
+python-multipart = {version = ">=0.0.6", optional = true}
+pandas = {version = ">=2.0.0", optional = true}
+numpy = {version = ">=1.24.0", optional = true}
+streamlit = {version = ">=1.28.0", optional = true}
+pydantic = {version = ">=2.5.0", optional = true}
+
+# ML dependencies (optional)
+transformers = {version = ">=4.35.0", optional = true}
+torch = {version = ">=2.0.0", optional = true}
+datasets = {version = ">=2.14.0", optional = true}
+scikit-learn = {version = ">=1.1.0", optional = true}
+sentence-transformers = {version = ">=2.2.0", optional = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.0"
+black = ">=23.0.0"
+isort = ">=5.12.0"
+flake8 = ">=6.0.0"
+mypy = ">=1.7.0"
+ruff = ">=0.1.0"
+pre-commit = ">=3.5.0"
+
+[tool.poetry.extras]
+api = ["fastapi", "uvicorn", "python-multipart", "pydantic", "pandas", "numpy"]
+ui = ["streamlit", "pandas", "numpy"]
+ml = ["transformers", "torch", "datasets", "scikit-learn", "sentence-transformers", "pandas", "numpy"]
+full = ["fastapi", "uvicorn", "python-multipart", "streamlit", "pydantic", "transformers", "torch", "datasets", "scikit-learn", "sentence-transformers", "pandas", "numpy"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "D",   # pydocstyle
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+
+ignore = [
+    "E501",  # Line too long (Black handles this)
+    "D203",  # 1 blank line required before class docstring
+    "D213",  # Multi-line docstring summary should start at second line
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --strict-markers --tb=short"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
