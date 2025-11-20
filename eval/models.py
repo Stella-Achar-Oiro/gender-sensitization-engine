@@ -23,9 +23,8 @@ class Language(str, Enum):
     """Supported languages for bias detection."""
     ENGLISH = "en"
     SWAHILI = "sw"
-    HAUSA = "ha"
-    YORUBA = "yo"
-    IGBO = "ig"
+    FRENCH = "fr"
+    GIKUYU = "ki"
 
 
 @dataclass

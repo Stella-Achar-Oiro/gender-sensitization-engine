@@ -355,7 +355,8 @@ def main():
         # Approximate F1 (simplified)
         pre_f1 = detection_rate  # Simplified - actual F1 from main evaluation
 
-        status = "Effective" if removal_rate > self.EFFECTIVE_REMOVAL_THRESHOLD else "Needs Work"
+        EFFECTIVE_REMOVAL_THRESHOLD = 0.7
+        status = "Effective" if removal_rate > EFFECTIVE_REMOVAL_THRESHOLD else "Needs Work"
 
         print(f"{lang:<10} {pre_f1:<10.3f} {detection_rate:<12.1%} {removal_rate:<12.1%} {status:<15}")
 
