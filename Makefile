@@ -59,33 +59,33 @@ install-core:
 
 # Run tests
 test:
-	python3 tests/test_system.py
+	poetry run python tests/test_system.py
 
 # Run evaluation
 eval:
-	python3 run_evaluation.py
+	poetry run python run_evaluation.py
 
 # Run correction evaluation
 eval-correction:
-	python3 eval/correction_evaluator.py
+	poetry run python eval/correction_evaluator.py
 
 # Run live demo
 demo:
-	python3 demo_live.py
+	poetry run python demo_live.py
 
 # Run API server
 run-api:
-	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+	poetry run uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
 
 # Run review UI
 run-ui:
-	streamlit run review_ui/app.py --server.port 8501
+	poetry run streamlit run review_ui/app.py --server.port 8501
 
 # Run both services
 run:
 	@echo "Starting API on :8000 and UI on :8501"
-	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000 &
-	streamlit run review_ui/app.py --server.port 8501 &
+	poetry run uvicorn api.main:app --reload --host 0.0.0.0 --port 8000 &
+	poetry run streamlit run review_ui/app.py --server.port 8501 &
 
 # Clean up
 clean:
@@ -118,7 +118,7 @@ lint:
 
 # Test utilities
 test-api:
-	python3 tests/test_api.py
+	poetry run python tests/test_api.py
 
 test-demo:
-	python3 tests/test_demo.py
+	poetry run python tests/test_demo.py
