@@ -110,11 +110,19 @@ print('Edits:', result.detected_edits)
 │   ├── download_datasets.py  # WinoBias, WinoGender, CrowS-Pairs
 │   ├── extract_wikipedia.py  # Wikipedia corpus extraction
 │   └── common_utils.py       # Shared utilities (1,637 lines)
+├── data/                   # Training and evaluation datasets
+│   ├── raw/                # Original benchmark datasets
+│   └── clean/              # Processed datasets for team access
 └── docs/                   # Documentation
     ├── approach_card.md    # Technical methodology
     ├── dataset_datasheet.md # Ground truth documentation
     └── eval_protocol.md    # Evaluation procedures
 ```
+
+**Data Pipeline:**
+- `data/raw/` - Original datasets (WinoBias, WinoGender, CrowS-Pairs, Wikipedia extracts)
+- `data/clean/` - Processed datasets ready for evaluation and model training
+- Use `scripts/data_collection/` tools to regenerate or update datasets
 
 ## Requirements
 
