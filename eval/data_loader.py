@@ -112,13 +112,16 @@ class RulesLoader:
                 rules = []
                 
                 for row in reader:
-                    if row.get('biased') and row.get('neutral_primary'):
+                    # Include rules with biased term (neutral_primary can be empty for deletion patterns)
+                    if row.get('biased'):
                         rules.append({
                             'biased': row['biased'],
-                            'neutral_primary': row['neutral_primary'],
-                            'severity': row.get('severity', 'replace')
+                            'neutral_primary': row.get('neutral_primary', ''),
+                            'severity': row.get('severity', 'replace'),
+                            'pos': row.get('pos', 'noun'),
+                            'tags': row.get('tags', '')
                         })
-                
+
                 return rules
                 
         except FileNotFoundError:

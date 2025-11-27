@@ -92,11 +92,25 @@ class BiasDetector:
         if language not in self._compiled_patterns:
             rules = self._get_rules(language)
             patterns = []
-            
+
             for rule in rules:
                 biased_term = rule['biased']
-                # Create word boundary pattern for exact matching
-                pattern = r'\b' + re.escape(biased_term) + r'\b'
+                pos = rule.get('pos', 'noun')
+
+                # Different pattern strategies based on term type
+                if ' ' in biased_term:
+                    # Multi-word phrase: use word boundaries only at start/end
+                    # Example: "wa kike" → r'\bwa kike\b'
+                    pattern = r'\b' + re.escape(biased_term) + r'\b'
+                elif pos == 'suffix' or len(biased_term) <= 4:
+                    # Suffix or short term: match as substring with word boundaries
+                    # Example: "zake" → r'\bzake\b' (matches "rekodi zake")
+                    # This allows matching within longer phrases
+                    pattern = r'\b' + re.escape(biased_term) + r'\b'
+                else:
+                    # Single-word term: strict word boundary matching
+                    pattern = r'\b' + re.escape(biased_term) + r'\b'
+
                 try:
                     compiled_pattern = re.compile(pattern, re.IGNORECASE)
                     patterns.append(compiled_pattern)
@@ -107,9 +121,9 @@ class BiasDetector:
                         biased_term, e
                     )
                     continue
-            
+
             self._compiled_patterns[language] = patterns
-        
+
         return self._compiled_patterns[language]
     
     def clear_cache(self) -> None:

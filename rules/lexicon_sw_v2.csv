@@ -29,3 +29,12 @@ sw,zake,zao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic pos
 sw,wake,wao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,wagonjwa wake,wagonjwa wao
 sw,yake,yao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,kadi yake,kadi yao
 sw,mwalimu mkuu,mwalimu mkuu,,occupation,compound,education,formal,replace,1/2,sg,false,,,,,Mwalimu mkuu ataongoza,Mwalimu mkuu ataongoza
+sw,mwanasiasa,mwanasiasa,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mwanasiasa aliahidi,Mwanasiasa aliahidi
+sw,mfalme,mfalme,,gender|occupation,noun,royal,formal,replace,1/2,sg,false,,,,,Mfalme alitawala,Mfalme alitawala
+sw,mawakili,mawakili,wanasheria,gender|occupation,noun,legal,formal,replace,6,pl,false,,,,,Mawakili walihudhulia,Mawakili walihudhulia
+sw,mpinzani,mpinzani,mshindani,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mpinzani alijibu,Mpinzani alijibu
+sw,mjumbe,mjumbe,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mjumbe aliwasilisha,Mjumbe aliwasilisha
+sw,mstaafu,mstaafu,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mstaafu alihudhulia,Mstaafu alihudhulia
+sw,mtendaji,mtendaji,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mtendaji alitekeleza,Mtendaji alitekeleza
+sw,majaji,majaji,waamuzi,gender|occupation,noun,legal,formal,replace,6,pl,false,,,,,Majaji walitoa hukumu,Majaji walitoa hukumu
+sw,meya,meya,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Meya alipitisha,Meya alipitisha
