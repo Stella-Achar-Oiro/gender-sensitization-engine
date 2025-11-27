@@ -1,6 +1,10 @@
 
 # Gender Bias Correction Evaluation Metrics Framework
 
+**Project:** JuaKazi Gender Sensitization Engine
+**Languages:** English, Swahili, French, Gikuyu
+**Updated:** November 20, 2025
+
 ## Bias Mitigation
 
 | Metric Name | Definition / Formula | Purpose / Interpretation | Target |
@@ -60,19 +64,34 @@
 
 ## Hybrid Debiasing Approach Summary
 
-| Component | Strength | Weakness | Why It Fits |
-|----------|----------|----------|-------------|
-| **LaserTagger** | Fast, precise | Limited with complex syntax | Good for lexical bias |
-| **mT5 / mBART / AfriT5** | Deep context-aware rewriting | Slower, may hallucinate | Handles structural stereotypes |
-| **Verifier** | Ensures quality & trust | Adds latency | Quality safeguard |
-| **Hybrid Routing** | Balanced performance | Threshold tuning needed | Best tradeoff accuracy vs speed |
+| Component | Strength | Weakness | Implementation Status |
+|----------|----------|----------|----------------------|
+| **Rules-Based Lexicon** | Fast, precise, zero false positives | Recall limited by lexicon coverage | Production (70% weight) |
+| **ML Detector (XLM-R)** | Context-aware, multilingual | Requires training data | Demo mode (30% weight) |
+| **MT5 Corrector** | Deep context-aware rewriting | Slower, may hallucinate | Optional (requires requirements_ml.txt) |
+| **Hybrid Routing** | Balanced performance | Threshold tuning needed | Implemented |
+
+---
+
+## Current Performance (Nov 20, 2025)
+
+| Language | F1 Score | Precision | Recall | Bias Removal | Status |
+|----------|----------|-----------|--------|--------------|--------|
+| English  | 0.764    | 1.000     | 0.618  | 100.0%       | Production |
+| Gikuyu   | 0.714    | 1.000     | 0.556  | Pending      | Beta |
+| Swahili  | 0.681    | 1.000     | 0.516  | 12.5%        | Foundation |
+| French   | 0.627    | 1.000     | 0.457  | Pending      | Beta |
+
+**Key Achievement:** Perfect precision (1.000) across all 4 languages - zero false positives.
 
 ---
 
 ### Language Models & Embeddings
-- LaBSE
-- AfriSimCSE
+- XLM-RoBERTa (multilingual detection)
+- DistilBERT (English detection)
+- MT5 (optional correction, requires ML deps)
+- LaBSE (semantic similarity)
 
 ---
 
-© JuaKazi — Gender Bias Correction Initiative
+© JuaKazi — Gender Bias Detection & Correction Initiative

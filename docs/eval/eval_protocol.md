@@ -2,7 +2,7 @@
 
 ## Overview
 
-Standardized evaluation framework for gender bias detection performance measurement across English, Swahili, Hausa, Igbo, and Yoruba languages.
+Standardized evaluation framework for gender bias detection performance measurement across English, Swahili, French, and Gikuyu languages.
 
 ## Metrics Definitions
 
@@ -23,13 +23,20 @@ Standardized evaluation framework for gender bias detection performance measurem
 
 **Overall Performance**: Aggregate metrics across all test samples
 **Per-Category**: Metrics broken down by bias type (occupation, pronoun_assumption, etc.)
-**Per-Language**: Separate evaluation for English, Swahili, Hausa, Igbo, and Yoruba
+**Per-Language**: Separate evaluation for English, Swahili, French, and Gikuyu
 
 ## Ground Truth Data
 
-**Location**: `eval/ground_truth_{lang}.csv` where lang = en, sw, ha, ig, yo
+**Location**: `eval/ground_truth_{lang}.csv` where lang = en, sw, fr, ki
 **Format**: CSV with columns: text, has_bias, bias_category, expected_correction
-**Size**: 50 samples per language (25 biased, 25 non-biased), 250 total samples
+**Size**: 216 total test samples across 4 languages
+
+| Language | Test Samples | Biased | Neutral | Status |
+|----------|-------------|--------|---------|--------|
+| English  | 67 samples  | 42     | 25      | Production |
+| Swahili  | 64 samples  | 33     | 31      | Foundation |
+| French   | 50 samples  | 35     | 15      | Beta |
+| Gikuyu   | 35 samples  | 18     | 17      | Beta |
 
 ## Evaluation Procedure
 
@@ -40,7 +47,7 @@ cd /path/to/gender-sensitization-engine
 
 ### Step 2: Run Evaluation
 ```bash
-python3 eval/run_evaluation.py
+python3 run_evaluation.py
 ```
 
 ### Step 3: Review Results
@@ -49,7 +56,7 @@ python3 eval/run_evaluation.py
 
 ## Output Format
 
-### Console Output
+### Console Output (Nov 20, 2025)
 ```
 Running bias detection evaluation...
 Evaluating en...
@@ -64,26 +71,22 @@ SW Results:
   Precision: 1.000
   Recall: 0.516
 
-Evaluating ha...
-HA Results:
-  Overall F1: 0.780
+Evaluating fr...
+FR Results:
+  Overall F1: 0.627
   Precision: 1.000
-  Recall: 0.640
+  Recall: 0.457
 
-Evaluating ig...
-IG Results:
-  Overall F1: 0.684
+Evaluating ki...
+KI Results:
+  Overall F1: 0.714
   Precision: 1.000
-  Recall: 0.520
+  Recall: 0.556
 
-Evaluating yo...
-YO Results:
-  Overall F1: 0.936
-  Precision: 1.000
-  Recall: 0.880
-
-Report saved to: eval/results/f1_report_20251028_112707.csv
+Report saved to: eval/results/f1_report_20251120_215337.csv
 ```
+
+**Key Achievement:** All 4 languages achieve perfect precision (1.000) - zero false positives.
 
 ### Correction Evaluation
 Run pre→post bias removal analysis:
@@ -110,16 +113,14 @@ Output includes:
 - No external packages required for evaluation
 
 ### File Dependencies
-- `eval/ground_truth_en.csv` - English test cases
-- `eval/ground_truth_sw.csv` - Swahili test cases
-- `eval/ground_truth_ha.csv` - Hausa test cases
-- `eval/ground_truth_ig.csv` - Igbo test cases
-- `eval/ground_truth_yo.csv` - Yoruba test cases
-- `rules/lexicon_en_v2.csv` - English bias rules
-- `rules/lexicon_sw_v2.csv` - Swahili bias rules
-- `rules/lexicon_ha_v2.csv` - Hausa bias rules
-- `rules/lexicon_ig_v2.csv` - Igbo bias rules
-- `rules/lexicon_yo_v2.csv` - Yoruba bias rules
+- `eval/ground_truth_en.csv` - English test cases (67 samples)
+- `eval/ground_truth_sw.csv` - Swahili test cases (64 samples)
+- `eval/ground_truth_fr.csv` - French test cases (50 samples)
+- `eval/ground_truth_ki.csv` - Gikuyu test cases (35 samples)
+- `rules/lexicon_en_v2.csv` - English bias rules (514 entries)
+- `rules/lexicon_sw_v2.csv` - Swahili bias rules (15 terms)
+- `rules/lexicon_fr_v2.csv` - French bias rules (51 terms)
+- `rules/lexicon_ki_v2.csv` - Gikuyu bias rules (22 terms)
 
 ### Expected Runtime
 - Total execution: <30 seconds
@@ -141,9 +142,9 @@ Output includes:
 ## Interpretation Guidelines
 
 ### Performance Benchmarks
-- **High Precision (>0.9)**: Low false positive rate, conservative detection
-- **Low Recall (<0.2)**: Missing many biased cases, needs rule expansion
-- **Balanced F1 (>0.5)**: Good overall performance target
+- **Perfect Precision (1.000)**: Achieved across all 4 languages - zero false positives
+- **Moderate Recall (0.45-0.62)**: Varies by lexicon maturity
+- **F1 Target (>0.60)**: English (0.764), Gikuyu (0.714), Swahili (0.681), French (0.627)
 
 ### Common Issues
 - **Perfect Precision, Low Recall**: Rule coverage gaps

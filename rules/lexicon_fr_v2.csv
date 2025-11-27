@@ -1,0 +1,52 @@
+language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
+fr,président,président·e,présidence|direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le président a ouvert la réunion.,La présidence a ouvert la réunion.
+fr,Président,Président·e,Présidence|Direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le président a ouvert la réunion.,La présidence a ouvert la réunion.
+fr,le président,la présidence,présidence|direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le président a ouvert la réunion.,La présidence a ouvert la réunion.
+fr,directeur,directeur·rice,direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le directeur gère l'équipe.,La direction gère l'équipe.
+fr,Directeur,Directeur·rice,Direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le directeur gère l'équipe.,La direction gère l'équipe.
+fr,le directeur,la direction,direction,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le directeur gère l'équipe.,La direction gère l'équipe.
+fr,policier,officier de police,agent|membre des forces de l'ordre,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,Le policier a aidé l'enfant.,L'officier de police a aidé l'enfant.
+fr,Policier,Officier de police,Agent|Membre des forces de l'ordre,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,Le policier a aidé l'enfant.,L'officier de police a aidé l'enfant.
+fr,le policier,l'officier de police,agent|membre des forces de l'ordre,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,Le policier a aidé l'enfant.,L'officier de police a aidé l'enfant.
+fr,serveuse,serveur·euse,personnel de service,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,La serveuse a pris notre commande.,Le personnel de service a pris notre commande.
+fr,Serveuse,Serveur·euse,Personnel de service,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,La serveuse a pris notre commande.,Le personnel de service a pris notre commande.
+fr,la serveuse,le personnel,personnel de service,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,La serveuse a pris notre commande.,Le personnel de service a pris notre commande.
+fr,infirmière,personnel infirmier,infirmier·ère|soignant,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,L'infirmière soigne les patients.,Le personnel infirmier soigne les patients.
+fr,Infirmière,Personnel infirmier,Infirmier·ère|Soignant,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,L'infirmière soigne les patients.,Le personnel infirmier soigne les patients.
+fr,l'infirmière,le personnel infirmier,personnel infirmier|soignant,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,L'infirmière soigne les patients.,Le personnel infirmier soigne les patients.
+fr,enseignant,enseignant·e,corps enseignant|personne enseignante,gender|occupation,noun,education,neutral,replace,,,,,,,,L'enseignant explique la leçon.,Le corps enseignant explique la leçon.
+fr,Enseignant,Enseignant·e,Corps enseignant|Personne enseignante,gender|occupation,noun,education,neutral,replace,,,,,,,,L'enseignant explique la leçon.,Le corps enseignant explique la leçon.
+fr,l'enseignant,le corps enseignant,corps enseignant|personne enseignante,gender|occupation,noun,education,neutral,replace,,,,,,,,L'enseignant explique la leçon.,Le corps enseignant explique la leçon.
+fr,médecin,médecin,praticien·ne|professionnel·le de santé,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,Le médecin examine le patient.,Le médecin examine le patient.
+fr,Médecin,Médecin,Praticien·ne|Professionnel·le de santé,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,Le médecin examine le patient.,Le médecin examine le patient.
+fr,le médecin,le médecin,praticien·ne|professionnel·le de santé,gender|occupation,noun,healthcare,neutral,replace,,,,,,,,Le médecin examine le patient.,Le médecin examine le patient.
+fr,ingénieur,ingénieur·e,personne ingénieure|membre de l'ingénierie,gender|occupation,noun,technology,neutral,replace,,,,,,,,L'ingénieur conçoit le système.,L'ingénieur·e conçoit le système.
+fr,Ingénieur,Ingénieur·e,Personne ingénieure|Membre de l'ingénierie,gender|occupation,noun,technology,neutral,replace,,,,,,,,L'ingénieur conçoit le système.,L'ingénieur·e conçoit le système.
+fr,l'ingénieur,l'ingénieur·e,personne ingénieure|membre de l'ingénierie,gender|occupation,noun,technology,neutral,replace,,,,,,,,L'ingénieur conçoit le système.,L'ingénieur·e conçoit le système.
+fr,secrétaire,secrétaire,assistant·e|personnel administratif,gender|occupation,noun,administrative,neutral,replace,,,,,,,,La secrétaire organise les dossiers.,Le personnel administratif organise les dossiers.
+fr,Secrétaire,Secrétaire,Assistant·e|Personnel administratif,gender|occupation,noun,administrative,neutral,replace,,,,,,,,La secrétaire organise les dossiers.,Le personnel administratif organise les dossiers.
+fr,la secrétaire,le personnel administratif,personnel administratif|assistant·e,gender|occupation,noun,administrative,neutral,replace,,,,,,,,La secrétaire organise les dossiers.,Le personnel administratif organise les dossiers.
+fr,homme,personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
+fr,Homme,Personne,Individu|Être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
+fr,l'homme,la personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,L'homme peut réussir.,La personne peut réussir.
+fr,femme,personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,Une femme peut réussir.,Une personne peut réussir.
+fr,Femme,Personne,Individu|Être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,Une femme peut réussir.,Une personne peut réussir.
+fr,la femme,la personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,,,,,,,,La femme peut réussir.,La personne peut réussir.
+fr,il ou elle,iel,eux|on,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,Si un étudiant est en retard il ou elle doit se présenter.,Si quelqu'un est en retard iel doit se présenter.
+fr,Il Ou Elle,Iel,Eux|On,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,Si un étudiant est en retard il ou elle doit se présenter.,Si quelqu'un est en retard iel doit se présenter.
+fr,son,leur,son|leur,gender|pronoun,pronoun,general,neutral,warn,,,,,,,,Chaque employé doit apporter son ordinateur.,Chaque employé doit apporter leur ordinateur.
+fr,Son,Leur,Son|Leur,gender|pronoun,pronoun,general,neutral,warn,,,,,,,,Chaque employé doit apporter son ordinateur.,Chaque employé doit apporter leur ordinateur.
+fr,sa,leur,sa|leur,gender|pronoun,pronoun,general,neutral,warn,,,,,,,,Chaque employée doit apporter sa tablette.,Chaque personne doit apporter leur tablette.
+fr,Sa,Leur,Sa|Leur,gender|pronoun,pronoun,general,neutral,warn,,,,,,,,Chaque employée doit apporter sa tablette.,Chaque personne doit apporter leur tablette.
+fr,chef,chef·fe,direction|responsable,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le chef dirige l'équipe.,La direction dirige l'équipe.
+fr,Chef,Chef·fe,Direction|Responsable,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le chef dirige l'équipe.,La direction dirige l'équipe.
+fr,le chef,la direction,direction|responsable,gender|role-title,noun,corporate,formal,replace,,,,,,,,Le chef dirige l'équipe.,La direction dirige l'équipe.
+fr,auteur,auteur·rice,personne autrice|écrivain·e,gender|occupation,noun,arts,neutral,replace,,,,,,,,L'auteur a écrit le livre.,La personne autrice a écrit le livre.
+fr,Auteur,Auteur·rice,Personne autrice|Écrivain·e,gender|occupation,noun,arts,neutral,replace,,,,,,,,L'auteur a écrit le livre.,La personne autrice a écrit le livre.
+fr,l'auteur,la personne autrice,personne autrice|écrivain·e,gender|occupation,noun,arts,neutral,replace,,,,,,,,L'auteur a écrit le livre.,La personne autrice a écrit le livre.
+fr,professeur,professeur·e,corps professoral|enseignant·e,gender|occupation,noun,education,neutral,replace,,,,,,,,Le professeur donne le cours.,Le corps professoral donne le cours.
+fr,Professeur,Professeur·e,Corps professoral|Enseignant·e,gender|occupation,noun,education,neutral,replace,,,,,,,,Le professeur donne le cours.,Le corps professoral donne le cours.
+fr,le professeur,le corps professoral,corps professoral|enseignant·e,gender|occupation,noun,education,neutral,replace,,,,,,,,Le professeur donne le cours.,Le corps professoral donne le cours.
+fr,avocat,avocat·e,personne avocate|membre du barreau,gender|occupation,noun,legal,neutral,replace,,,,,,,,L'avocat défend son client.,La personne avocate défend le client.
+fr,Avocat,Avocat·e,Personne avocate|Membre du barreau,gender|occupation,noun,legal,neutral,replace,,,,,,,,L'avocat défend son client.,La personne avocate défend le client.
+fr,l'avocat,la personne avocate,personne avocate|membre du barreau,gender|occupation,noun,legal,neutral,replace,,,,,,,,L'avocat défend son client.,La personne avocate défend le client.

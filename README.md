@@ -3,31 +3,56 @@
 Gender bias detection and correction system for African languages with comprehensive F1 evaluation framework.
 
 ## Supported Languages
-- **English** (F1: 0.764, Correction: 100% bias removal)
-- **Swahili** (F1: 0.681, Correction: 12.5% bias removal)
-- **Hausa** (F1: 0.780, Correction: 68.8% bias removal)
-- **Igbo** (F1: 0.684, Correction: 69.2% bias removal)
-- **Yoruba** (F1: 0.936, Correction: 77.3% bias removal)
 
-**Total Coverage**: 158M+ African language speakers
+### Production & Foundation
+- **English** (F1: 0.764, Precision: 1.000, Bias Removal: 100%) - Production-ready
+- **Swahili** (F1: 0.681, Precision: 1.000, Bias Removal: 12.5%) - Foundation
 
-**Latest Update (Oct 28, 2025):** Enhanced ground truth with diverse test cases, added correction effectiveness evaluation
+### Beta (Pending Native Speaker Validation)
+- **French** (F1: 0.627, Precision: 1.000) - Initial validation complete
+- **Gikuyu** (F1: 0.714, Precision: 1.000) - Initial validation complete
+
+**Perfect Precision**: All 4 languages achieve 1.000 precision (zero false positives)
+
+**Latest Update (Nov 20, 2025):** Added French and Gikuyu support with F1 evaluation, updated to 4-language system
 
 ## Quick Start
 
-### Run Full Evaluation
+### Using Make Commands (Recommended)
 ```bash
-python3 run_evaluation.py
+# Show all available commands
+make help
+
+# Run evaluation (no dependencies required)
+make eval              # F1 evaluation across all languages
+make eval-correction   # Correction effectiveness analysis
+make demo              # Live interactive demo
+
+# Run tests
+make test              # System tests
+make test-demo         # Complete demo with all features
+
+# Start services (requires optional dependencies)
+make run-api           # API server on port 8000
+make run-ui            # Streamlit UI on port 8501
+make run               # Both API and UI together
 ```
 
-### Run Baseline Comparison
+### Direct Python Commands
 ```bash
-cd eval && python3 baseline_simple.py
-```
+# Evaluation (no dependencies required)
+python3 run_evaluation.py           # F1 evaluation
+python3 eval/correction_evaluator.py # Correction analysis
+python3 demo_live.py                # Live demo
 
-### Run Correction Evaluation (Pre→Post)
-```bash
-python3 eval/correction_evaluator.py
+# Testing
+python3 tests/test_system.py        # System tests
+python3 tests/test_api.py           # API endpoint tests (requires FastAPI)
+python3 tests/test_demo.py          # Complete demo
+
+# Services (requires optional dependencies)
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000  # API
+streamlit run review_ui/app.py --server.port 8501         # UI
 ```
 
 ### Test Individual Language
@@ -44,28 +69,27 @@ print('Edits:', result.detected_edits)
 
 ## Performance Summary
 
-### Detection Performance
-| Language | F1 Score | Precision | Recall | Status |
-|----------|----------|-----------|--------|---------|
-| English  | 0.764    | 1.000     | 0.618  | Good |
-| Swahili  | 0.681    | 1.000     | 0.516  | Moderate |
-| Hausa    | 0.780    | 1.000     | 0.640  | Good |
-| Igbo     | 0.684    | 1.000     | 0.520  | Moderate |
-| Yoruba   | 0.936    | 1.000     | 0.880  | Excellent |
+### Detection Performance (Nov 20, 2025)
+| Language | F1 Score | Precision | Recall | Lexicon Size | Status |
+|----------|----------|-----------|--------|--------------|---------|
+| English  | 0.764    | 1.000     | 0.618  | 514 entries (19 concepts) | Production |
+| Swahili  | 0.681    | 1.000     | 0.516  | 15 terms | Foundation |
+| French   | 0.627    | 1.000     | 0.457  | 51 terms | Beta |
+| Gikuyu   | 0.714    | 1.000     | 0.556  | 22 terms | Beta |
 
-### Correction Effectiveness (Pre→Post Bias Removal)
+### Correction Effectiveness
 | Language | Detection Rate | Bias Removal Rate | Status |
 |----------|---------------|-------------------|---------|
-| English  | 61.8%         | **100.0%**        | Excellent |
-| Swahili  | 51.6%         | 12.5%             | Needs Work |
-| Hausa    | 64.0%         | 68.8%             | Moderate |
-| Igbo     | 52.0%         | 69.2%             | Moderate |
-| Yoruba   | 88.0%         | 77.3%             | Good |
+| English  | 61.8%         | **100.0%**        | Production-ready |
+| Swahili  | 51.6%         | 12.5%             | Needs expansion |
+| French   | 45.7%         | Pending           | Needs validation |
+| Gikuyu   | 55.6%         | Pending           | Needs validation |
 
 **Key Achievements**:
-- Perfect precision (1.000) across all languages - zero false positives
+- **Perfect precision (1.000) across all 4 languages** - zero false positives
 - English: 100% bias removal rate (all detected biases successfully corrected)
-- Enhanced ground truth with diverse, complex test cases
+- Hybrid approach: Rules-based (70%) + ML (30%)
+- 4 languages with measurable F1 scores
 
 ## Project Structure
 
@@ -78,21 +102,58 @@ print('Edits:', result.detected_edits)
 │   ├── ground_truth_*.csv  # Test datasets (50+ samples each)
 │   └── results/            # Evaluation outputs
 ├── rules/                  # Bias detection lexicons
-│   ├── lexicon_en_v2.csv  # English rules (515 terms)
-│   ├── lexicon_sw_v2.csv  # Swahili rules (15 terms)
-│   ├── lexicon_ha_v2.csv  # Hausa rules (22 terms)
-│   ├── lexicon_ig_v2.csv  # Igbo rules (20 terms)
-│   └── lexicon_yo_v2.csv  # Yoruba rules (20 terms)
+│   ├── lexicon_en_v2.csv  # English (514 entries = 19 concepts)
+│   ├── lexicon_sw_v2.csv  # Swahili (15 terms)
+│   ├── lexicon_fr_v2.csv  # French (51 terms)
+│   └── lexicon_ki_v2.csv  # Gikuyu (22 terms)
+├── scripts/data_collection/  # Data collection tools
+│   ├── download_datasets.py  # WinoBias, WinoGender, CrowS-Pairs
+│   ├── extract_wikipedia.py  # Wikipedia corpus extraction
+│   └── common_utils.py       # Shared utilities (1,637 lines)
+├── data/                   # Training and evaluation datasets
+│   ├── raw/                # Original benchmark datasets
+│   └── clean/              # Processed datasets for team access
 └── docs/                   # Documentation
     ├── approach_card.md    # Technical methodology
     ├── dataset_datasheet.md # Ground truth documentation
     └── eval_protocol.md    # Evaluation procedures
 ```
 
+**Data Pipeline:**
+- `data/raw/` - Original datasets (WinoBias, WinoGender, CrowS-Pairs, Wikipedia extracts)
+- `data/clean/` - Processed datasets ready for evaluation and model training
+- Use `scripts/data_collection/` tools to regenerate or update datasets
+
 ## Requirements
 
-- Python 3.x (standard library only)
-- No external dependencies required
+### Core System (No Dependencies)
+- Python 3.12+ (standard library only)
+- All evaluation and detection features work without external dependencies
+
+```bash
+python3 run_evaluation.py           # F1 evaluation
+python3 demo_live.py                # Live demo
+python3 eval/correction_evaluator.py # Correction analysis
+```
+
+### Optional Dependencies
+
+Install using Poetry for dependency management:
+
+```bash
+# Full installation (API, UI, ML, dev tools) - auto-installs poetry if needed
+make setup
+
+# Alternatives
+make install-minimal  # API + UI only (no ML)
+make install-core     # Dev tools only
+```
+
+Dependencies managed via `pyproject.toml` with optional extras:
+- **api** - FastAPI, pandas
+- **ui** - Streamlit
+- **ml** - Transformers, PyTorch, scikit-learn
+- **dev** - pytest, black, ruff, mypy, pre-commit
 
 ## Documentation
 

@@ -2,7 +2,7 @@
 
 ## Problem Framing
 
-**Objective**: Detect and correct gender bias in African language text (English, Swahili, Hausa, Igbo, Yoruba) with focus on occupational and linguistic bias patterns.
+**Objective**: Detect and correct gender bias in African language text (JuaKazi languages: English, Swahili, French, Gikuyu) with focus on occupational and linguistic bias patterns.
 
 **Target Bias Categories**:
 - Occupational terms (chairman → chairperson)
@@ -36,51 +36,48 @@ policeman → police officer
 - Case preservation (Chairman → Chairperson)
 - Severity levels (replace, warn)
 
-### Cross-Language Strategy
+### Cross-Language Strategy (JuaKazi)
 **Per-language lexicons** with shared evaluation framework
 - English: 515 occupational/pronoun rules
 - Swahili: 15 culturally-adapted rules
-- Hausa: 22 culturally-adapted rules
-- Igbo: 20 culturally-adapted rules
-- Yoruba: 20 culturally-adapted rules
+- French: TBD (in development)
+- Gikuyu: TBD (in development)
 - Independent rule sets to preserve linguistic accuracy
 
 **Trade-off Rationale**: Language-specific rules over shared model to maintain semantic precision and cultural context.
 
 ## Current Performance
 
-### Detection Results (Oct 28, 2025 - Enhanced Ground Truth)
+### Detection Results (JuaKazi Languages)
 | Language | Precision | Recall | F1 Score | Status |
 |----------|-----------|--------|----------|---------|
 | English  | 1.000     | 0.618  | 0.764    | Good |
 | Swahili  | 1.000     | 0.516  | 0.681    | Moderate |
-| Hausa    | 1.000     | 0.640  | 0.780    | Good |
-| Igbo     | 1.000     | 0.520  | 0.684    | Moderate |
-| Yoruba   | 1.000     | 0.880  | 0.936    | Excellent |
+| French   | TBD       | TBD    | TBD      | In Progress |
+| Gikuyu   | TBD       | TBD    | TBD      | In Progress |
 
 ### Correction Effectiveness (Pre→Post Comparison)
 | Language | Detection Rate | Bias Removal Rate | Status |
 |----------|---------------|-------------------|---------|
 | English  | 61.8%         | **100.0%**        | Effective |
 | Swahili  | 51.6%         | 12.5%             | Needs Work |
-| Hausa    | 64.0%         | 68.8%             | Moderate |
-| Igbo     | 52.0%         | 69.2%             | Moderate |
-| Yoruba   | 88.0%         | 77.3%             | Effective |
+| French   | TBD           | TBD               | In Progress |
+| Gikuyu   | TBD           | TBD               | In Progress |
 
-**Key Finding:** English achieves 100% bias removal rate - all detected biases successfully neutralized. Yoruba strong at 77.3%. Swahili requires significant lexicon expansion (12.5% removal rate indicates gaps).
+**Key Finding:** English achieves 100% bias removal rate - all detected biases successfully neutralized. Swahili requires significant lexicon expansion (12.5% removal rate indicates gaps). French and Gikuyu data collection and evaluation in progress.
 
 ### Analysis
 **Strengths**:
-- Perfect precision (1.000) - zero false positives across all languages
+- Perfect precision (1.000) - zero false positives across evaluated languages
 - English correction: 100% bias removal (all detected→neutralized)
-- Yoruba: Excellent detection (88%) and correction (77.3%)
 - No over-corrections detected (preserves non-biased text)
 
 **Limitations**:
 - Recall gaps indicate lexicon coverage needs expansion
 - Swahili correction needs improvement (12.5% removal rate)
-- African language test sets may need more complexity
+- JuaKazi language test sets may need more complexity
 - Generic pronoun category shows zero detection in English/Swahili
+- French and Gikuyu lexicons and evaluations in development
 
 **Priority Actions**:
 1. Expand Swahili correction lexicon urgently
@@ -104,6 +101,44 @@ policeman → police officer
 - Neutralization may lose cultural/historical context
 - Binary gender assumptions in current rule set
 - Focus on professional contexts over personal identity
+
+## Data Collection Methodology (JuaKazi Team)
+
+### Team Assignment
+**Languages**: Gikuyu (ki), French (fr), English (en), Swahili (sw)
+**Strategy**: 100% online sourcing from open-source datasets and Wikipedia
+
+### Collection Approach
+1. **Download bias datasets**: WinoBias (MIT), WinoGender (CC BY 4.0), CrowS-Pairs (CC BY-SA 4.0)
+2. **Extract from Wikipedia**: Gender-relevant articles across 4 languages
+3. **PII detection**: Automated removal of personally identifiable information
+4. **Schema conversion**: Map all data to 40-field AI BRIDGE standard
+5. **Quality assurance**: Double annotation for Cohen's Kappa ≥ 0.70
+
+### Data Collection Toolkit
+**5 Python scripts** (1,637 LOC, zero external dependencies):
+- `download_datasets.py`: Download open-source bias datasets
+- `extract_wikipedia.py`: Extract from Wikipedia (multi-language)
+- `detect_pii.py`: PII detection and removal
+- `annotate_samples.py`: Terminal annotation interface
+- `track_quality.py`: Quality tracking dashboard
+
+### Collection Results
+**Total Collected**: 3,011 samples
+- English: 2,838 samples (236% of Bronze target)
+- French: 135 samples
+- Swahili: 37 samples
+- Gikuyu: 1 sample (limited online availability)
+
+**Data Quality**:
+- Schema compliance: 100% (40 fields)
+- PII detection rate: 0.3% (all redacted)
+- Pre-labeled: 1,584 samples (52.6%)
+- Bias balance: 50% stereotype / 50% counter-stereotype
+
+See `docs/eval/DATA_COLLECTION_REPORT.md` for complete details.
+
+---
 
 ## Evaluation Protocol
 

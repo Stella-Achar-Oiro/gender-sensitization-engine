@@ -7,10 +7,28 @@ venv/
 logs/
 audit_logs/
 
+# Poetry
+poetry.lock
+dist/
+build/
+*.egg-info
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Linting
+.mypy_cache/
+.ruff_cache/
+
 # Ignore generated results but track essential data files
 eval/results/
 *_backup.csv
 *.csv.bak
 
 # Ignore JSON results but allow package.json, etc.
-eval/results/*.json
+eval/results/*.jsonCLAUDE.md
+
+CLAUDE.md
+.pre-commit-config.yaml

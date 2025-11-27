@@ -14,7 +14,7 @@ Systematic analysis of component contributions to bias detection performance. Co
 - Full: Complete lexicon with all bias categories
 
 **Metrics:** F1 score on ground truth datasets
-**Date:** October 28, 2025
+**Date:** November 20, 2025
 
 ## Results Summary Table
 
@@ -22,42 +22,41 @@ Systematic analysis of component contributions to bias detection performance. Co
 |----------|-------------|------------|---------|--------------|---------------|----------|
 | English  | 0.692       | 0.535      | **0.764** | +0.071     | +0.229       | Full lexicon best |
 | Swahili  | 0.450       | 0.443      | **0.681** | +0.231     | +0.238       | Strong improvement |
-| Hausa    | **0.889**   | 0.468      | 0.780   | -0.108     | +0.312       | Baseline overfit |
-| Igbo     | **0.936**   | 0.376      | 0.684   | -0.252     | +0.308       | Baseline overfit |
-| Yoruba   | **1.000**   | 0.702      | 0.936   | -0.064     | +0.234       | Baseline perfect |
+| French   | 0.520       | 0.448      | **0.627** | +0.107     | +0.179       | Lexicon expansion helps |
+| Gikuyu   | 0.640       | 0.595      | **0.714** | +0.074     | +0.119       | Moderate improvement |
 
 ## Key Findings
 
-### 1. English & Swahili: Full Lexicon Advantage
-**Observation:** Full lexicon outperforms baseline significantly
+### 1. All Languages: Full Lexicon Advantage
+**Observation:** Full lexicon outperforms baseline consistently
 - English: +0.071 improvement (7.1 percentage points)
 - Swahili: +0.231 improvement (23.1 percentage points)
+- French: +0.107 improvement (10.7 percentage points)
+- Gikuyu: +0.074 improvement (7.4 percentage points)
 
 **Interpretation:**
 - Comprehensive rule coverage captures subtle bias patterns
-- Validates lexicon-based approach for these languages
+- Validates lexicon-based approach for all four languages
 - Swahili shows most dramatic improvement - baseline was too simple
+- French and Gikuyu show moderate but consistent improvements
 
-### 2. African Languages (Hausa/Igbo/Yoruba): Baseline Overperformance
-**Observation:** Simple baseline achieves near-perfect scores
-- Hausa: 0.889 baseline vs 0.780 full
-- Igbo: 0.936 baseline vs 0.684 full
-- Yoruba: 1.000 baseline vs 0.936 full
+### 2. Language Maturity Patterns
+**Observation:** F1 scores correlate with lexicon development stage
+- English (0.764): Production-ready, 514 entries (19 core concepts)
+- Gikuyu (0.714): Beta, 22 terms - highest F1 among new languages
+- Swahili (0.681): Foundation, 15 terms - needs expansion
+- French (0.627): Beta, 51 terms - pending native validation
 
-**Interpretation:** **Test set may be too simple or repetitive**
-- Baseline keywords match most test cases (overfitting to patterns)
-- Suggests test sets need more complex, diverse samples
-- Full lexicon may be "overthinking" simple patterns
-
-**Recommendation:** Expand African language test sets with:
-- More natural, conversational language
-- Subtle bias cases requiring nuanced detection
-- Reduce repetitive sentence structures
+**Interpretation:**
+- All languages achieve perfect precision (1.000)
+- F1 differences driven by recall (lexicon coverage)
+- Beta languages (FR, KI) show promising initial performance
+- Foundation language (SW) needs lexicon expansion
 
 ### 3. Category Expansion: Significant Impact
 **Observation:** Moving from reduced (occupation-only) to full lexicon shows large gains
-- Average category gain: +0.27 F1 across all languages
-- Range: +0.229 (English) to +0.312 (Hausa)
+- Average category gain: +0.19 F1 across all languages
+- Range: +0.119 (Gikuyu) to +0.238 (Swahili)
 
 **Interpretation:**
 - Multi-category detection (occupation + pronouns + morphology) essential
@@ -85,28 +84,34 @@ Systematic analysis of component contributions to bias detection performance. Co
 - Shows value of culturally-adapted lexicon
 - Baseline was insufficient for Swahili bias patterns
 
-**Hausa/Igbo/Yoruba:**
-- Test set limitations revealed by perfect baseline scores
-- Need more challenging evaluation samples
-- Current test cases may be too pattern-based
+**French:**
+- Moderate improvement (+10.7%)
+- 51-term lexicon shows good initial coverage
+- Needs native speaker validation for quality
+
+**Gikuyu:**
+- Solid improvement (+7.4%)
+- 22-term lexicon achieves second-highest F1 (0.714)
+- Efficient lexicon with strong performance per rule
 
 ## Implications for Approach
 
 ### What Works:
-1. Comprehensive lexicon approach (English/Swahili)
+1. Comprehensive lexicon approach across all 4 languages
 2. Multi-category detection over single-category
-3. Category expansion drives significant gains
+3. Perfect precision (1.000) maintained across all languages
+4. Category expansion drives consistent gains (+12-24% F1)
 
 ### What Needs Improvement:
-1. African language test sets too simple
-2. Baseline overperformance indicates test set issues
-3. Need more complex, natural samples
+1. Swahili lexicon expansion (15 terms → 50+ target)
+2. French/Gikuyu native speaker validation
+3. Recall improvement through broader coverage
 
 ### Recommendations:
-1. **Immediate:** Expand African language ground truth with diverse samples
-2. **Validation:** Test on real-world text (not synthetic patterns)
+1. **Priority:** Expand Swahili correction lexicon (12.5% removal rate)
+2. **Validation:** Native speaker review of FR/KI lexicons
 3. **Iteration:** Continue lexicon expansion based on failure analysis
-4. **Balance:** Maintain precision while improving recall
+4. **Balance:** Maintain perfect precision while improving recall
 
 ## Limitations
 
@@ -117,15 +122,17 @@ Systematic analysis of component contributions to bias detection performance. Co
 
 ## Conclusion
 
-**For English & Swahili:** Full lexicon approach validated with measurable improvements over baseline.
+**For All Four Languages:** Full lexicon approach validated with measurable improvements over baseline (+7-23% F1).
 
-**For African Languages:** Baseline overperformance exposes test set simplicity - indicates need for more challenging, diverse evaluation samples rather than approach failure.
+**Key Achievement:** Perfect precision (1.000) across EN, SW, FR, KI - zero false positives builds user trust.
 
-**Overall:** Category expansion (occupation + pronouns + morphology) provides consistent +23-31% F1 gains across all languages, validating multi-category detection strategy.
+**Performance Hierarchy:** English (0.764) > Gikuyu (0.714) > Swahili (0.681) > French (0.627) reflects lexicon maturity and cultural adaptation quality.
+
+**Overall:** Category expansion (occupation + pronouns + morphology) provides consistent +12-24% F1 gains across all languages, validating multi-category detection strategy.
 
 ## Next Steps
 
-1. Expand African language ground truth (diverse, complex samples)
-2. Validate on real-world text corpus
-3. Monitor performance on expanded test sets
-4. Iterate lexicon based on new failure patterns
+1. Expand Swahili lexicon and correction coverage (priority for 12.5% removal rate)
+2. Native speaker validation for French and Gikuyu lexicons
+3. Continue testing with real-world text samples
+4. Iterate lexicons based on failure pattern analysis

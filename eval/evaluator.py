@@ -66,7 +66,8 @@ class BiasEvaluationOrchestrator:
             EvaluationError: If evaluation fails
         """
         if languages is None:
-            languages = [Language.ENGLISH, Language.SWAHILI, Language.HAUSA, Language.YORUBA, Language.IGBO]
+            # JuaKazi languages: EN (production), SW (foundation), FR/KI (pending validation)
+            languages = [Language.ENGLISH, Language.SWAHILI, Language.FRENCH, Language.GIKUYU]
         
         results = []
         
@@ -79,10 +80,9 @@ class BiasEvaluationOrchestrator:
                 # Print immediate results
                 lang_names = {
                     Language.ENGLISH: "English",
-                    Language.SWAHILI: "Swahili", 
-                    Language.HAUSA: "Hausa",
-                    Language.YORUBA: "Yoruba",
-                    Language.IGBO: "Igbo"
+                    Language.SWAHILI: "Swahili",
+                    Language.FRENCH: "French",
+                    Language.GIKUYU: "Gikuyu"
                 }
                 lang_name = lang_names.get(language, language.value)
                 print(f"{lang_name} Results:")
