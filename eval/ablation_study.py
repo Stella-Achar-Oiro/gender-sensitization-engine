@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Union
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -30,15 +30,14 @@ class DetectorType(Enum):
 
 # Estimated weights for occupation-only detection performance
 # These represent the proportion of F1 score maintained when using only occupation rules
-CATEGORY_WEIGHTS: Dict[str, float] = {
+CATEGORY_WEIGHTS: dict[str, float] = {
     'en': 0.7,   # Occupation dominates English dataset
     'sw': 0.65,  # Swahili moderate occupation presence
-    'ha': 0.6,   # Hausa balanced categories
-    'ig': 0.55,  # Igbo more pronoun-focused
-    'yo': 0.75   # Yoruba strong occupation presence
+    'fr': 0.6,   # French balanced categories
+    'ki': 0.65   # Gikuyu moderate occupation presence
 }
 
-def run_ablation_study() -> List[Dict[str, Any]]:
+def run_ablation_study() -> list[dict[str, Any]]:
     """
     Run ablation study comparing different component configurations.
 
@@ -48,14 +47,14 @@ def run_ablation_study() -> List[Dict[str, Any]]:
     Returns:
         List of dictionaries containing F1 scores and gains for each language
     """
-    languages: List[Tuple[str, Language]] = [
+    # JuaKazi languages: English (production), Swahili (foundation), French & Gikuyu (beta)
+    languages: list[tuple[str, Language]] = [
         ('en', Language.ENGLISH),
         ('sw', Language.SWAHILI),
-        ('ha', Language.HAUSA),
-        ('ig', Language.IGBO),
-        ('yo', Language.YORUBA)
+        ('fr', Language.FRENCH),
+        ('ki', Language.GIKUYU)
     ]
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
 
     for lang_code, language in languages:
         print(f"Running ablation for {lang_code}...")
