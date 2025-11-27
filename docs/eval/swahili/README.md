@@ -2,7 +2,7 @@
 
 This folder contains all documentation related to improving Swahili gender bias detection from 12.5% to 75%+ bias removal rate.
 
-## 📁 Contents
+## Contents
 
 ### [improvement_research.md](improvement_research.md)
 **600+ lines** of comprehensive research including:
@@ -24,7 +24,7 @@ This folder contains all documentation related to improving Swahili gender bias 
 - Budget: ~$2,250
 - Timeline: 12 weeks
 
-## 🎯 Project Goals
+## Project Goals
 
 ### Current State
 - **F1 Score**: 0.681 (Precision: 1.000, Recall: 0.516)
@@ -38,7 +38,7 @@ This folder contains all documentation related to improving Swahili gender bias 
 - **Lexicon**: 150+ terms (10x)
 - **Dataset**: 200+ samples (3x)
 
-## 📋 Implementation Phases
+## Implementation Phases
 
 1. **Phase 1 (Weeks 1-2)**: Data Collection
    - Extract Swahili Wikipedia corpus
@@ -69,7 +69,7 @@ This folder contains all documentation related to improving Swahili gender bias 
    - Verify targets met (Recall >0.75, Removal >75%)
    - Document lessons learned
 
-## 🗂️ Files to Modify
+## Files to Modify
 
 ### Core Files
 ```
@@ -92,7 +92,7 @@ This folder contains all documentation related to improving Swahili gender bias 
 ✓ docs/eval/swahili/expansion_summary.md
 ```
 
-## 🌍 Community Resources
+## Community Resources
 
 ### Partners
 - [Masakhane NLP](https://www.masakhane.io/) - African NLP community
@@ -106,20 +106,20 @@ This folder contains all documentation related to improving Swahili gender bias 
 - [Swahili News Dataset](https://lacunafund.org/datasets/language/) - 31K articles
 - [KenSwQuAD](https://lacunafund.org/datasets/language/) - 7,526 QA pairs
 
-## 💰 Budget Breakdown
+## Budget Breakdown
 
 - **Native Speaker Annotators**: $1,200 (5-10 people × 40 hours × $15-20/hr)
 - **Linguistic Consultant**: $1,000 (1 person × 20 hours × $50/hr)
 - **ML Training**: $50 (Google Colab GPU credits)
 - **Total**: ~$2,250
 
-## 📊 Success Metrics
+## Success Metrics
 
 ### Technical Metrics
-- ✓ Precision: 1.000 (maintain zero false positives)
-- 📈 Recall: 0.516 → 0.750+ (+45%)
-- 📈 F1 Score: 0.681 → 0.800+ (+17%)
-- 🎯 Bias Removal: 12.5% → 75%+ (6x improvement)
+-  Precision: 1.000 (maintain zero false positives)
+-  Recall: 0.516 → 0.750+ (+45%)
+-  F1 Score: 0.681 → 0.800+ (+17%)
+-  Bias Removal: 12.5% → 75%+ (6x improvement)
 
 ### Checkpoints
 - **Week 2**: 500+ candidate terms identified
@@ -129,14 +129,14 @@ This folder contains all documentation related to improving Swahili gender bias 
 - **Week 10**: Recall 0.750+, Removal 75%+
 - **Week 12**: All targets met, docs complete
 
-## 🚀 Getting Started
+##  Getting Started
 
 1. **Read the Research**: Start with [improvement_research.md](improvement_research.md)
 2. **Review the Plan**: Check [implementation_plan.md](implementation_plan.md)
 3. **Track Progress**: Use the todo list in the repository
 4. **Join Community**: Connect with Masakhane NLP
 
-## 📝 Additional Documentation
+##  Additional Documentation
 
 As the project progresses, additional documents will be added:
 - `annotation_guidelines.md` - For native speaker annotators
@@ -144,7 +144,7 @@ As the project progresses, additional documents will be added:
 - `failure_analysis.md` - Analysis of missed bias cases
 - `expansion_summary.md` - Final results and lessons learned
 
-## ⚠️ Important Notes
+##  Important Notes
 
 1. **Maintain Perfect Precision**: Zero false positives is non-negotiable
 2. **Regional Variations**: Document differences between Kenya, Tanzania, Uganda
@@ -153,4 +153,4 @@ As the project progresses, additional documents will be added:
 
 ---
 
-**Status**: Planning Complete ✅ | **Next**: Begin Data Collection (Phase 1)
+**Status**: Planning Complete  | **Next**: Begin Data Collection (Phase 1)
