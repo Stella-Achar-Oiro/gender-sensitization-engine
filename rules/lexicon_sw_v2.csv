@@ -14,3 +14,18 @@ sw,mwandishi wa habari,mwandishi wa habari,mwandishi,gender|occupation,noun,medi
 sw,mpeleka mizigo,mpeleka mizigo,dereva wa utoaji,gender|occupation,noun,logistics,formal,replace,1/2,sg,false,,,,,Mpeleka mizigo alichelewa,Mpeleka mizigo alichelewa
 sw,mshonaji,mshonaji,mtaalamu wa nguo,gender|occupation,noun,fashion,formal,replace,1/2,sg,false,,,,,Yeye ni mshonaji hodari,Ni mshonaji hodari
 sw,fundi wa nyumba,fundi wa nyumba,mtaalamu wa ukarabati,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Fundi wa nyumba alirekebishe mlango,Fundi wa nyumba alirekebishe mlango
+sw,mgombea,mgombea,mshindani,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mgombea alijibu maswali,Mgombea alijibu maswali
+sw,msemaji,msemaji,mzungumzaji,gender|occupation,noun,media,formal,replace,1/2,sg,false,,,,,Msemaji alitangaza habari,Msemaji alitangaza habari
+sw,mwakilishi,mwakilishi,mwakilishi,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mwakilishi alihudhulia mkutano,Mwakilishi alihudhulia mkutano
+sw,mhudumu,mhudumu,mtumishi,gender|occupation,noun,hospitality,formal,replace,1/2,sg,false,,,,,Mhudumu alihudumu chakula,Mhudumu alihudumu chakula
+sw,Yeye ni,Ni,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni muuguzi mzuri,Ni muuguzi mzuri
+sw,yeye ni,ni,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni mama mzuri,Ni mama mzuri
+sw,Yeye anafanya,Anafanya,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye anafanya kazi ya uandishi,Anafanya kazi ya uandishi
+sw,yeye anafanya,anafanya,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,yeye anafanya vizuri,Anafanya vizuri
+sw,wa kike,,,morphology,suffix,general,formal,replace,,,false,,"Gender-marked suffix (female)",,,,Mwalimu wa kike alifundisha,Mwalimu alifundisha
+sw,wa kiume,,,morphology,suffix,general,formal,replace,,,false,,"Gender-marked suffix (male)",,,,Daktari wa kiume alipima,Daktari alipima
+sw,mama wa nyumbani,mtu wa nyumbani,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni mama wa nyumbani tu,Ni mtu wa nyumbani
+sw,zake,zao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,rekodi zake,rekodi zao
+sw,wake,wao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,wagonjwa wake,wagonjwa wao
+sw,yake,yao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,kadi yake,kadi yao
+sw,mwalimu mkuu,mwalimu mkuu,,occupation,compound,education,formal,replace,1/2,sg,false,,,,,Mwalimu mkuu ataongoza,Mwalimu mkuu ataongoza
