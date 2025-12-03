@@ -5,11 +5,12 @@ This module provides a clean interface for bias detection using rules-based matc
 """
 import logging
 import re
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 
 from .models import Language, BiasDetectionResult
 from .data_loader import RulesLoader, DataLoadError
+from .ngeli_tracker import NgeliTracker, NounClass
 
 
 # Set up module logger
@@ -29,16 +30,19 @@ class BiasDetector:
     for evaluating text samples.
     """
     
-    def __init__(self, rules_dir: Path = Path("rules")):
+    def __init__(self, rules_dir: Path = Path("rules"), enable_ngeli_tracking: bool = True):
         """
         Initialize the bias detector.
-        
+
         Args:
             rules_dir: Directory containing bias detection rules
+            enable_ngeli_tracking: Enable Swahili noun class tracking (default: True)
         """
         self.rules_loader = RulesLoader(rules_dir)
         self._rules_cache: Dict[Language, List[Dict[str, str]]] = {}
         self._compiled_patterns: Dict[Language, List[re.Pattern]] = {}
+        self.enable_ngeli_tracking = enable_ngeli_tracking
+        self.ngeli_tracker = NgeliTracker() if enable_ngeli_tracking else None
     
     def detect_bias(self, text: str, language: Language) -> BiasDetectionResult:
         """
@@ -62,17 +66,43 @@ class BiasDetector:
             
             for rule, pattern in zip(rules, patterns):
                 if pattern.search(text):
-                    detected_edits.append({
+                    # Skip if biased == neutral (already gender-neutral term)
+                    # These terms only need detection in pronoun/morphology contexts
+                    if rule['biased'] == rule['neutral_primary']:
+                        continue
+
+                    edit = {
                         'from': rule['biased'],
                         'to': rule['neutral_primary'],
                         'severity': rule['severity']
-                    })
-            
-            return BiasDetectionResult(
+                    }
+
+                    # Add ngeli metadata for Swahili
+                    if language == Language.SWAHILI and self.ngeli_tracker:
+                        ngeli = rule.get('ngeli', '')
+                        if ngeli:
+                            edit['ngeli'] = ngeli
+                            # Track noun for statistics
+                            self.ngeli_tracker.track_noun(rule['biased'])
+
+                    detected_edits.append(edit)
+
+            # Analyze text for noun class patterns (Swahili only)
+            ngeli_analysis = None
+            if language == Language.SWAHILI and self.ngeli_tracker:
+                ngeli_analysis = self.ngeli_tracker.analyze_text(text)
+
+            result = BiasDetectionResult(
                 text=text,
                 has_bias_detected=len(detected_edits) > 0,
                 detected_edits=detected_edits
             )
+
+            # Attach ngeli analysis as metadata (not part of standard result)
+            if ngeli_analysis:
+                result._ngeli_analysis = ngeli_analysis
+
+            return result
             
         except Exception as e:
             raise BiasDetectionError(f"Failed to detect bias in text: {e}") from e
@@ -126,6 +156,17 @@ class BiasDetector:
 
         return self._compiled_patterns[language]
     
+    def get_ngeli_statistics(self) -> Optional[Dict[str, int]]:
+        """
+        Get noun class statistics from tracked Swahili nouns.
+
+        Returns:
+            Dictionary mapping noun class codes to counts, or None if tracking disabled
+        """
+        if self.ngeli_tracker:
+            return self.ngeli_tracker.get_statistics()
+        return None
+
     def clear_cache(self) -> None:
         """Clear the rules and patterns cache."""
         self._rules_cache.clear()

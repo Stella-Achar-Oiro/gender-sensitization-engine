@@ -28,7 +28,18 @@ eval/results/
 *.csv.bak
 
 # Ignore JSON results but allow package.json, etc.
-eval/results/*.jsonCLAUDE.md
+eval/results/*.json
+
+# Data collection - ignore large datasets
+data/raw/swahili-news.zip
+data/raw/swahili-news/
+data/raw/kwici-corpus/
+data/analysis/swahili_news_occupations.csv
+data/analysis/kwici_occupations.csv
+
+# Temporary session files
+scripts/data_collection/SESSION_SUMMARY.md
+scripts/data_collection/collect_real_data.sh
 
 CLAUDE.md
 .pre-commit-config.yaml

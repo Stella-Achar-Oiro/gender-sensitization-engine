@@ -38,3 +38,20 @@ sw,mstaafu,mstaafu,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,
 sw,mtendaji,mtendaji,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mtendaji alitekeleza,Mtendaji alitekeleza
 sw,majaji,majaji,waamuzi,gender|occupation,noun,legal,formal,replace,6,pl,false,,,,,Majaji walitoa hukumu,Majaji walitoa hukumu
 sw,meya,meya,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Meya alipitisha,Meya alipitisha
+sw,daktari,daktari,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Daktari alipima mgonjwa,Daktari alipima mgonjwa
+sw,muuguzi,muuguzi,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Muuguzi alitoa dawa,Muuguzi alitoa dawa
+sw,mkunga,mkunga,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Mkunga alisaidia uzazi,Mkunga alisaidia uzazi
+sw,mhandisi,mhandisi,,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Mhandisi alibuni daraja,Mhandisi alibuni daraja
+sw,mhasibu,mhasibu,,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Mhasibu alikagua hesabu,Mhasibu alikagua hesabu
+sw,dereva,dereva,,gender|occupation,noun,transport,formal,replace,1/2,sg,false,,,,,Dereva aliondoka alfajiri,Dereva aliondoka alfajiri
+sw,rubani,rubani,,gender|occupation,noun,transport,formal,replace,1/2,sg,false,,,,,Rubani aliruka ndege,Rubani aliruka ndege
+sw,mkulima,mkulima,,gender|occupation,noun,agriculture,formal,replace,1/2,sg,false,,,,,Mkulima alipanda mazao,Mkulima alipanda mazao
+sw,mvuvi,mvuvi,,gender|occupation,noun,agriculture,formal,replace,1/2,sg,false,,,,,Mvuvi alivua samaki,Mvuvi alivua samaki
+sw,mwimbaji,mwimbaji,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Mwimbaji aliimba wimbo,Mwimbaji aliimba wimbo
+sw,mchezo,mchezo,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Mchezo aliigiza vizuri,Mchezo aliigiza vizuri
+sw,msanii,msanii,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Msanii alichora picha,Msanii alichora picha
+sw,profesa,profesa,mwalimu mkuu,gender|occupation,noun,education,formal,replace,1/2,sg,false,,,,,Profesa alifundisha,Profesa alifundisha
+sw,meneja,meneja,msimamizi,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Meneja aliongoza timu,Meneja aliongoza timu
+sw,tajiri,tajiri,mfanyabiashara,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Tajiri alichangia miradi,Tajiri alichangia miradi
+sw,mpishi,mpishi,,gender|occupation,noun,hospitality,formal,replace,1/2,sg,false,,,,,Mpishi alipika chakula,Mpishi alipika chakula
+sw,mtumishi,mtumishi,mfanyakazi,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mtumishi alifanya kazi,Mtumishi alifanya kazi
