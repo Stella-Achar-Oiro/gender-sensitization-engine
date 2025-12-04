@@ -257,7 +257,6 @@ sentence_length,has_url,has_hashtag,content_ratio
 ## Quick Links
 
 ### Documentation
-- [CLAUDE.md](https://gitlab.com/juakazike/gender-sensitization-engine/-/blob/feature/swahili-lexicon-expansion/CLAUDE.md) - Project overview
 - [DATA_COLLECTION_REPORT.md](https://gitlab.com/juakazike/gender-sensitization-engine/-/blob/feature/swahili-lexicon-expansion/DATA_COLLECTION_REPORT.md) - Phase 3-4 results
 - [ANNOTATION_ONE_PAGER.md](https://gitlab.com/juakazike/gender-sensitization-engine/-/blob/feature/swahili-lexicon-expansion/ANNOTATION_ONE_PAGER.md) - Quick annotation guide
 
