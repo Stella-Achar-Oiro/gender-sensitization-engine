@@ -1,515 +1,515 @@
-language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
-en,chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_14,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_15,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_16,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_17,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_18,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_19,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_20,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_21,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_22,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_23,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_24,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_25,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_26,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_27,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_28,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_29,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_30,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_31,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_32,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_33,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_34,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_35,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_36,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_37,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_38,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_39,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_40,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_41,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_42,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_43,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_44,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_45,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_46,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_47,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_48,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_49,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_50,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_51,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_52,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_53,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_54,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_55,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_56,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_57,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_58,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_59,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_60,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_61,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_62,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_63,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_64,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_65,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_66,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_67,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_68,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_69,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_70,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_71,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_72,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_73,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_74,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_75,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_76,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_77,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_78,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_79,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_80,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_81,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_82,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_83,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_84,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_85,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_86,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_87,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_88,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_89,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_90,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_91,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_92,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_93,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_94,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_95,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_96,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_97,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_98,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_99,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_100,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_101,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_102,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_103,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_104,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_105,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_106,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_107,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_108,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_109,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_110,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_111,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_112,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_113,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_114,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_115,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_116,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_117,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_118,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_119,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_120,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_121,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_122,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_123,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_124,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_125,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_126,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_127,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_128,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_129,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_130,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_131,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_132,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_133,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_134,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_135,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_136,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_137,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_138,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_139,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_140,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_141,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_142,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_143,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_144,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_145,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_146,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_147,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_148,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_149,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_150,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_151,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_152,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_153,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_154,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_155,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_156,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_157,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_158,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_159,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_160,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_161,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_162,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_163,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_164,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_165,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_166,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_167,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_168,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_169,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_170,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_171,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_172,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_173,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_174,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_175,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_176,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_177,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_178,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_179,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_180,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_181,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_182,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_183,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_184,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_185,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_186,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_187,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_188,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_189,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_190,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_191,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_192,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_193,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_194,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_195,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_196,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_197,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_198,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_199,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_200,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_201,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_202,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_203,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_204,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_205,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_206,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_207,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_208,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_209,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_210,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_211,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_212,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_213,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_214,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_215,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_216,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_217,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_218,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_219,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_220,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_221,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_222,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_223,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_224,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_225,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_226,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_227,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_228,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_229,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_230,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_231,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_232,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_233,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_234,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_235,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_236,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_237,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_238,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_239,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_240,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_241,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_242,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_243,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_244,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_245,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_246,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_247,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_248,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_249,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_250,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_251,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_252,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_253,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_254,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_255,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_256,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_257,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_258,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_259,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_260,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_261,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_262,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_263,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_264,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_265,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_266,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_267,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_268,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_269,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_270,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_271,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_272,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_273,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_274,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_275,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_276,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_277,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_278,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_279,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_280,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_281,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_282,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_283,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_284,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_285,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_286,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_287,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_288,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_289,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_290,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_291,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_292,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_293,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_294,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_295,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_296,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_297,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_298,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_299,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_300,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_301,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_302,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_303,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_304,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_305,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_306,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_307,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_308,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_309,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_310,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_311,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_312,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_313,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_314,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_315,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_316,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_317,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_318,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_319,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_320,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_321,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_322,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_323,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_324,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_325,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_326,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_327,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_328,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_329,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_330,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_331,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_332,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_333,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_334,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_335,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_336,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_337,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_338,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_339,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_340,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_341,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_342,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_343,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_344,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_345,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_346,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_347,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_348,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_349,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_350,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_351,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_352,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_353,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_354,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_355,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_356,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_357,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_358,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_359,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_360,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_361,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_362,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_363,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_364,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_365,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_366,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_367,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_368,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_369,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_370,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_371,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_372,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_373,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_374,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_375,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_376,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_377,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_378,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_379,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_380,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_381,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_382,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_383,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_384,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_385,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_386,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_387,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_388,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_389,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_390,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_391,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_392,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_393,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_394,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_395,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_396,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_397,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_398,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_399,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_400,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_401,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_402,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_403,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_404,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_405,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_406,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_407,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_408,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_409,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_410,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_411,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_412,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_413,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_414,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_415,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_416,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_417,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_418,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_419,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_420,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_421,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_422,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_423,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_424,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_425,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_426,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_427,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_428,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_429,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_430,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_431,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_432,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_433,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_434,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_435,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_436,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_437,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_438,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_439,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_440,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_441,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_442,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_443,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_444,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_445,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_446,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_447,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_448,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_449,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_450,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_451,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_452,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_453,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_454,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_455,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_456,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_457,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_458,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_459,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_460,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_461,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_462,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_463,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_464,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_465,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_466,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_467,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_468,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_469,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_470,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_471,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_472,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_473,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_474,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_475,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_476,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_477,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_478,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_479,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_480,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_481,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_482,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_483,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_484,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_485,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,He Or She_486,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,crazy_487,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,Crazy_488,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,the crazy_489,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,,,,,,,,That’s a crazy idea!,That’s a wild idea!
-en,chairman_490,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,Chairman_491,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,the chairman_492,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
-en,policeman_493,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,Policeman_494,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,the policeman_495,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,,,,,,,,The policeman helped the child.,The police officer helped the child.
-en,waitress_496,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,Waitress_497,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,the waitress_498,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,,,,,,,,The waitress took our order.,The server took our order.
-en,he or she_499,they,,gender|pronoun,pronoun,general,neutral,replace,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
-en,businessman,businessperson,entrepreneur|business owner,gender|occupation,noun,business,formal,replace,,,,,,,,The businessman closed the deal.,The businessperson closed the deal.
-en,fireman,firefighter,fire officer|emergency responder,gender|occupation,noun,emergency,formal,replace,,,,,,,,The fireman saved the cat.,The firefighter saved the cat.
-en,mailman,mail carrier,postal worker|delivery person,gender|occupation,noun,postal,formal,replace,,,,,,,,The mailman delivered the package.,The mail carrier delivered the package.
-en,stewardess,flight attendant,cabin crew|airline attendant,gender|occupation,noun,aviation,formal,replace,,,,,,,,The stewardess served drinks.,The flight attendant served drinks.
-en,congressman,representative,legislator|member of congress,gender|occupation,noun,political,formal,replace,,,,,,,,Ask your congressman about the bill.,Ask your representative about the bill.
-en,weatherman,meteorologist,weather forecaster|weather reporter,gender|occupation,noun,media,formal,replace,,,,,,,,The weatherman predicted rain.,The meteorologist predicted rain.
-en,repairman,repair technician,maintenance worker|service technician,gender|occupation,noun,technical,formal,replace,,,,,,,,The repairman fixed the sink.,The repair technician fixed the sink.
-en,doorman,door attendant,security guard|building attendant,gender|occupation,noun,security,formal,replace,,,,,,,,The doorman checked IDs.,The door attendant checked IDs.
-en,anchorman,news anchor,anchor|news presenter,gender|occupation,noun,media,formal,replace,,,,,,,,The anchorman read the news.,The news anchor read the news.
-en,deliveryman,delivery driver,courier|delivery person,gender|occupation,noun,logistics,formal,replace,,,,,,,,The deliveryman was late.,The delivery driver was late.
-en,handyman,maintenance worker,repair person|service worker,gender|occupation,noun,technical,formal,replace,,,,,,,,The handyman repaired the door.,The maintenance worker repaired the door.
-en,cleaning lady,cleaner,custodian|janitorial staff,gender|occupation,noun,service,formal,replace,,,,,,,,The cleaning lady comes on Fridays.,The cleaner comes on Fridays.
-en,seamstress,tailor,clothing designer|garment worker,gender|occupation,noun,fashion,formal,replace,,,,,,,,She is a talented seamstress.,They are a talented tailor.
-en,garbage man,sanitation worker,waste collector|refuse collector,gender|occupation,noun,municipal,formal,replace,,,,,,,,The garbage man comes early.,The sanitation worker comes early.
+language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,bias_label,stereotype_category,explicitness,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
+en,chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_14,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_15,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_16,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_17,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_18,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_19,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_20,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_21,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_22,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_23,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_24,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_25,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_26,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_27,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_28,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_29,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_30,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_31,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_32,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_33,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_34,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_35,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_36,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_37,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_38,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_39,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_40,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_41,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_42,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_43,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_44,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_45,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_46,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_47,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_48,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_49,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_50,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_51,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_52,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_53,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_54,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_55,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_56,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_57,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_58,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_59,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_60,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_61,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_62,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_63,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_64,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_65,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_66,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_67,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_68,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_69,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_70,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_71,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_72,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_73,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_74,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_75,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_76,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_77,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_78,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_79,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_80,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_81,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_82,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_83,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_84,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_85,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_86,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_87,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_88,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_89,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_90,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_91,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_92,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_93,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_94,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_95,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_96,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_97,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_98,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_99,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_100,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_101,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_102,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_103,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_104,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_105,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_106,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_107,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_108,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_109,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_110,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_111,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_112,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_113,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_114,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_115,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_116,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_117,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_118,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_119,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_120,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_121,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_122,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_123,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_124,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_125,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_126,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_127,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_128,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_129,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_130,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_131,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_132,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_133,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_134,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_135,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_136,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_137,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_138,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_139,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_140,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_141,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_142,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_143,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_144,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_145,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_146,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_147,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_148,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_149,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_150,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_151,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_152,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_153,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_154,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_155,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_156,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_157,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_158,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_159,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_160,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_161,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_162,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_163,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_164,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_165,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_166,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_167,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_168,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_169,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_170,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_171,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_172,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_173,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_174,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_175,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_176,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_177,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_178,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_179,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_180,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_181,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_182,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_183,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_184,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_185,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_186,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_187,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_188,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_189,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_190,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_191,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_192,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_193,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_194,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_195,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_196,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_197,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_198,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_199,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_200,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_201,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_202,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_203,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_204,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_205,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_206,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_207,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_208,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_209,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_210,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_211,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_212,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_213,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_214,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_215,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_216,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_217,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_218,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_219,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_220,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_221,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_222,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_223,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_224,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_225,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_226,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_227,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_228,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_229,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_230,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_231,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_232,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_233,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_234,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_235,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_236,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_237,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_238,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_239,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_240,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_241,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_242,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_243,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_244,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_245,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_246,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_247,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_248,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_249,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_250,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_251,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_252,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_253,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_254,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_255,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_256,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_257,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_258,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_259,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_260,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_261,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_262,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_263,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_264,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_265,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_266,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_267,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_268,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_269,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_270,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_271,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_272,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_273,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_274,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_275,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_276,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_277,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_278,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_279,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_280,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_281,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_282,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_283,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_284,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_285,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_286,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_287,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_288,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_289,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_290,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_291,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_292,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_293,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_294,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_295,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_296,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_297,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_298,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_299,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_300,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_301,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_302,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_303,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_304,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_305,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_306,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_307,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_308,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_309,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_310,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_311,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_312,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_313,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_314,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_315,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_316,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_317,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_318,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_319,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_320,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_321,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_322,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_323,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_324,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_325,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_326,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_327,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_328,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_329,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_330,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_331,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_332,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_333,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_334,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_335,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_336,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_337,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_338,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_339,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_340,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_341,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_342,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_343,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_344,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_345,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_346,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_347,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_348,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_349,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_350,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_351,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_352,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_353,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_354,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_355,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_356,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_357,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_358,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_359,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_360,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_361,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_362,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_363,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_364,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_365,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_366,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_367,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_368,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_369,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_370,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_371,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_372,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_373,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_374,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_375,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_376,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_377,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_378,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_379,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_380,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_381,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_382,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_383,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_384,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_385,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_386,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_387,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_388,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_389,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_390,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_391,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_392,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_393,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_394,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_395,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_396,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_397,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_398,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_399,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_400,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_401,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_402,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_403,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_404,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_405,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_406,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_407,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_408,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_409,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_410,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_411,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_412,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_413,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_414,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_415,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_416,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_417,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_418,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_419,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_420,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_421,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_422,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_423,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_424,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_425,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_426,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_427,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_428,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_429,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_430,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_431,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_432,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_433,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_434,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_435,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_436,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_437,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_438,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_439,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_440,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_441,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_442,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_443,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_444,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_445,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_446,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_447,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_448,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_449,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_450,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_451,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_452,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_453,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_454,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_455,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_456,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_457,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_458,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_459,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_460,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_461,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_462,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_463,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_464,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_465,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_466,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_467,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_468,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_469,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_470,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_471,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_472,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_473,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_474,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_475,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_476,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_477,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_478,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_479,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_480,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_481,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_482,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_483,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_484,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_485,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,He Or She_486,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,crazy_487,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,Crazy_488,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,the crazy_489,wild,unusual|unexpected,ableism|descriptor,adjective,general,informal,warn,stereotype,profession,explicit,,,,,,,,That’s a crazy idea!,That’s a wild idea!
+en,chairman_490,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,Chairman_491,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,the chairman_492,chair,chairperson|chair of the board,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,The chairman opened the meeting.,The chair opened the meeting.
+en,policeman_493,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,Policeman_494,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,the policeman_495,police officer,officer|law enforcement officer,gender|occupation,noun,law enforcement,neutral,replace,stereotype,profession,explicit,,,,,,,,The policeman helped the child.,The police officer helped the child.
+en,waitress_496,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,Waitress_497,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,the waitress_498,server,waitstaff|attendant,gender|occupation,noun,hospitality,neutral,replace,stereotype,profession,explicit,,,,,,,,The waitress took our order.,The server took our order.
+en,he or she_499,they,,gender|pronoun,pronoun,general,neutral,replace,stereotype,daily_life,explicit,,,,,,,,"If a student is late, he or she must report.","If a student is late, they must report."
+en,businessman,businessperson,entrepreneur|business owner,gender|occupation,noun,business,formal,replace,stereotype,profession,explicit,,,,,,,,The businessman closed the deal.,The businessperson closed the deal.
+en,fireman,firefighter,fire officer|emergency responder,gender|occupation,noun,emergency,formal,replace,stereotype,profession,explicit,,,,,,,,The fireman saved the cat.,The firefighter saved the cat.
+en,mailman,mail carrier,postal worker|delivery person,gender|occupation,noun,postal,formal,replace,stereotype,profession,explicit,,,,,,,,The mailman delivered the package.,The mail carrier delivered the package.
+en,stewardess,flight attendant,cabin crew|airline attendant,gender|occupation,noun,aviation,formal,replace,stereotype,profession,explicit,,,,,,,,The stewardess served drinks.,The flight attendant served drinks.
+en,congressman,representative,legislator|member of congress,gender|occupation,noun,political,formal,replace,stereotype,profession,explicit,,,,,,,,Ask your congressman about the bill.,Ask your representative about the bill.
+en,weatherman,meteorologist,weather forecaster|weather reporter,gender|occupation,noun,media,formal,replace,stereotype,profession,explicit,,,,,,,,The weatherman predicted rain.,The meteorologist predicted rain.
+en,repairman,repair technician,maintenance worker|service technician,gender|occupation,noun,technical,formal,replace,stereotype,profession,explicit,,,,,,,,The repairman fixed the sink.,The repair technician fixed the sink.
+en,doorman,door attendant,security guard|building attendant,gender|occupation,noun,security,formal,replace,stereotype,profession,explicit,,,,,,,,The doorman checked IDs.,The door attendant checked IDs.
+en,anchorman,news anchor,anchor|news presenter,gender|occupation,noun,media,formal,replace,stereotype,profession,explicit,,,,,,,,The anchorman read the news.,The news anchor read the news.
+en,deliveryman,delivery driver,courier|delivery person,gender|occupation,noun,logistics,formal,replace,stereotype,profession,explicit,,,,,,,,The deliveryman was late.,The delivery driver was late.
+en,handyman,maintenance worker,repair person|service worker,gender|occupation,noun,technical,formal,replace,stereotype,profession,explicit,,,,,,,,The handyman repaired the door.,The maintenance worker repaired the door.
+en,cleaning lady,cleaner,custodian|janitorial staff,gender|occupation,noun,service,formal,replace,stereotype,profession,explicit,,,,,,,,The cleaning lady comes on Fridays.,The cleaner comes on Fridays.
+en,seamstress,tailor,clothing designer|garment worker,gender|occupation,noun,fashion,formal,replace,stereotype,profession,explicit,,,,,,,,She is a talented seamstress.,They are a talented tailor.
+en,garbage man,sanitation worker,waste collector|refuse collector,gender|occupation,noun,municipal,formal,replace,stereotype,profession,explicit,,,,,,,,The garbage man comes early.,The sanitation worker comes early.
