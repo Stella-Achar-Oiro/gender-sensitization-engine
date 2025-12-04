@@ -1,6 +1,6 @@
 # JuaKazi Development Makefile
 
-.PHONY: setup install install-minimal install-core test eval eval-correction demo run-api run-ui run clean docker-build docker-run format lint test-api test-demo help
+.PHONY: setup install install-minimal install-core test validate-lexicons eval eval-correction demo run-api run-ui run clean docker-build docker-run format lint test-api test-demo help
 
 # Default target - show help
 .DEFAULT_GOAL := help
@@ -16,9 +16,10 @@ help:
 	@echo "  make install-core     Install core only (no optional dependencies)"
 	@echo ""
 	@echo "Evaluation (No Dependencies Required):"
-	@echo "  make eval             Run full F1 evaluation across all languages"
-	@echo "  make eval-correction  Run correction effectiveness evaluation"
-	@echo "  make demo             Run live demo"
+	@echo "  make validate-lexicons  Validate lexicons for AI BRIDGE compliance"
+	@echo "  make eval               Run full F1 evaluation across all languages"
+	@echo "  make eval-correction    Run correction effectiveness evaluation"
+	@echo "  make demo               Run live demo"
 	@echo ""
 	@echo "Testing:"
 	@echo "  make test             Run system tests"
@@ -60,6 +61,11 @@ install-core:
 # Run tests
 test:
 	poetry run python tests/test_system.py
+
+# Validate lexicons (AI BRIDGE compliance check)
+validate-lexicons:
+	@echo "Validating lexicons for AI BRIDGE compliance..."
+	poetry run python -m eval.lexicon_validator
 
 # Run evaluation
 eval:
