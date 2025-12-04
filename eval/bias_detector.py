@@ -3,6 +3,9 @@ Bias detection service for evaluating gender bias in text.
 
 This module provides a clean interface for bias detection using rules-based matching.
 Implements AI BRIDGE bias constructs: stereotype, counter-stereotype, derogation, neutral.
+
+Enhanced with context-aware correction to preserve meaning when gender terms are used
+for accuracy (biographical, historical, medical, etc.) rather than bias.
 """
 import logging
 import re
@@ -15,6 +18,7 @@ from .models import (
 )
 from .data_loader import RulesLoader, DataLoadError
 from .ngeli_tracker import NgeliTracker, NounClass
+from .context_checker import ContextChecker, ContextCheckResult
 
 
 # Set up module logger
@@ -92,13 +96,19 @@ class BiasDetector:
         ],
     }
 
-    def __init__(self, rules_dir: Path = Path("rules"), enable_ngeli_tracking: bool = True):
+    def __init__(
+        self,
+        rules_dir: Path = Path("rules"),
+        enable_ngeli_tracking: bool = True,
+        enable_context_checking: bool = True
+    ):
         """
         Initialize the bias detector.
 
         Args:
             rules_dir: Directory containing bias detection rules
             enable_ngeli_tracking: Enable Swahili noun class tracking (default: True)
+            enable_context_checking: Enable context-aware correction (default: True)
         """
         self.rules_loader = RulesLoader(rules_dir)
         self._rules_cache: Dict[Language, List[Dict[str, str]]] = {}
@@ -107,6 +117,10 @@ class BiasDetector:
         self._derogation_patterns: Dict[Language, List[tuple]] = {}
         self.enable_ngeli_tracking = enable_ngeli_tracking
         self.ngeli_tracker = NgeliTracker() if enable_ngeli_tracking else None
+
+        # Context-aware correction to preserve meaning
+        self.enable_context_checking = enable_context_checking
+        self.context_checker = ContextChecker() if enable_context_checking else None
 
         # Compile counter-stereotype and derogation patterns
         self._compile_special_patterns()
@@ -221,12 +235,40 @@ class BiasDetector:
             detected_edits = []
             detected_categories = []
             detected_genders = []
+            skipped_edits = []  # Track edits skipped due to context
 
             for rule, pattern in zip(rules, patterns):
                 if pattern.search(text):
                     # Skip if biased == neutral (already gender-neutral term)
                     if rule['biased'] == rule['neutral_primary']:
                         continue
+
+                    biased_term = rule['biased']
+                    avoid_when = rule.get('avoid_when', '')
+                    constraints = rule.get('constraints', '')
+
+                    # Context-aware check: should we apply this correction?
+                    if self.context_checker and (avoid_when or constraints):
+                        context_result = self.context_checker.check_context(
+                            text=text,
+                            biased_term=biased_term,
+                            avoid_when=avoid_when,
+                            constraints=constraints
+                        )
+
+                        if not context_result.should_correct:
+                            # Skip this edit - context indicates preservation needed
+                            skipped_edits.append({
+                                'term': biased_term,
+                                'reason': context_result.reason,
+                                'blocked_by': context_result.blocked_by.value if context_result.blocked_by else None,
+                                'confidence': context_result.confidence
+                            })
+                            logger.debug(
+                                "Skipped correction for '%s': %s",
+                                biased_term, context_result.reason
+                            )
+                            continue
 
                     edit = {
                         'from': rule['biased'],
@@ -279,6 +321,10 @@ class BiasDetector:
             # Attach ngeli analysis as metadata
             if ngeli_analysis:
                 result._ngeli_analysis = ngeli_analysis
+
+            # Attach context-skipped edits for transparency
+            if skipped_edits:
+                result._skipped_edits = skipped_edits
 
             return result
 

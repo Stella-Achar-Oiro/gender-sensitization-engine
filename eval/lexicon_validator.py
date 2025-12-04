@@ -219,8 +219,9 @@ class LexiconValidator:
     def _validate_row(self, row: Dict[str, str], row_num: int) -> List[ValidationIssue]:
         """Validate a single lexicon row."""
         issues = []
-        biased = row.get('biased', '').strip()
-        neutral = row.get('neutral_primary', '').strip()
+        # Handle None values from CSV (when trailing columns are empty)
+        biased = (row.get('biased') or '').strip()
+        neutral = (row.get('neutral_primary') or '').strip()
 
         # Skip empty rows
         if not biased:
@@ -240,7 +241,7 @@ class LexiconValidator:
             ))
 
         # Check 2: Empty neutral_primary (except for morphology/suffix entries)
-        tags = row.get('tags', '')
+        tags = row.get('tags') or ''
         if not neutral and 'morphology' not in tags and 'suffix' not in tags:
             issues.append(ValidationIssue(
                 row_number=row_num,
@@ -253,8 +254,8 @@ class LexiconValidator:
             ))
 
         # Check 3: Identical example sentences
-        example_biased = row.get('example_biased', '').strip()
-        example_neutral = row.get('example_neutral', '').strip()
+        example_biased = (row.get('example_biased') or '').strip()
+        example_neutral = (row.get('example_neutral') or '').strip()
 
         if example_biased and example_neutral:
             if example_biased == example_neutral:
@@ -300,8 +301,8 @@ class LexiconValidator:
             ))
 
         # Check 5: AI BRIDGE metadata
-        bias_label = row.get('bias_label', '').strip()
-        stereotype_category = row.get('stereotype_category', '').strip()
+        bias_label = (row.get('bias_label') or '').strip()
+        stereotype_category = (row.get('stereotype_category') or '').strip()
 
         if not bias_label:
             issues.append(ValidationIssue(
