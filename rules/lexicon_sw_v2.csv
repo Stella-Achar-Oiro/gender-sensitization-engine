@@ -14,3 +14,44 @@ sw,mwandishi wa habari,mwandishi wa habari,mwandishi,gender|occupation,noun,medi
 sw,mpeleka mizigo,mpeleka mizigo,dereva wa utoaji,gender|occupation,noun,logistics,formal,replace,1/2,sg,false,,,,,Mpeleka mizigo alichelewa,Mpeleka mizigo alichelewa
 sw,mshonaji,mshonaji,mtaalamu wa nguo,gender|occupation,noun,fashion,formal,replace,1/2,sg,false,,,,,Yeye ni mshonaji hodari,Ni mshonaji hodari
 sw,fundi wa nyumba,fundi wa nyumba,mtaalamu wa ukarabati,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Fundi wa nyumba alirekebishe mlango,Fundi wa nyumba alirekebishe mlango
+sw,mgombea,mgombea,mshindani,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mgombea alijibu maswali,Mgombea alijibu maswali
+sw,msemaji,msemaji,mzungumzaji,gender|occupation,noun,media,formal,replace,1/2,sg,false,,,,,Msemaji alitangaza habari,Msemaji alitangaza habari
+sw,mwakilishi,mwakilishi,mwakilishi,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mwakilishi alihudhulia mkutano,Mwakilishi alihudhulia mkutano
+sw,mhudumu,mhudumu,mtumishi,gender|occupation,noun,hospitality,formal,replace,1/2,sg,false,,,,,Mhudumu alihudumu chakula,Mhudumu alihudumu chakula
+sw,Yeye ni,Ni,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni muuguzi mzuri,Ni muuguzi mzuri
+sw,yeye ni,ni,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni mama mzuri,Ni mama mzuri
+sw,Yeye anafanya,Anafanya,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye anafanya kazi ya uandishi,Anafanya kazi ya uandishi
+sw,yeye anafanya,anafanya,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,yeye anafanya vizuri,Anafanya vizuri
+sw,wa kike,,,morphology,suffix,general,formal,replace,,,false,,"Gender-marked suffix (female)",,,,Mwalimu wa kike alifundisha,Mwalimu alifundisha
+sw,wa kiume,,,morphology,suffix,general,formal,replace,,,false,,"Gender-marked suffix (male)",,,,Daktari wa kiume alipima,Daktari alipima
+sw,mama wa nyumbani,mtu wa nyumbani,,pronoun_assumption,phrase,general,formal,replace,,,false,,,,,Yeye ni mama wa nyumbani tu,Ni mtu wa nyumbani
+sw,zake,zao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,rekodi zake,rekodi zao
+sw,wake,wao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,wagonjwa wake,wagonjwa wao
+sw,yake,yao,,pronoun_generic,suffix,general,formal,replace,,,false,,"Generic possessive (his/her → their)",,,,kadi yake,kadi yao
+sw,mwalimu mkuu,mwalimu mkuu,,occupation,compound,education,formal,replace,1/2,sg,false,,,,,Mwalimu mkuu ataongoza,Mwalimu mkuu ataongoza
+sw,mwanasiasa,mwanasiasa,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mwanasiasa aliahidi,Mwanasiasa aliahidi
+sw,mfalme,mfalme,,gender|occupation,noun,royal,formal,replace,1/2,sg,false,,,,,Mfalme alitawala,Mfalme alitawala
+sw,mawakili,mawakili,wanasheria,gender|occupation,noun,legal,formal,replace,6,pl,false,,,,,Mawakili walihudhulia,Mawakili walihudhulia
+sw,mpinzani,mpinzani,mshindani,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mpinzani alijibu,Mpinzani alijibu
+sw,mjumbe,mjumbe,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Mjumbe aliwasilisha,Mjumbe aliwasilisha
+sw,mstaafu,mstaafu,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mstaafu alihudhulia,Mstaafu alihudhulia
+sw,mtendaji,mtendaji,,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mtendaji alitekeleza,Mtendaji alitekeleza
+sw,majaji,majaji,waamuzi,gender|occupation,noun,legal,formal,replace,6,pl,false,,,,,Majaji walitoa hukumu,Majaji walitoa hukumu
+sw,meya,meya,,gender|occupation,noun,political,formal,replace,1/2,sg,false,,,,,Meya alipitisha,Meya alipitisha
+sw,daktari,daktari,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Daktari alipima mgonjwa,Daktari alipima mgonjwa
+sw,muuguzi,muuguzi,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Muuguzi alitoa dawa,Muuguzi alitoa dawa
+sw,mkunga,mkunga,,gender|occupation,noun,healthcare,formal,replace,1/2,sg,false,,,,,Mkunga alisaidia uzazi,Mkunga alisaidia uzazi
+sw,mhandisi,mhandisi,,gender|occupation,noun,technical,formal,replace,1/2,sg,false,,,,,Mhandisi alibuni daraja,Mhandisi alibuni daraja
+sw,mhasibu,mhasibu,,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Mhasibu alikagua hesabu,Mhasibu alikagua hesabu
+sw,dereva,dereva,,gender|occupation,noun,transport,formal,replace,1/2,sg,false,,,,,Dereva aliondoka alfajiri,Dereva aliondoka alfajiri
+sw,rubani,rubani,,gender|occupation,noun,transport,formal,replace,1/2,sg,false,,,,,Rubani aliruka ndege,Rubani aliruka ndege
+sw,mkulima,mkulima,,gender|occupation,noun,agriculture,formal,replace,1/2,sg,false,,,,,Mkulima alipanda mazao,Mkulima alipanda mazao
+sw,mvuvi,mvuvi,,gender|occupation,noun,agriculture,formal,replace,1/2,sg,false,,,,,Mvuvi alivua samaki,Mvuvi alivua samaki
+sw,mwimbaji,mwimbaji,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Mwimbaji aliimba wimbo,Mwimbaji aliimba wimbo
+sw,mchezo,mchezo,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Mchezo aliigiza vizuri,Mchezo aliigiza vizuri
+sw,msanii,msanii,,gender|occupation,noun,arts,formal,replace,1/2,sg,false,,,,,Msanii alichora picha,Msanii alichora picha
+sw,profesa,profesa,mwalimu mkuu,gender|occupation,noun,education,formal,replace,1/2,sg,false,,,,,Profesa alifundisha,Profesa alifundisha
+sw,meneja,meneja,msimamizi,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Meneja aliongoza timu,Meneja aliongoza timu
+sw,tajiri,tajiri,mfanyabiashara,gender|occupation,noun,business,formal,replace,1/2,sg,false,,,,,Tajiri alichangia miradi,Tajiri alichangia miradi
+sw,mpishi,mpishi,,gender|occupation,noun,hospitality,formal,replace,1/2,sg,false,,,,,Mpishi alipika chakula,Mpishi alipika chakula
+sw,mtumishi,mtumishi,mfanyakazi,gender|occupation,noun,general,formal,replace,1/2,sg,false,,,,,Mtumishi alifanya kazi,Mtumishi alifanya kazi
