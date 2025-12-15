@@ -3,6 +3,7 @@ Data loading utilities for bias evaluation framework.
 
 This module handles all file I/O operations with proper error handling and validation.
 Supports both legacy 4-field format and full AI BRIDGE 29-field schema.
+Includes automatic lexicon validation on load.
 """
 import csv
 import json
@@ -13,6 +14,10 @@ from .models import (
     GroundTruthSample, Language, BiasCategory, BiasLabel,
     StereotypeCategory, TargetGender, Explicitness, Sentiment,
     SafetyFlag, QAStatus
+)
+from .lexicon_validator import (
+    LexiconValidator, ValidationReport, LexiconValidationError,
+    validate_lexicon_on_load
 )
 
 
@@ -176,17 +181,28 @@ class GroundTruthLoader:
 
 
 class RulesLoader:
-    """Handles loading bias detection rules from CSV files."""
-    
-    def __init__(self, rules_dir: Path = Path("rules")):
+    """Handles loading bias detection rules from CSV files with validation."""
+
+    def __init__(self, rules_dir: Path = Path("rules"), validate: bool = True,
+                 strict_validation: bool = False):
         """
         Initialize the rules loader.
-        
+
         Args:
             rules_dir: Directory containing rule files
+            validate: If True, validates lexicons before loading
+            strict_validation: If True, warnings become errors during validation
         """
         self.rules_dir = rules_dir
-    
+        self.validate = validate
+        self.strict_validation = strict_validation
+        self._validator = LexiconValidator(strict_mode=strict_validation)
+        self._validation_reports: Dict[str, ValidationReport] = {}
+
+    def get_validation_report(self, language: Language) -> Optional[ValidationReport]:
+        """Get the validation report for a language if available."""
+        return self._validation_reports.get(language.value)
+
     def load_rules(self, language: Language) -> List[Dict[str, str]]:
         """
         Load bias detection rules for a specific language.
@@ -199,8 +215,26 @@ class RulesLoader:
 
         Raises:
             DataLoadError: If rules cannot be loaded
+            LexiconValidationError: If validation fails (when validate=True)
         """
         file_path = self._get_rules_path(language)
+
+        # Validate lexicon before loading
+        if self.validate:
+            report = self._validator.validate_file(file_path)
+            self._validation_reports[language.value] = report
+
+            if not report.is_valid:
+                # Log validation issues
+                print(f"\n⚠️  Lexicon validation issues for {language.value}:")
+                for issue in report.issues:
+                    if issue.severity.value == "error":
+                        print(f"   ❌ Row {issue.row_number}: {issue.message}")
+
+                raise LexiconValidationError(report)
+
+            elif report.warning_count > 0:
+                print(f"\n⚠️  Lexicon warnings for {language.value}: {report.warning_count} warnings")
 
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
