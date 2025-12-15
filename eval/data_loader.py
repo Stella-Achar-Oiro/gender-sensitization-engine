@@ -2,13 +2,18 @@
 Data loading utilities for bias evaluation framework.
 
 This module handles all file I/O operations with proper error handling and validation.
+Supports both legacy 4-field format and full AI BRIDGE 29-field schema.
 """
 import csv
 import json
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
-from .models import GroundTruthSample, Language, BiasCategory
+from .models import (
+    GroundTruthSample, Language, BiasCategory, BiasLabel,
+    StereotypeCategory, TargetGender, Explicitness, Sentiment,
+    SafetyFlag, QAStatus
+)
 
 
 class DataLoadError(Exception):
@@ -70,13 +75,104 @@ class GroundTruthLoader:
         return self.data_dir / filename
     
     def _parse_ground_truth_row(self, row: Dict[str, str]) -> GroundTruthSample:
-        """Parse a single CSV row into a GroundTruthSample."""
-        return GroundTruthSample(
-            text=row['text'].strip('"'),  # Remove quotes if present
-            has_bias=row['has_bias'].lower() == 'true',
-            bias_category=BiasCategory(row['bias_category']),
-            expected_correction=row['expected_correction']
-        )
+        """
+        Parse a single CSV row into a GroundTruthSample.
+
+        Supports both legacy 4-field format and full AI BRIDGE schema.
+        """
+        # Core required fields
+        text = row['text'].strip('"')
+        has_bias = row['has_bias'].lower() == 'true'
+        bias_category = BiasCategory(row['bias_category'])
+        expected_correction = row.get('expected_correction', '')
+
+        # Check if this is AI BRIDGE extended format
+        is_extended = 'target_gender' in row or 'bias_label' in row
+
+        if is_extended:
+            return GroundTruthSample(
+                text=text,
+                has_bias=has_bias,
+                bias_category=bias_category,
+                expected_correction=expected_correction,
+                # AI BRIDGE metadata fields
+                id=row.get('id'),
+                language=row.get('language'),
+                script=row.get('script'),
+                country=row.get('country'),
+                region_dialect=row.get('region_dialect'),
+                source_type=row.get('source_type'),
+                source_ref=row.get('source_ref'),
+                collection_date=row.get('collection_date'),
+                translation=row.get('translation'),
+                domain=row.get('domain'),
+                topic=row.get('topic'),
+                theme=row.get('theme'),
+                sensitive_characteristic=row.get('sensitive_characteristic'),
+                # AI BRIDGE bias annotation fields
+                target_gender=self._parse_enum(row.get('target_gender'), TargetGender),
+                bias_label=self._parse_enum(row.get('bias_label'), BiasLabel),
+                stereotype_category=self._parse_enum(row.get('stereotype_category'), StereotypeCategory),
+                explicitness=self._parse_enum(row.get('explicitness'), Explicitness),
+                bias_severity=self._parse_int(row.get('bias_severity')),
+                sentiment_toward_referent=self._parse_enum(row.get('sentiment_toward_referent'), Sentiment),
+                device=row.get('device'),
+                # Quality and safety fields
+                safety_flag=self._parse_enum(row.get('safety_flag'), SafetyFlag),
+                pii_removed=self._parse_bool(row.get('pii_removed')),
+                annotator_id=row.get('annotator_id'),
+                qa_status=self._parse_enum(row.get('qa_status'), QAStatus),
+                approver_id=row.get('approver_id'),
+                cohen_kappa=self._parse_float(row.get('cohen_kappa')),
+                notes=row.get('notes'),
+                eval_split=row.get('eval_split')
+            )
+        else:
+            # Legacy 4-field format
+            return GroundTruthSample(
+                text=text,
+                has_bias=has_bias,
+                bias_category=bias_category,
+                expected_correction=expected_correction
+            )
+
+    def _parse_enum(self, value: Optional[str], enum_class) -> Optional[Any]:
+        """Parse a string value into an enum, returning None if invalid."""
+        if not value or value.upper() in ('', 'NEEDS_ANNOTATION', 'N/A', 'NONE'):
+            return None
+        try:
+            # Handle both value and name matching
+            value_lower = value.lower().replace('_', '-')
+            for member in enum_class:
+                if member.value.lower() == value_lower or member.name.lower() == value_lower:
+                    return member
+            return None
+        except (ValueError, KeyError):
+            return None
+
+    def _parse_int(self, value: Optional[str]) -> Optional[int]:
+        """Parse a string to int, returning None if invalid."""
+        if not value or value in ('', 'N/A'):
+            return None
+        try:
+            return int(value)
+        except ValueError:
+            return None
+
+    def _parse_float(self, value: Optional[str]) -> Optional[float]:
+        """Parse a string to float, returning None if invalid."""
+        if not value or value in ('', 'N/A'):
+            return None
+        try:
+            return float(value)
+        except ValueError:
+            return None
+
+    def _parse_bool(self, value: Optional[str]) -> Optional[bool]:
+        """Parse a string to bool, returning None if invalid."""
+        if not value or value in ('', 'N/A'):
+            return None
+        return value.lower() in ('true', '1', 'yes')
 
 
 class RulesLoader:
@@ -94,36 +190,47 @@ class RulesLoader:
     def load_rules(self, language: Language) -> List[Dict[str, str]]:
         """
         Load bias detection rules for a specific language.
-        
+
         Args:
             language: Language to load rules for
-            
+
         Returns:
-            List of rule dictionaries
-            
+            List of rule dictionaries with AI BRIDGE extended fields
+
         Raises:
             DataLoadError: If rules cannot be loaded
         """
         file_path = self._get_rules_path(language)
-        
+
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 rules = []
-                
+
                 for row in reader:
                     # Include rules with biased term (neutral_primary can be empty for deletion patterns)
                     if row.get('biased'):
-                        rules.append({
+                        rule = {
                             'biased': row['biased'],
                             'neutral_primary': row.get('neutral_primary', ''),
                             'severity': row.get('severity', 'replace'),
                             'pos': row.get('pos', 'noun'),
-                            'tags': row.get('tags', '')
-                        })
+                            'tags': row.get('tags', ''),
+                            # AI BRIDGE extended fields
+                            'bias_label': row.get('bias_label', 'stereotype'),
+                            'stereotype_category': row.get('stereotype_category', 'profession'),
+                            'explicitness': row.get('explicitness', 'explicit'),
+                            # Language-specific fields
+                            'ngeli': row.get('ngeli', ''),
+                            'number': row.get('number', ''),
+                            'requires_agreement': row.get('requires_agreement', 'false'),
+                            'scope': row.get('scope', ''),
+                            'register': row.get('register', 'formal'),
+                        }
+                        rules.append(rule)
 
                 return rules
-                
+
         except FileNotFoundError:
             raise DataLoadError(f"Rules file not found: {file_path}")
         except Exception as e:

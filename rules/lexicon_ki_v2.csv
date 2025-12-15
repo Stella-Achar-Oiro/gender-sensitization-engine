@@ -1,23 +1,23 @@
-language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
-ki,mũndũ mũrũme,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũndũ mũrũme nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
-ki,Mũndũ mũrũme,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũndũ mũrũme nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
-ki,mũndũ wa mũirĩtu,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũndũ wa mũirĩtu nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
-ki,Mũndũ wa mũirĩtu,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũndũ wa mũirĩtu nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
-ki,mũthuuri,mũndũ mũkũrũ,mũndũ|mũkũrũ,gender|age,noun,general,neutral,replace,,,,,,,,Mũthuuri ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
-ki,Mũthuuri,Mũndũ mũkũrũ,Mũndũ|Mũkũrũ,gender|age,noun,general,neutral,replace,,,,,,,,Mũthuuri ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
-ki,mũtumia,mũndũ,mũndũ mũkũrũ,gender|age,noun,general,neutral,replace,,,,,,,,Mũtumia ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
-ki,Mũtumia,Mũndũ,Mũndũ mũkũrũ,gender|age,noun,general,neutral,replace,,,,,,,,Mũtumia ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
-ki,mũrũme,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũrũme ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
-ki,Mũrũme,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũrũme ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
-ki,mũirĩtu,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũirĩtu ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
-ki,Mũirĩtu,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,,,,,,,,Mũirĩtu ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
-ki,mũrutani wa arũme,mũrutani,mũrutani,gender|occupation,noun,education,neutral,replace,,,,,,,,Mũrutani wa arũme nĩatũruta.,Mũrutani nĩatũruta.
-ki,Mũrutani wa arũme,Mũrutani,Mũrutani,gender|occupation,noun,education,neutral,replace,,,,,,,,Mũrutani wa arũme nĩatũruta.,Mũrutani nĩatũruta.
-ki,mũrutani wa airĩtu,mũrutani,mũrutani,gender|occupation,noun,education,neutral,replace,,,,,,,,Mũrutani wa airĩtu nĩatũruta.,Mũrutani nĩatũruta.
-ki,Mũrutani wa airĩtu,Mũrutani,Mũrutani,gender|occupation,noun,education,neutral,replace,,,,,,,,Mũrutani wa airĩtu nĩatũruta.,Mũrutani nĩatũruta.
-ki,mũrũgamĩrĩri,mũrũgamĩrĩri,mũnene|mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,,,,,,,,Mũrũgamĩrĩri nĩatũruta wĩra mwega.,Mũnene nĩatũruta wĩra mwega.
-ki,Mũrũgamĩrĩri,Mũrũgamĩrĩri,Mũnene|Mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,,,,,,,,Mũrũgamĩrĩri nĩatũruta wĩra mwega.,Mũnene nĩatũruta wĩra mwega.
-ki,mũndũ wa gũtungatĩra,mũndũ wa wĩra,mũndũ|wĩra,gender|occupation,noun,general,neutral,replace,,,,,,,,Mũndũ wa gũtungatĩra nĩarutaga wĩra.,Mũndũ wa wĩra nĩarutaga wĩra.
-ki,Mũndũ wa gũtungatĩra,Mũndũ wa wĩra,Mũndũ|Wĩra,gender|occupation,noun,general,neutral,replace,,,,,,,,Mũndũ wa gũtungatĩra nĩarutaga wĩra.,Mũndũ wa wĩra nĩarutaga wĩra.
-ki,mũthĩnjĩri-ngĩ,mũthĩnjĩri-ngĩ,mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,,,,,,,,Mũthĩnjĩri-ngĩ nĩagĩĩte na ciugo nyingĩ.,Mũrũgamĩrĩri nĩagĩĩte na ciugo nyingĩ.
-ki,Mũthĩnjĩri-ngĩ,Mũthĩnjĩri-ngĩ,Mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,,,,,,,,Mũthĩnjĩri-ngĩ nĩagĩĩte na ciugo nyingĩ.,Mũrũgamĩrĩri nĩagĩĩte na ciugo nyingĩ.
+language,biased,neutral_primary,neutral_alternatives,tags,pos,scope,register,severity,bias_label,stereotype_category,explicitness,ngeli,number,requires_agreement,agreement_notes,patterns,constraints,avoid_when,example_biased,example_neutral
+ki,mũndũ mũrũme,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ mũrũme nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
+ki,Mũndũ mũrũme,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ mũrũme nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
+ki,mũndũ wa mũirĩtu,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ wa mũirĩtu nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
+ki,Mũndũ wa mũirĩtu,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ wa mũirĩtu nĩarĩ mũrutani.,Mũndũ nĩarĩ mũrutani.
+ki,mũthuuri,mũndũ mũkũrũ,mũndũ|mũkũrũ,gender|age,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũthuuri ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
+ki,Mũthuuri,Mũndũ mũkũrũ,Mũndũ|Mũkũrũ,gender|age,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũthuuri ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
+ki,mũtumia,mũndũ,mũndũ mũkũrũ,gender|age,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũtumia ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
+ki,Mũtumia,Mũndũ,Mũndũ mũkũrũ,gender|age,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũtumia ũcio nĩ mũgima.,Mũndũ mũkũrũ ũcio nĩ mũgima.
+ki,mũrũme,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrũme ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
+ki,Mũrũme,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrũme ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
+ki,mũirĩtu,mũndũ,mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũirĩtu ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
+ki,Mũirĩtu,Mũndũ,Mũndũ,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũirĩtu ũcio nĩ mũrutani.,Mũndũ ũcio nĩ mũrutani.
+ki,mũrutani wa arũme,mũrutani,mũrutani,gender|occupation,noun,education,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrutani wa arũme nĩatũruta.,Mũrutani nĩatũruta.
+ki,Mũrutani wa arũme,Mũrutani,Mũrutani,gender|occupation,noun,education,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrutani wa arũme nĩatũruta.,Mũrutani nĩatũruta.
+ki,mũrutani wa airĩtu,mũrutani,mũrutani,gender|occupation,noun,education,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrutani wa airĩtu nĩatũruta.,Mũrutani nĩatũruta.
+ki,Mũrutani wa airĩtu,Mũrutani,Mũrutani,gender|occupation,noun,education,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũrutani wa airĩtu nĩatũruta.,Mũrutani nĩatũruta.
+ki,mũrũgamĩrĩri,mũrũgamĩrĩri,mũnene|mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,Mũrũgamĩrĩri nĩatũruta wĩra mwega.,Mũnene nĩatũruta wĩra mwega.
+ki,Mũrũgamĩrĩri,Mũrũgamĩrĩri,Mũnene|Mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,Mũrũgamĩrĩri nĩatũruta wĩra mwega.,Mũnene nĩatũruta wĩra mwega.
+ki,mũndũ wa gũtungatĩra,mũndũ wa wĩra,mũndũ|wĩra,gender|occupation,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ wa gũtungatĩra nĩarutaga wĩra.,Mũndũ wa wĩra nĩarutaga wĩra.
+ki,Mũndũ wa gũtungatĩra,Mũndũ wa wĩra,Mũndũ|Wĩra,gender|occupation,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Mũndũ wa gũtungatĩra nĩarutaga wĩra.,Mũndũ wa wĩra nĩarutaga wĩra.
+ki,mũthĩnjĩri-ngĩ,mũthĩnjĩri-ngĩ,mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,Mũthĩnjĩri-ngĩ nĩagĩĩte na ciugo nyingĩ.,Mũrũgamĩrĩri nĩagĩĩte na ciugo nyingĩ.
+ki,Mũthĩnjĩri-ngĩ,Mũthĩnjĩri-ngĩ,Mũrũgamĩrĩri,gender|role-title,noun,corporate,formal,replace,stereotype,profession,explicit,,,,,,,,Mũthĩnjĩri-ngĩ nĩagĩĩte na ciugo nyingĩ.,Mũrũgamĩrĩri nĩagĩĩte na ciugo nyingĩ.
