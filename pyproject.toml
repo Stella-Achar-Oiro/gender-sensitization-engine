@@ -7,6 +7,7 @@ packages = [{ include = "eval" }, { include = "api" }, { include = "review_ui" }
 
 [tool.poetry.dependencies]
 python = "^3.12"
+openai = {version = ">=1.51.0", optional = true}
 
 # Core dependencies (optional, not required for evaluation)
 fastapi = {version = ">=0.104.0", optional = true}
@@ -38,7 +39,8 @@ pre-commit = ">=3.5.0"
 api = ["fastapi", "uvicorn", "python-multipart", "pydantic", "pandas", "numpy"]
 ui = ["streamlit", "pandas", "numpy"]
 ml = ["transformers", "torch", "datasets", "scikit-learn", "sentence-transformers", "pandas", "numpy"]
-full = ["fastapi", "uvicorn", "python-multipart", "streamlit", "pydantic", "transformers", "torch", "datasets", "scikit-learn", "sentence-transformers", "pandas", "numpy"]
+ai = ["openai"]
+full = ["fastapi", "uvicorn", "python-multipart", "streamlit", "pydantic", "transformers", "torch", "datasets", "scikit-learn", "sentence-transformers", "pandas", "numpy", "openai"]
 
 [build-system]
 requires = ["poetry-core"]
