@@ -43,3 +43,8 @@ scripts/data_collection/collect_real_data.sh
 
 CLAUDE.md
 .pre-commit-config.yaml
+
+data/MCAAI-MSU-KI-DATA
+.DS_Store
+*/*/.DS_Store
+
