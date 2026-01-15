@@ -234,7 +234,7 @@ class CorrectionEvaluator:
             return self.rules_cache[language]
 
         lang_code = language.value
-        rules_file = self.rules_dir / f"lexicon_{lang_code}_v2.csv"
+        rules_file = self.rules_dir / f"lexicon_{lang_code}_v3.csv"
 
         if not rules_file.exists():
             return []

@@ -35,7 +35,7 @@ context_checker = ContextChecker()
 semantic_metrics = SemanticPreservationMetrics()
 
 def load_rules_v2(lang="en"):
-    path = RULES_DIR / f"lexicon_{lang}_v2.csv"
+    path = RULES_DIR / f"lexicon_{lang}_v3.csv"
     if not path.exists():
         return []
     df = pd.read_csv(path)

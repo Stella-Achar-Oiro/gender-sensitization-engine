@@ -5,7 +5,7 @@ import csv
 def load_rules(lang):
     """Load bias detection rules."""
     rules = []
-    with open(f"rules/lexicon_{lang}_v2.csv", 'r') as f:
+    with open(f"rules/lexicon_{lang}_v3.csv", 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row.get('biased'):
