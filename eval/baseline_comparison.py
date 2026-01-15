@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 
 import csv
+from pathlib import Path
+
+from config import lexicon_filename, ground_truth_filename
 
 def load_rules(lang):
     """Load bias detection rules."""
     rules = []
-    with open(f"rules/lexicon_{lang}_v3.csv", 'r') as f:
+    rules_path = Path("rules") / lexicon_filename(lang)
+    with open(rules_path, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row.get('biased'):
@@ -50,7 +54,8 @@ def compare_baselines():
         
         # Load ground truth
         samples = []
-        with open(f"eval/ground_truth_{lang}.csv", 'r') as f:
+        gt_path = Path("eval") / ground_truth_filename(lang)
+        with open(gt_path, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 samples.append({

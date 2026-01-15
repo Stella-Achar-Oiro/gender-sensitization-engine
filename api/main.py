@@ -18,6 +18,7 @@ from .ml_rewriter import ml_rewrite
 BASE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE))
 
+from config import lexicon_filename
 from eval.context_checker import ContextChecker, should_apply_correction
 from eval.correction_evaluator import SemanticPreservationMetrics
 
@@ -35,7 +36,7 @@ context_checker = ContextChecker()
 semantic_metrics = SemanticPreservationMetrics()
 
 def load_rules_v2(lang="en"):
-    path = RULES_DIR / f"lexicon_{lang}_v3.csv"
+    path = RULES_DIR / lexicon_filename(lang)
     if not path.exists():
         return []
     df = pd.read_csv(path)

@@ -19,6 +19,7 @@ from .lexicon_validator import (
     LexiconValidator, ValidationReport, LexiconValidationError,
     validate_lexicon_on_load
 )
+from config import lexicon_filename, ground_truth_filename
 
 
 class DataLoadError(Exception):
@@ -76,7 +77,7 @@ class GroundTruthLoader:
     
     def _get_ground_truth_path(self, language: Language) -> Path:
         """Get the file path for ground truth data."""
-        filename = f"ground_truth_{language.value}_v3.csv"
+        filename = ground_truth_filename(language.value)
         return self.data_dir / filename
     
     def _parse_ground_truth_row(self, row: Dict[str, str]) -> GroundTruthSample:
@@ -272,7 +273,7 @@ class RulesLoader:
     
     def _get_rules_path(self, language: Language) -> Path:
         """Get the file path for rules data."""
-        filename = f"lexicon_{language.value}_v3.csv"
+        filename = lexicon_filename(language.value)
         return self.rules_dir / filename
 
 

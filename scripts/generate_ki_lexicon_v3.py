@@ -4,7 +4,7 @@ This script mines frequent n-grams that contain gendered/role terms from the
 provided Kikuyu transcript CSVs, then creates rewrite lexicon rows in the
 project's standard schema.
 
-Output: rules/lexicon_ki_v3.csv
+Output defaults to rules/lexicon_ki_<version>.csv (see config.py).
 
 Notes:
 - This is a heuristic generator (data-driven) intended to produce a large
@@ -23,8 +23,15 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+import sys
 
 import pandas as pd
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from config import lexicon_filename
 
 
 # If an n-gram includes these tokens, it's more likely to be a stereotype-laden
@@ -344,7 +351,11 @@ def make_row(
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", default="data/Kikuyu", help="Directory with Kikuyu transcript CSVs")
-    ap.add_argument("--out", default="rules/lexicon_ki_v3.csv", help="Output CSV path")
+    ap.add_argument(
+        "--out",
+        default=f"rules/{lexicon_filename('ki')}",
+        help="Output CSV path",
+    )
     ap.add_argument("--min-count", type=int, default=2, help="Minimum n-gram frequency")
     ap.add_argument("--n-min", type=int, default=2)
     ap.add_argument("--n-max", type=int, default=7)

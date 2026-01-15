@@ -24,6 +24,7 @@ from statistics import harmonic_mean
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+from config import lexicon_filename
 # Import existing evaluation components
 from eval.bias_detector import BiasDetector
 from eval.models import Language, BiasCategory
@@ -234,7 +235,7 @@ class CorrectionEvaluator:
             return self.rules_cache[language]
 
         lang_code = language.value
-        rules_file = self.rules_dir / f"lexicon_{lang_code}_v3.csv"
+        rules_file = self.rules_dir / lexicon_filename(lang_code)
 
         if not rules_file.exists():
             return []
