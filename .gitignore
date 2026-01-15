@@ -23,12 +23,12 @@ htmlcov/
 .ruff_cache/
 
 # Ignore generated results but track essential data files
-eval/results/
 *_backup.csv
 *.csv.bak
 
 # Ignore JSON results but allow package.json, etc.
 eval/results/*.json
+eval/results/*.txt
 
 # Data collection - ignore large datasets
 data/raw/swahili-news.zip

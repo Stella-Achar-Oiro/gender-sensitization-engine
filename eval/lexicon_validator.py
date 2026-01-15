@@ -105,7 +105,7 @@ class LexiconValidator:
 
     Usage:
         validator = LexiconValidator()
-        report = validator.validate_file("rules/lexicon_sw_v2.csv")
+        report = validator.validate_file("rules/lexicon_sw_v3.csv")
 
         if not report.is_valid:
             print(report.summary())
@@ -142,7 +142,7 @@ class LexiconValidator:
         """
         file_path = Path(file_path)
 
-        # Extract language from filename (e.g., lexicon_sw_v2.csv -> sw)
+        # Extract language from filename (e.g., lexicon_sw_v3.csv -> sw)
         language = file_path.stem.split('_')[1] if '_' in file_path.stem else 'unknown'
 
         report = ValidationReport(
@@ -355,7 +355,7 @@ class LexiconValidator:
         rules_dir = Path(rules_dir)
         reports = {}
 
-        for lexicon_file in rules_dir.glob("lexicon_*_v2.csv"):
+        for lexicon_file in rules_dir.glob("lexicon_*_v3.csv"):
             report = self.validate_file(lexicon_file)
             reports[report.language] = report
 

@@ -73,7 +73,7 @@ eval:
 
 # Run correction evaluation
 eval-correction:
-	poetry run python eval/correction_evaluator.py
+	poetry run python ./eval/correction_evaluator.py
 
 # Run live demo
 demo:
