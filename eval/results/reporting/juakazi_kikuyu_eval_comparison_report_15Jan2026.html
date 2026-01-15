@@ -1,0 +1,327 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kikuyu Bias Correction – Comparative Evaluation Report (JuaKazi)</title>
+
+<style>
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11pt;
+    color: #0f172a;
+    background: #ffffff;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 18pt;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 28px;
+    font-size: 14pt;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 4px;
+}
+
+p {
+    text-align: justify;
+    margin: 8px 0;
+}
+
+table {
+    width: 85%;
+    margin: 14px auto;
+    border-collapse: collapse;
+    font-size: 10.5pt;
+}
+
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+th {
+    background: #e0f2fe;
+    font-weight: bold;
+}
+
+.figure {
+    text-align: center;
+    margin: 20px 0;
+}
+
+svg {
+    width: 480px;
+    max-width: 100%;
+}
+
+.caption {
+    font-size: 10pt;
+    font-style: italic;
+    margin-top: 6px;
+    color: #334155;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Comparative Bias Correction Evaluation – Kikuyu (KI)</h1>
+
+<p style="text-align:center;">
+<strong>Project:</strong> JuaKazi Gender Bias Detection & Correction System<br>
+<strong>Languages:</strong> Kikuyu (KI)<br>
+<strong>Comparison Scope:</strong> Small-scale vs Large-scale Evaluation
+</p>
+
+<h2>1. Evaluation Scope Overview</h2>
+
+<p>
+This report compares two evaluation runs of the JuaKazi bias detection and
+correction system for Kikuyu. The first evaluation was conducted on a small,
+manually curated dataset, while the second represents a large-scale evaluation
+intended to stress-test detection coverage, correction reliability, and semantic
+preservation.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Run A (Small-Scale)</th>
+<th>Run B (Large-Scale)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total Samples</td>
+<td>33</td>
+<td>742</td>
+</tr>
+<tr>
+<td>Biased Samples</td>
+<td>18</td>
+<td>488</td>
+</tr>
+<tr>
+<td>Detected Biases</td>
+<td>9</td>
+<td>231</td>
+</tr>
+</tbody>
+</table>
+
+<h2>2. Pre-Correction Detection Performance Comparison</h2>
+
+<p>
+Detection performance reflects the system’s ability to identify biased text prior
+to any intervention. Both runs were evaluated under a precision-first operating
+point.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Run A</th>
+<th>Run B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Precision</td>
+<td>1.000</td>
+<td>1.000</td>
+</tr>
+<tr>
+<td>Recall</td>
+<td>0.500</td>
+<td>0.473</td>
+</tr>
+<tr>
+<td>F1 Score</td>
+<td>0.667</td>
+<td>0.643</td>
+</tr>
+</tbody>
+</table>
+
+<div class="figure">
+<svg viewBox="0 0 480 260">
+    <rect x="10" y="10" width="460" height="240" fill="none" stroke="#94a3b8"/>
+    <text x="240" y="30" text-anchor="middle" font-size="12" font-weight="bold">
+        Pre-Correction F1 Comparison
+    </text>
+
+    <line x1="80" y1="210" x2="420" y2="210" stroke="#334155"/>
+    <line x1="80" y1="60" x2="80" y2="210" stroke="#334155"/>
+
+    <text x="50" y="210">0.0</text>
+    <text x="50" y="135">0.5</text>
+    <text x="50" y="65">1.0</text>
+
+    <rect x="160" y="110" width="60" height="100" fill="#2563eb"/>
+    <rect x="280" y="116" width="60" height="94" fill="#0ea5e9"/>
+
+    <text x="190" y="105">0.667</text>
+    <text x="310" y="111">0.643</text>
+
+    <text x="190" y="235">Run A</text>
+    <text x="310" y="235">Run B</text>
+</svg>
+<p class="caption">
+Figure 1: Comparison of pre-correction F1 scores across evaluation scales.
+</p>
+</div>
+
+<p>
+Detection quality remains stable as scale increases, with only a marginal drop in
+recall and F1. This indicates good generalization of the detector, though coverage
+limitations persist.
+</p>
+
+<h2>3. Bias Removal Effectiveness Comparison</h2>
+
+<p>
+Bias removal effectiveness measures whether detected bias is successfully
+neutralized.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Run A</th>
+<th>Run B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detected Biases</td>
+<td>9</td>
+<td>231</td>
+</tr>
+<tr>
+<td>Successfully Neutralized</td>
+<td>9</td>
+<td>231</td>
+</tr>
+<tr>
+<td>Removal Rate</td>
+<td>100.0%</td>
+<td>100.0%</td>
+</tr>
+<tr>
+<td>HarmonicScore</td>
+<td>0.800</td>
+<td>0.782</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Perfect removal is maintained at scale. The slight reduction in HarmonicScore in
+Run B is attributable solely to reduced detection F1, not correction quality.
+</p>
+
+<h2>4. Semantic Preservation Comparison</h2>
+
+<p>
+Semantic preservation metrics assess how well meaning is retained after bias
+neutralization.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Run A</th>
+<th>Run B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLEU</td>
+<td>0.854</td>
+<td>0.703</td>
+</tr>
+<tr>
+<td>ROUGE-L</td>
+<td>0.823</td>
+<td>0.824</td>
+</tr>
+<tr>
+<td>Token Overlap</td>
+<td>0.783</td>
+<td>0.824</td>
+</tr>
+<tr>
+<td>Edit Similarity</td>
+<td>0.783</td>
+<td>0.824</td>
+</tr>
+<tr>
+<td><strong>Composite</strong></td>
+<td><strong>0.816</strong></td>
+<td><strong>0.787</strong></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+At scale, BLEU decreases due to increased lexical diversity, while ROUGE-L and
+token overlap remain stable or improve. This suggests that corrections remain
+structurally faithful, even when surface-level wording varies.
+</p>
+
+<h2>5. Areas of Success</h2>
+
+<p>
+The following strengths are consistently observed across both evaluations:
+</p>
+
+<ul>
+<li><strong>Zero false positives</strong> across all datasets, ensuring safe deployment.</li>
+<li><strong>Perfect correction reliability</strong> once bias is detected.</li>
+<li><strong>High semantic preservation</strong>, even at large scale.</li>
+<li><strong>Strong pronoun-bias handling</strong>, with high pre-F1 and full neutralization.</li>
+<li><strong>Scalable correction logic</strong> unaffected by dataset size.</li>
+</ul>
+
+<h2>6. Areas Requiring Improvement</h2>
+
+<p>
+Despite strong correction performance, several limitations remain:
+</p>
+
+<ul>
+<li><strong>Detection recall</strong> remains below 0.50, limiting end-to-end impact.</li>
+<li><strong>Occupation bias detection</strong> shows consistently low pre-F1.</li>
+<li><strong>HarmonicScore ceiling</strong> is constrained by detection rather than correction.</li>
+<li><strong>BLEU sensitivity</strong> at scale suggests a need for embedding-based semantic metrics.</li>
+</ul>
+
+<p>
+Future work should prioritize expanding detection coverage—particularly for
+occupation-related bias—while preserving the system’s conservative precision
+profile.
+</p>
+
+<p style="text-align:center; margin-top:30px; font-size:9pt;">
+© JuaKazi Team — Comparative Bias Correction Analysis
+</p>
+
+</div>
+</body>
+</html>

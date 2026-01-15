@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bias Correction Evaluation – Kikuyu (JuaKazi)</title>
+
+<style>
+@page {
+    size: A4;
+    margin: 25mm;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11pt;
+    color: #0f172a;
+    background: #ffffff;
+    line-height: 1.45;
+}
+
+/* Centered content container */
+.container {
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+/* Headings */
+h1 {
+    font-size: 18pt;
+    margin-bottom: 12px;
+    text-align: center;
+    color: #020617;
+}
+
+h2 {
+    font-size: 14pt;
+    margin-top: 30px;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 4px;
+    color: #020617;
+}
+
+h3 {
+    font-size: 12pt;
+    margin-top: 20px;
+    color: #020617;
+}
+
+p {
+    margin: 8px 0;
+    text-align: justify;
+}
+
+/* Tables */
+table {
+    width: 88%;
+    margin: 12px auto;
+    border-collapse: collapse;
+    font-size: 10.5pt;
+}
+
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: center;
+}
+
+th {
+    background: #e0f2fe;
+    color: #020617;
+    font-weight: bold;
+}
+
+/* Metric grid */
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 12px auto;
+    width: 88%;
+}
+
+.metric-box {
+    border: 1px solid #93c5fd;
+    background: #f8fafc;
+    padding: 8px;
+    text-align: center;
+}
+
+.metric-box strong {
+    display: block;
+    font-size: 12pt;
+    color: #020617;
+}
+
+/* Figures */
+.figure {
+    margin: 18px auto;
+    text-align: center;
+}
+
+svg {
+    width: 420px;
+    max-width: 100%;
+    height: auto;
+}
+
+.caption {
+    font-size: 10pt;
+    margin-top: 4px;
+    font-style: italic;
+    color: #334155;
+}
+
+/* Footer */
+.footer {
+    margin-top: 40px;
+    font-size: 9pt;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 6px;
+    color: #334155;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Bias Detection and Correction Evaluation for Kikuyu</h1>
+
+<p style="text-align:center;">
+<strong>Project:</strong> JuaKazi Gender Bias Detection & Correction System<br>
+<strong>Language:</strong> Kikuyu (KI)<br>
+<strong>Evaluation Date:</strong> 19 December 2025
+</p>
+
+<h2>1. Dataset Description</h2>
+
+<p>
+The evaluation was conducted on a manually curated Kikuyu dataset consisting of
+33 sentences. Of these, 18 instances were annotated as containing gender bias.
+Bias categories include <em>pronoun assumption</em> and
+<em>occupation-related bias</em>.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Total Samples</th>
+<th>Biased Samples</th>
+<th>Detected (Pre-Correction)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>33</td>
+<td>18</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+
+<h2>2. Pre-Correction Bias Detection Performance</h2>
+
+<p>
+This section evaluates the performance of the bias detector on original,
+uncorrected text. These metrics quantify the system’s ability to identify
+biased content prior to intervention.
+</p>
+
+<div class="metric-grid">
+<div class="metric-box">
+<strong>Precision</strong>
+1.000
+</div>
+<div class="metric-box">
+<strong>Recall</strong>
+0.500
+</div>
+<div class="metric-box">
+<strong>F1 Score</strong>
+0.667
+</div>
+</div>
+
+<p>
+Perfect precision indicates the absence of false positives, while a recall of
+0.50 shows that half of the biased instances were identified. This reflects a
+deliberate precision-first strategy appropriate for automated correction
+pipelines where false corrections are costly.
+</p>
+
+<div class="figure">
+<svg viewBox="0 0 460 260">
+    <!-- Border -->
+    <rect x="10" y="10" width="440" height="240" fill="none" stroke="#94a3b8"/>
+
+    <!-- Title -->
+    <text x="230" y="30" text-anchor="middle" font-size="12" font-weight="bold">
+        Pre-Correction Detection Metrics
+    </text>
+
+    <!-- Axes -->
+    <line x1="60" y1="210" x2="400" y2="210" stroke="#334155"/>
+    <line x1="60" y1="60" x2="60" y2="210" stroke="#334155"/>
+
+    <!-- Y-axis labels -->
+    <text x="30" y="210">0.0</text>
+    <text x="30" y="135">0.5</text>
+    <text x="30" y="65">1.0</text>
+
+    <!-- Bars -->
+    <rect x="110" y="60" width="50" height="150" fill="#2563eb"/>
+    <rect x="200" y="135" width="50" height="75" fill="#2563eb"/>
+    <rect x="290" y="110" width="50" height="100" fill="#2563eb"/>
+
+    <!-- Values -->
+    <text x="135" y="55" text-anchor="middle">1.00</text>
+    <text x="225" y="130" text-anchor="middle">0.50</text>
+    <text x="315" y="105" text-anchor="middle">0.67</text>
+
+    <!-- Labels -->
+    <text x="135" y="230" text-anchor="middle">Precision</text>
+    <text x="225" y="230" text-anchor="middle">Recall</text>
+    <text x="315" y="230" text-anchor="middle">F1</text>
+</svg>
+<p class="caption">
+Figure 1: Precision, recall, and F1 score of the bias detector prior to correction.
+</p>
+</div>
+
+
+<h2>3. Bias Removal Effectiveness</h2>
+
+<table>
+<thead>
+<tr>
+<th>Detected Biases</th>
+<th>Neutralized</th>
+<th>Removal Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>9</td>
+<td>100.0%</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+All detected biased instances were successfully neutralized. The
+<strong>HarmonicScore</strong>, defined as the harmonic mean of pre-correction F1
+and bias removal rate, summarizes end-to-end system effectiveness.
+</p>
+
+<div class="metric-grid" style="grid-template-columns: 1fr;">
+<div class="metric-box">
+<strong>HarmonicScore</strong>
+0.800
+</div>
+</div>
+
+<p>
+A HarmonicScore of 0.800 indicates strong combined performance, balancing
+moderate detection coverage with perfect correction reliability.
+</p>
+
+<h2>4. Semantic Preservation Analysis</h2>
+
+<p>
+Semantic preservation evaluates whether bias mitigation alters the original
+meaning. Token-level similarity metrics were computed between original and
+corrected sentences for all successfully neutralized samples.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Score</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BLEU</td>
+<td>0.854</td>
+<td>High local lexical similarity</td>
+</tr>
+<tr>
+<td>ROUGE-L</td>
+<td>0.823</td>
+<td>Strong sequence-level alignment</td>
+</tr>
+<tr>
+<td>Token Overlap</td>
+<td>0.783</td>
+<td>Most content words preserved</td>
+</tr>
+<tr>
+<td>Edit Similarity</td>
+<td>0.783</td>
+<td>Limited, targeted edits</td>
+</tr>
+<tr>
+<td><strong>Composite</strong></td>
+<td><strong>0.816</strong></td>
+<td><strong>Overall semantic integrity retained</strong></td>
+</tr>
+</tbody>
+</table>
+
+<div class="figure">
+<svg viewBox="0 0 460 300">
+    <!-- Border -->
+    <rect x="10" y="10" width="440" height="280" fill="none" stroke="#94a3b8"/>
+
+    <!-- Title -->
+    <text x="230" y="30" text-anchor="middle" font-size="12" font-weight="bold">
+        Semantic Preservation Metrics
+    </text>
+
+    <!-- Axes -->
+    <line x1="60" y1="240" x2="400" y2="240" stroke="#334155"/>
+    <line x1="60" y1="70" x2="60" y2="240" stroke="#334155"/>
+
+    <!-- Y-axis labels -->
+    <text x="30" y="240">0.0</text>
+    <text x="30" y="155">0.5</text>
+    <text x="30" y="75">1.0</text>
+
+    <!-- Bars -->
+    <rect x="90"  y="95" width="40" height="145" fill="#0ea5e9"/>
+    <rect x="150" y="105" width="40" height="135" fill="#0ea5e9"/>
+    <rect x="210" y="125" width="40" height="115" fill="#0ea5e9"/>
+    <rect x="270" y="125" width="40" height="115" fill="#0ea5e9"/>
+    <rect x="330" y="110" width="40" height="130" fill="#0ea5e9"/>
+
+    <!-- Values -->
+    <text x="110" y="90" text-anchor="middle">0.85</text>
+    <text x="170" y="100" text-anchor="middle">0.82</text>
+    <text x="230" y="120" text-anchor="middle">0.78</text>
+    <text x="290" y="120" text-anchor="middle">0.78</text>
+    <text x="350" y="105" text-anchor="middle">0.82</text>
+
+    <!-- Labels -->
+    <text x="110" y="260" text-anchor="middle">BLEU</text>
+    <text x="170" y="260" text-anchor="middle">ROUGE-L</text>
+    <text x="230" y="260" text-anchor="middle">Token</text>
+    <text x="290" y="260" text-anchor="middle">Edit</text>
+    <text x="350" y="260" text-anchor="middle">Composite</text>
+</svg>
+<p class="caption">
+Figure 2: Token-level semantic preservation between original and corrected Kikuyu text.
+</p>
+</div>
+
+
+<h2>5. Category-Level Performance</h2>
+
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Pre-F1</th>
+<th>Removal %</th>
+<th>Harmonic</th>
+<th>Detected</th>
+<th>Corrected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pronoun Assumption</td>
+<td>1.000</td>
+<td>100.0%</td>
+<td>1.000</td>
+<td>9</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Occupation</td>
+<td>0.000</td>
+<td>0.0%</td>
+<td>0.000</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<h2>6. Technical Interpretation</h2>
+
+<p>
+Results indicate that the JuaKazi correction pipeline achieves complete bias
+neutralization for detected Kikuyu pronoun-based bias, while preserving
+semantic content. The correction strategy relies on minimal lexical substitution,
+which is particularly suitable for low-resource and morphologically rich
+languages.
+</p>
+
+<p>
+Detection recall remains the primary limitation, especially for occupation-based
+bias categories, suggesting future work should focus on expanding detection
+coverage without compromising precision.
+</p>
+
+<div class="footer">
+© JuaKazi Team — Bias Detection and Correction Research
+</div>
+
+</div>
+</body>
+</html>
