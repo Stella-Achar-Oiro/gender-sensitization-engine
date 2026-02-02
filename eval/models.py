@@ -20,6 +20,7 @@ class BiasCategory(str, Enum):
     HONORIFIC = "honorific"
     MORPHOLOGY = "morphology"
     NONE = "none"
+    STEREOTYPE="stereotype"
 
 
 class BiasLabel(str, Enum):
