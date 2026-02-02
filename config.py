@@ -9,7 +9,7 @@ class DataVersions:
     """Active version identifiers for dataset artifacts."""
 
     LEXICON: str = "v3"
-    GROUND_TRUTH: str = "v3"
+    GROUND_TRUTH: str = "v4"
 
 
 def lexicon_filename(language_code: str, version: str | None = None) -> str:
