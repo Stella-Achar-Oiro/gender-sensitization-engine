@@ -60,6 +60,10 @@ scripts/data_collection/collect_real_data.sh
 team_messages_*.md
 data/analysis/swahili_corpus_analysis.md
 scripts/data_collection/download_anv_kenya_auth.md
+scripts/annotation_prompt.md
+
+# Generated annotation artifacts
+data/analysis/kappa_overlap_ids.txt
 
 # Eval HTML reports — generated, not source
 eval/results/reporting/
