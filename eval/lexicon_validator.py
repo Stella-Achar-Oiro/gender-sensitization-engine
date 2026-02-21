@@ -229,15 +229,23 @@ class LexiconValidator:
         if not biased:
             return issues
 
-        # Check 1: Identical biased and neutral terms (CRITICAL)
+        # Check 1: Identical biased and neutral terms
         if biased and neutral and biased == neutral:
-            severity = ValidationSeverity.ERROR
+            # For warn-severity entries, identical terms are intentional
+            # (detection-only rules that flag context, not replace words)
+            rule_severity = (row.get('severity') or '').strip().lower()
+            if rule_severity == 'warn':
+                severity = ValidationSeverity.WARNING
+                msg = "Biased term is identical to neutral_primary (detection-only warn rule)"
+            else:
+                severity = ValidationSeverity.ERROR
+                msg = "Biased term is identical to neutral_primary - this entry is non-functional"
             issues.append(ValidationIssue(
                 row_number=row_num,
                 column="biased/neutral_primary",
                 issue_type="IDENTICAL_TERMS",
                 severity=severity,
-                message="Biased term is identical to neutral_primary - this entry is non-functional",
+                message=msg,
                 biased_term=biased,
                 suggestion="Either provide a different neutral term, or remove this entry if the term is inherently neutral"
             ))
@@ -261,11 +269,15 @@ class LexiconValidator:
 
         if example_biased and example_neutral:
             if example_biased == example_neutral:
+                # For warn-severity detection-only rules, identical examples are expected
+                rule_severity = (row.get('severity') or '').strip().lower()
+                ex_severity = (ValidationSeverity.WARNING if rule_severity == 'warn'
+                               else ValidationSeverity.ERROR)
                 issues.append(ValidationIssue(
                     row_number=row_num,
                     column="example_biased/example_neutral",
                     issue_type="IDENTICAL_EXAMPLES",
-                    severity=ValidationSeverity.ERROR,
+                    severity=ex_severity,
                     message="Example sentences are identical - no pedagogical value",
                     biased_term=biased,
                     suggestion="Provide distinct examples that show the difference between biased and neutral usage"

@@ -3,7 +3,13 @@ name = "juakazi"
 version = "0.1.0"
 description = "Gender bias detection and correction system for African languages"
 authors = ["AI BRIDGE Team <team@aibridge.org>"]
-packages = [{ include = "eval" }, { include = "api" }, { include = "review_ui" }]
+packages = [
+    { include = "eval" },
+    { include = "api" },
+    { include = "ui" },
+    { include = "ml" },
+    { include = "scripts" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -34,6 +40,7 @@ flake8 = ">=6.0.0"
 mypy = ">=1.7.0"
 ruff = ">=0.1.0"
 pre-commit = ">=3.5.0"
+pytest-cov = "^7.0.0"
 
 [tool.poetry.extras]
 api = ["fastapi", "uvicorn", "python-multipart", "pydantic", "pandas", "numpy"]
@@ -83,6 +90,8 @@ python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
 addopts = "-v --strict-markers --tb=short"
+# Note: pythonpath is NOT included here - handled by conftest.py
+# This prevents pytest assertion rewriting conflicts with sys.path manipulation
 
 [tool.mypy]
 python_version = "3.12"

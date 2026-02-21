@@ -2,9 +2,13 @@
 """Live Demo Script - JuaKazi Hybrid Bias Detection
 Shows rules-based detection with actual examples
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 
 from eval.bias_detector import BiasDetector
 from eval.models import Language
+from api.main import apply_rules_on_spans
 
 
 def demo_header():
@@ -39,13 +43,13 @@ def demo_example(detector, text, language, example_num):
                 f'   {i}. "{edit["from"]}" -> "{edit["to"]}" (severity: {edit.get("severity", "replace")})'
             )
 
-        # Apply corrections
-        corrected_text = text
-        for edit in result.detected_edits:
-            corrected_text = corrected_text.replace(edit["from"], edit["to"])
+        # Apply corrections using the same regex-based, case-preserving function as the API
+        corrected_text, applied_edits, count, skipped = apply_rules_on_spans(text, language.value)
 
         print("\nCorrected Text:")
         print(f'   "{corrected_text}"')
+        if skipped:
+            print(f"   (skipped {len(skipped)} term(s) due to context: {[s['term'] for s in skipped]})")
     else:
         print("\nNo corrections needed - text is bias-free!")
 
@@ -60,11 +64,11 @@ def main():
     print("Initializing hybrid bias detector...\n")
     detector = BiasDetector()
     print("[OK] Detector ready with 4 language lexicons:")
-    print("  - English: 19 core concepts (514 pattern variants) - Production")
-    print("  - Swahili: 15 terms (expanding to 50+) - Foundation")
-    print("  - French: 51 terms (initial validation) - Beta")
-    print("  - Gikuyu: 22 terms (initial validation) - Beta")
-    print("\n  F1 Scores: EN 0.764 | SW 0.681 | FR 0.627 | KI 0.714")
+    print("  - English: 538 rules - Production")
+    print("  - Swahili: 211 rules - Production")
+    print("  - French: 78 rules - Beta")
+    print("  - Gikuyu: 1,240 rules - Production")
+    print("\n  F1 Scores: EN 0.786 | SW 0.611 | FR 0.542 | KI 0.352")
     print()
 
     # English Examples
@@ -127,10 +131,9 @@ def main():
     print(" " * 25 + "DEMO SUMMARY")
     print("=" * 70 + "\n")
     print("[OK] Hybrid Detection: Rules-based (primary) + ML (fallback)")
-    print("[OK] Perfect Precision: 1.000 across all languages")
-    print("[OK] Zero False Positives: Every detection is accurate")
-    print("[OK] Culturally Appropriate: Native speaker-defined rules")
-    # print("[OK] Production Ready: English 100% bias removal rate")
+    print("[OK] Context-Aware: Biographical, quote, and statistical contexts preserved")
+    print("[OK] Case-Preserving: Chairman → Chairperson, CHAIRMAN → CHAIRPERSON")
+    print("[OK] Audit Trail: All corrections logged to audit_logs/rewrites.jsonl")
     print("\n" + "=" * 70 + "\n")
 
 

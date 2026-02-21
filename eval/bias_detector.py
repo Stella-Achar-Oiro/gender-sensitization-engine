@@ -87,11 +87,18 @@ class BiasDetector:
              StereotypeCategory.CAPABILITY, TargetGender.MALE),
         ],
         Language.SWAHILI: [
-            (r'\b(tu|basi)\s+(mwanamke|msichana)',
+            # Dismissive "ni tu mwanamke/msichana" = "s/he is just a woman"
+            # Must be predicate construction (ni + tu), not bare "tu mwanamke" which is too broad
+            (r'\bni\s+tu\s+(mwanamke|msichana)\b',
              StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(mwanamke|msichana).*(hawezi|haiwezekani|dhaifu)',
+            # Direct derogation: "mwanamke/msichana hawezi" where hawezi is a direct predicate
+            # Exclude medical contexts (kuzaa, kukoma, kupenda) and counter-stereotype quotations
+            # (hawezi bila kuwezeshwa = quoting stereotype in order to reject it)
+            (r'\b(mwanamke|msichana)\b\s+hawezi\b(?!\s+(?:kuzaa|kukoma|kupenda|kunifikia|kufikia|kukufikia|bila\s+kuwezeshwa))',
              StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(kama\s+msichana|kama\s+mwanamke)',
+            # Require "kama mwanamke/msichana" to be followed by a negative/derogatory term,
+            # not just any noun phrase (e.g. "kama mwanamke wa imani" is biographical)
+            (r'\b(kama\s+msichana|kama\s+mwanamke)\b.{0,30}\b(dhaifu|hawezi|haiwezi|hana nguvu|anapiga|analia)',
              StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
         ],
     }
@@ -232,7 +239,10 @@ class BiasDetector:
             rules = self._get_rules(language)
             patterns = self._get_compiled_patterns(language)
 
-            detected_edits = []
+            # replace_edits: confirmed bias — set has_bias_detected=True, trigger correction
+            # warn_edits: informational flags (severity=warn) — never set has_bias_detected
+            replace_edits = []
+            warn_edits = []
             detected_categories = []
             detected_genders = []
             skipped_edits = []  # Track edits skipped due to context
@@ -244,6 +254,7 @@ class BiasDetector:
                         continue
 
                     biased_term = rule['biased']
+                    severity = rule.get('severity', 'replace')
                     avoid_when = rule.get('avoid_when', '')
                     constraints = rule.get('constraints', '')
 
@@ -273,7 +284,7 @@ class BiasDetector:
                     edit = {
                         'from': rule['biased'],
                         'to': rule['neutral_primary'],
-                        'severity': rule['severity'],
+                        'severity': severity,
                         'bias_type': rule.get('bias_label', 'stereotype'),
                         'stereotype_category': rule.get('stereotype_category', 'profession')
                     }
@@ -285,14 +296,17 @@ class BiasDetector:
                             edit['ngeli'] = ngeli
                             self.ngeli_tracker.track_noun(rule['biased'])
 
-                    detected_edits.append(edit)
+                    # Route by severity: warn entries are informational only
+                    if severity == 'warn':
+                        warn_edits.append(edit)
+                    else:
+                        replace_edits.append(edit)
+                        # Only track categories for confirmed-bias (replace) edits
+                        cat = rule.get('stereotype_category', 'profession')
+                        if cat:
+                            detected_categories.append(cat)
 
-                    # Track categories for result aggregation
-                    cat = rule.get('stereotype_category', 'profession')
-                    if cat:
-                        detected_categories.append(cat)
-
-            # Determine primary stereotype category
+            # Determine primary stereotype category from replace edits only
             primary_category = None
             if detected_categories:
                 try:
@@ -305,12 +319,14 @@ class BiasDetector:
             if language == Language.SWAHILI and self.ngeli_tracker:
                 ngeli_analysis = self.ngeli_tracker.analyze_text(text)
 
-            # Build result with AI BRIDGE fields
-            has_bias = len(detected_edits) > 0
+            # has_bias is True only when replace-severity edits are present.
+            # warn_edits surface separately and never drive has_bias_detected.
+            has_bias = len(replace_edits) > 0
             result = BiasDetectionResult(
                 text=text,
                 has_bias_detected=has_bias,
-                detected_edits=detected_edits,
+                detected_edits=replace_edits,
+                warn_edits=warn_edits,
                 bias_label=BiasLabel.STEREOTYPE if has_bias else BiasLabel.NEUTRAL,
                 stereotype_category=primary_category,
                 target_gender=None,  # Would need deeper NLP for gender inference

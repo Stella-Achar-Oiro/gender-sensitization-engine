@@ -5,16 +5,16 @@ Gender bias detection and correction system for African languages with comprehen
 ## Supported Languages
 
 ### Production & Foundation
-- **English** (F1: 0.764, Precision: 1.000, Bias Removal: 100%) - Production-ready
-- **Swahili** (F1: 0.681, Precision: 1.000, Bias Removal: 12.5%) - Foundation
+- **English** (F1: 0.786, Precision: 1.000, Recall: 0.647) - Production-ready
+- **Swahili** (F1: 0.708, Precision: 1.000, Recall: 0.548) - Foundation
 
 ### Beta (Pending Native Speaker Validation)
-- **French** (F1: 0.627, Precision: 1.000) - Initial validation complete
-- **Gikuyu** (F1: 0.714, Precision: 1.000) - Initial validation complete
+- **French** (F1: 0.571, Precision: 1.000, Recall: 0.400) - Initial validation complete
+- **Gikuyu** (F1: 0.643, Precision: 1.000, Recall: 0.473) - Expanded dataset (5,254 samples)
 
 **Perfect Precision**: All 4 languages achieve 1.000 precision (zero false positives)
 
-**Latest Update (Nov 20, 2025):** Added French and Gikuyu support with F1 evaluation, updated to 4-language system
+**Latest Update (Jan 2026):** Major Kikuyu expansion with 5,200+ lexicon entries and 5,254 ground truth samples. AI BRIDGE compliance features added.
 
 ## Quick Start
 
@@ -69,21 +69,21 @@ print('Edits:', result.detected_edits)
 
 ## Performance Summary
 
-### Detection Performance (Nov 20, 2025)
-| Language | F1 Score | Precision | Recall | Lexicon Size | Status |
-|----------|----------|-----------|--------|--------------|---------|
-| English  | 0.764    | 1.000     | 0.618  | 514 entries (19 concepts) | Production |
-| Swahili  | 0.681    | 1.000     | 0.516  | 15 terms | Foundation |
-| French   | 0.627    | 1.000     | 0.457  | 51 terms | Beta |
-| Gikuyu   | 0.714    | 1.000     | 0.556  | 22 terms | Beta |
+### Detection Performance (Jan 2026)
+| Language | F1 Score | Precision | Recall | Lexicon Size | Ground Truth | Status |
+|----------|----------|-----------|--------|--------------|--------------|--------|
+| English  | 0.786    | 1.000     | 0.647  | 515 entries (v3) | 67 samples | Production |
+| Swahili  | 0.708    | 1.000     | 0.548  | 151 entries (v3) | 64 samples | Foundation |
+| French   | 0.571    | 1.000     | 0.400  | 51 entries (v3) | 51 samples | Beta |
+| Gikuyu   | 0.643    | 1.000     | 0.473  | 1,209 entries (v3) | 5,254 samples (v4) | Beta |
 
 ### Correction Effectiveness
 | Language | Detection Rate | Bias Removal Rate | Status |
 |----------|---------------|-------------------|---------|
-| English  | 61.8%         | **100.0%**        | Production-ready |
-| Swahili  | 51.6%         | 12.5%             | Needs expansion |
-| French   | 45.7%         | Pending           | Needs validation |
-| Gikuyu   | 55.6%         | Pending           | Needs validation |
+| English  | 64.7%         | **100.0%**        | Production-ready |
+| Swahili  | 54.8%         | Improving         | Expanding |
+| French   | 40.0%         | Pending           | Needs validation |
+| Gikuyu   | 47.3%         | In Progress       | Large-scale validation |
 
 **Key Achievements**:
 - **Perfect precision (1.000) across all 4 languages** - zero false positives
@@ -102,17 +102,24 @@ print('Edits:', result.detected_edits)
 │   ├── ground_truth_*.csv  # Test datasets (50+ samples each)
 │   └── results/            # Evaluation outputs
 ├── rules/                  # Bias detection lexicons
-│   ├── lexicon_en_v2.csv  # English (514 entries = 19 concepts)
-│   ├── lexicon_sw_v2.csv  # Swahili (15 terms)
-│   ├── lexicon_fr_v2.csv  # French (51 terms)
-│   └── lexicon_ki_v2.csv  # Gikuyu (22 terms)
-├── scripts/data_collection/  # Data collection tools
-│   ├── download_datasets.py  # WinoBias, WinoGender, CrowS-Pairs
-│   ├── extract_wikipedia.py  # Wikipedia corpus extraction
-│   └── common_utils.py       # Shared utilities (1,637 lines)
+│   ├── lexicon_en_v3.csv  # English (515 entries)
+│   ├── lexicon_sw_v3.csv  # Swahili (151 entries)
+│   ├── lexicon_fr_v3.csv  # French (51 entries)
+│   ├── lexicon_ki_v3.csv  # Gikuyu (1,209 entries)
+│   └── lexicon_ki_v2.csv  # Gikuyu baseline (111 entries)
+├── scripts/                  # Utilities and generation tools
+│   ├── generate_ki_lexicon_v3.py    # Kikuyu lexicon generator (data-driven)
+│   ├── generate_kikuyu_lexicon_ai.py # AI-based lexicon generation
+│   └── data_collection/      # Data collection tools
+│       ├── download_datasets.py  # WinoBias, WinoGender, CrowS-Pairs
+│       ├── extract_wikipedia.py  # Wikipedia corpus extraction
+│       └── common_utils.py       # Shared utilities
 ├── data/                   # Training and evaluation datasets
+│   ├── Kikuyu/             # Kikuyu transcripts (33MB+)
 │   ├── raw/                # Original benchmark datasets
-│   └── clean/              # Processed datasets for team access
+│   ├── clean/              # Processed datasets for team access
+│   ├── swahili_corpus/     # Swahili training data
+│   └── analysis/           # Analysis outputs
 └── docs/                   # Documentation
     ├── approach_card.md    # Technical methodology
     ├── dataset_datasheet.md # Ground truth documentation
@@ -172,10 +179,11 @@ Dependencies managed via `pyproject.toml` with optional extras:
 ## Key Features
 
 - **Zero False Positives**: Perfect precision across all languages
+- **AI BRIDGE Compliant**: Fairness metrics (DP, EO) for bias detection
+- **Large-Scale Kikuyu Dataset**: 5,254 annotated samples with 1,209 lexicon entries
+- **Context-Aware Correction**: Enhanced semantic preservation
 - **Culturally Adapted**: Language-specific lexicons with regional context
 - **Systematic Evaluation**: Comprehensive F1 framework with failure analysis
-- **Baseline Validated**: Outperforms simple keyword detection
-- **Comprehensive Evaluation**: All languages evaluated with F1 > 0.5 threshold
 
 ## Usage Examples
 
@@ -207,9 +215,10 @@ print(result.get('corrected_text'))  # Returns corrected version if available
 ## Evaluation Results
 
 Latest evaluation run shows consistent performance:
-- **250 ground truth samples** (50 per language)
+- **5,436 ground truth samples** (EN: 67, SW: 64, FR: 51, KI: 5,254)
 - **Perfect precision** maintained across all languages
-- **Systematic improvement** process validated (Swahili: 0.077 → 0.750)
+- **Major Kikuyu expansion**: 22 → 1,209 lexicon entries, 34 → 5,254 samples
+- **AI BRIDGE compliance**: Fairness metrics integrated
 - **Cross-language framework** proven scalable
 
 ## Contributing

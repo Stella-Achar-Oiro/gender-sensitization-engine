@@ -1,17 +1,25 @@
 import time
 from typing import List, Dict, Any
-import torch
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+
+# Optional ML dependencies — not required for rules-based operation
+try:
+    import torch
+    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+    _ML_AVAILABLE = True
+except ImportError:
+    _ML_AVAILABLE = False
 
 # I decided to choose a multilingual small seq2seq model
-MODEL_ID = "google/mt5-small"  
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+MODEL_ID = "google/mt5-small"
+DEVICE = "cuda" if (_ML_AVAILABLE and __import__("torch").cuda.is_available()) else "cpu"
 
 # Lazy load
 _tokenizer = None
 _model = None
 
 def _ensure_model():
+    if not _ML_AVAILABLE:
+        raise RuntimeError("ML dependencies not installed. Run: pip install torch transformers")
     global _tokenizer, _model
     if _tokenizer is None:
         _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
@@ -21,6 +29,9 @@ def _ensure_model():
         _model.eval()
 
 def ml_rewrite(text: str, lang: str = "en", num_return_sequences: int = 3, max_new_tokens: int = 64) -> Dict[str, Any]:
+    if not _ML_AVAILABLE:
+        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
+
     """
     Returns dict:
       {

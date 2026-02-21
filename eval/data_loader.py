@@ -76,9 +76,19 @@ class GroundTruthLoader:
             raise DataLoadError(f"Failed to load ground truth from {file_path}: {e}") from e
     
     def _get_ground_truth_path(self, language: Language) -> Path:
-        """Get the file path for ground truth data."""
+        """Get the file path for ground truth data.
+
+        Tries versioned filename first, falls back to non-versioned.
+        """
         filename = ground_truth_filename(language.value)
-        return self.data_dir / filename
+        versioned_path = self.data_dir / filename
+        if versioned_path.exists():
+            return versioned_path
+        # Fallback to non-versioned filename (e.g., ground_truth_ki.csv)
+        fallback_path = self.data_dir / f"ground_truth_{language.value}.csv"
+        if fallback_path.exists():
+            return fallback_path
+        return versioned_path  # Return versioned path for error message
     
     def _parse_ground_truth_row(self, row: Dict[str, str]) -> GroundTruthSample:
         """
@@ -89,7 +99,13 @@ class GroundTruthLoader:
         # Core required fields
         text = row['text'].strip('"')
         has_bias = row['has_bias'].lower() == 'true'
-        bias_category = BiasCategory(row['bias_category'])
+        raw_category = row.get('bias_category', '').strip()
+        try:
+            bias_category = BiasCategory(raw_category) if raw_category else BiasCategory.NONE
+        except ValueError:
+            # Ground truth may use stereotype_category values (capability, family_role, etc.)
+            # as bias_category — map to STEREOTYPE for backward compatibility
+            bias_category = BiasCategory.STEREOTYPE
         expected_correction = row.get('expected_correction', '')
 
         # Check if this is AI BRIDGE extended format
@@ -261,6 +277,9 @@ class RulesLoader:
                             'requires_agreement': row.get('requires_agreement', 'false'),
                             'scope': row.get('scope', ''),
                             'register': row.get('register', 'formal'),
+                            # Context-checker fields — needed to suppress false positives
+                            'avoid_when': row.get('avoid_when', ''),
+                            'constraints': row.get('constraints', ''),
                         }
                         rules.append(rule)
 

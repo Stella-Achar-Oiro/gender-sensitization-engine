@@ -1,0 +1,25 @@
+{
+  "total_rows": 11848,
+  "migrated_rows": 11848,
+  "fields_added": [
+    "target_gender",
+    "bias_label",
+    "stereotype_category",
+    "sentiment",
+    "device",
+    "safety_flag"
+  ],
+  "bias_label_counts": {
+    "stereotype": 1181,
+    "neutral": 10525,
+    "derogation": 72,
+    "counter-stereotype": 70
+  },
+  "device_counts": {
+    "scripture_quote": 794,
+    "narrative": 9882,
+    "directive": 385,
+    "question": 787
+  },
+  "needs_manual_review": 405
+}

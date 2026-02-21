@@ -1,19 +1,27 @@
 version: '3.8'
 
 services:
+  # JuaKazi API service
   api:
     build: .
+    container_name: juakazi-api
     ports:
       - "8000:8000"
     volumes:
       - ./audit_logs:/app/audit_logs
       - ./data:/app/data
+      - ./models:/app/models
     environment:
       - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - juakazi-network
 
+  # Review UI service
   ui:
     build: .
+    container_name: juakazi-ui
     ports:
       - "8501:8501"
     volumes:
@@ -21,6 +29,77 @@ services:
       - ./data:/app/data
     environment:
       - PYTHONPATH=/app
-    command: streamlit run review_ui/app.py --server.port 8501 --server.address 0.0.0.0
+      - PYTHONUNBUFFERED=1
+    command: streamlit run ui/app.py --server.port 8501 --server.address 0.0.0.0
     depends_on:
       - api
+    networks:
+      - juakazi-network
+
+  # Test runner service (Week 2)
+  test:
+    build: .
+    container_name: juakazi-tests
+    volumes:
+      - ./tests:/app/tests
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    command: pytest tests/ -v -k "not slow"
+    profiles:
+      - testing
+    networks:
+      - juakazi-network
+
+  # ML Training service (Week 2)
+  train:
+    build: .
+    container_name: juakazi-train
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    command: python3 train_ml_model.py --all-languages --epochs 2
+    profiles:
+      - ml
+    networks:
+      - juakazi-network
+
+  # Model Comparison service (Week 2)
+  compare:
+    build: .
+    container_name: juakazi-compare
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    command: python3 compare_models.py --all-languages --output reports/comparison_docker.txt
+    profiles:
+      - ml
+    networks:
+      - juakazi-network
+
+  # Data Collection CLI (Week 2)
+  collect:
+    build: .
+    container_name: juakazi-collect
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    command: python3 scripts/data_collection/cli.py list-sources
+    profiles:
+      - data
+    networks:
+      - juakazi-network
+
+networks:
+  juakazi-network:
+    driver: bridge

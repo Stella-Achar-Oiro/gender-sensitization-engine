@@ -1,0 +1,57 @@
+{
+  "dataset": "ground_truth_fr_v5.csv",
+  "migration_date": "2026-02-18",
+  "input_version": "v4",
+  "output_version": "v5",
+  "schema_version": "aibridge-v1",
+  "row_count": 50,
+  "compliance_rate": 1.0,
+  "gap_summary": {
+    "input_columns": 4,
+    "canonical_columns": 24,
+    "legacy_retained": [
+      "has_bias",
+      "bias_category",
+      "expected_correction"
+    ],
+    "columns_added": 23,
+    "columns_renamed": 0
+  },
+  "field_completeness": {
+    "id": 50,
+    "language": 50,
+    "script": 50,
+    "country": 50,
+    "target_gender": 50,
+    "bias_label": 50,
+    "stereotype_category": 35,
+    "explicitness": 35,
+    "sentiment_toward_referent": 50,
+    "safety_flag": 50,
+    "pii_removed": 50,
+    "qa_status": 50
+  },
+  "value_distribution": {
+    "bias_label": {
+      "stereotype": 35,
+      "neutral": 15
+    },
+    "stereotype_category": {
+      "profession": 23,
+      "family_role": 8,
+      "daily_life": 4,
+      "": 15
+    },
+    "qa_status": {
+      "needs_review": 50
+    },
+    "domain": {
+      "livelihoods_and_work": 23,
+      "household_and_care": 12,
+      "media_and_online": 15
+    }
+  },
+  "issues": [
+    "All 50 rows qa_status=needs_review \u2014 requires native speaker double-annotation"
+  ]
+}

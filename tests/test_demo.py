@@ -134,7 +134,7 @@ def main():
     print("\n\n✨ Demo Complete!")
     print("\nNext Steps:")
     print("• Start API: uvicorn api.main:app --reload")
-    print("• Start UI: streamlit run review_ui/app.py")
+    print("• Start UI: streamlit run ui/app.py")
     print("• Run evaluation: python3 eval/run_evaluation.py")
 
 if __name__ == "__main__":

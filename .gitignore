@@ -29,17 +29,43 @@ htmlcov/
 # Ignore JSON results but allow package.json, etc.
 eval/results/*.json
 eval/results/*.txt
+eval/results/*.csv
 
-# Data collection - ignore large datasets
+# Data collection - ignore large datasets and external repos
+data/external/
 data/raw/swahili-news.zip
 data/raw/swahili-news/
 data/raw/kwici-corpus/
+data/raw/kikuyu_bible/
 data/analysis/swahili_news_occupations.csv
 data/analysis/kwici_occupations.csv
+
+# Large raw data files - not needed in repo (can be regenerated)
+data/raw/swahili_news_train.csv
+data/raw/swahili_news_mined.csv
+data/raw/swahili_zenodo_mined.csv
+
+# Generated HTML artefacts — never commit these
+*.html
+presentation.html
+
+# Claude Code internal files — not source code
+.claude/
 
 # Temporary session files
 scripts/data_collection/SESSION_SUMMARY.md
 scripts/data_collection/collect_real_data.sh
+
+# Throwaway MD notes (session-specific, not docs)
+team_messages_*.md
+data/analysis/swahili_corpus_analysis.md
+scripts/data_collection/download_anv_kenya_auth.md
+
+# Eval HTML reports — generated, not source
+eval/results/reporting/
+
+# Generated files (can be recreated)
+requirements.txt
 
 CLAUDE.md
 .pre-commit-config.yaml
@@ -48,3 +74,5 @@ data/MCAAI-MSU-KI-DATA
 .DS_Store
 */*/.DS_Store
 
+models/bias_detector/*
+.DS_Store

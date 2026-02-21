@@ -173,6 +173,12 @@ class BiasDetectionResult:
     explicitness: Optional[Explicitness] = None
     confidence: Optional[float] = None
 
+    # Informational warnings from severity=warn rules.
+    # These do NOT indicate confirmed bias — they flag terms that may warrant
+    # human review (e.g. occupation titles used in factual reporting).
+    # has_bias_detected is never set True based on warn_edits alone.
+    warn_edits: List[Dict[str, str]] = field(default_factory=list)
+
 
 @dataclass
 class EvaluationMetrics:
