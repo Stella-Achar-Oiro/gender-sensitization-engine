@@ -1,12 +1,16 @@
-"""Audit log I/O — load rewrites, save review decisions."""
+"""Audit log I/O — load rewrites, save review decisions, load stats."""
 
+import csv
 import json
 import uuid
 from pathlib import Path
 from datetime import datetime
 
-REWRITES = Path("../audit_logs/rewrites.jsonl")
-REVIEWS = Path("../audit_logs/reviews.jsonl")
+BASE = Path(__file__).resolve().parent.parent
+REWRITES = BASE / "audit_logs" / "rewrites.jsonl"
+RULES_DIR = BASE / "rules"
+RESULTS_DIR = BASE / "eval" / "results"
+REVIEWS = BASE / "audit_logs" / "reviews.jsonl"
 REVIEWS.parent.mkdir(parents=True, exist_ok=True)
 
 
@@ -47,3 +51,28 @@ def save_review(
         review["flagged_reason"] = flagged_reason
     with open(REVIEWS, "a", encoding="utf-8") as f:
         f.write(json.dumps(review, ensure_ascii=False) + "\n")
+
+
+def load_stats() -> dict:
+    """Return latest F1 metrics per language + lexicon sizes."""
+    # Latest F1 report
+    reports = sorted(RESULTS_DIR.glob("f1_report_*.csv"))
+    metrics: dict[str, dict] = {}
+    if reports:
+        for row in csv.DictReader(reports[-1].open(encoding="utf-8")):
+            if row["Category"] == "OVERALL":
+                lang = row["Language"].lower()
+                metrics[lang] = {
+                    "precision": float(row["Precision"]),
+                    "recall": float(row["Recall"]),
+                    "f1": float(row["F1_Score"]),
+                }
+
+    # Lexicon sizes
+    lexicon_sizes: dict[str, int] = {}
+    for f in RULES_DIR.glob("lexicon_*_v3.csv"):
+        lang = f.stem.split("_")[1]
+        with f.open(encoding="utf-8") as fh:
+            lexicon_sizes[lang] = sum(1 for _ in csv.reader(fh)) - 1  # exclude header
+
+    return {"metrics": metrics, "lexicon_sizes": lexicon_sizes}

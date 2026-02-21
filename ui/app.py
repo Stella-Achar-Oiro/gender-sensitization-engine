@@ -9,12 +9,14 @@ from .components import (
     render_ml_candidates,
     render_review_form,
     render_skipped,
+    render_stats_panel,
     render_text_comparison,
 )
 from .data import load_rewrites
 
 st.set_page_config(page_title="JuaKazi", layout="wide")
 st.title("JuaKazi")
+render_stats_panel()
 
 all_items = load_rewrites()
 pending = [i for i in all_items if i.get("response", {}).get("needs_review", True)]

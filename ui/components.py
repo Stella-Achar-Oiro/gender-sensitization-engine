@@ -2,7 +2,7 @@
 
 import streamlit as st
 
-from .data import save_review
+from .data import load_stats, save_review
 
 SOURCE_BADGE = {
     "rules": "🟢 rules",
@@ -137,3 +137,33 @@ def render_review_form(item: dict) -> bool:
         )
         st.success(f"Recorded **{decision}** for `{audit_id[:8]}`")
         return True
+
+
+LANG_LABELS = {"en": "English", "sw": "Swahili", "fr": "French", "ki": "Gikuyu"}
+TIER_THRESHOLDS = {"f1": 0.85, "precision": 1.0}
+
+
+def render_stats_panel() -> None:
+    """Render the model statistics panel (F1, precision, recall, lexicon sizes)."""
+    stats = load_stats()
+    metrics = stats["metrics"]
+    lexicon_sizes = stats["lexicon_sizes"]
+
+    with st.expander("Model Statistics", expanded=True):
+        st.caption("Detection performance (latest eval run) · Precision 1.000 = zero false positives")
+
+        cols = st.columns(len(LANG_LABELS))
+        for col, (code, label) in zip(cols, LANG_LABELS.items()):
+            m = metrics.get(code, {})
+            lex = lexicon_sizes.get(code, 0)
+            with col:
+                st.markdown(f"**{label}**")
+                if m:
+                    f1 = m["f1"]
+                    tier = "Gold" if f1 >= 0.85 else "Silver" if f1 >= 0.80 else "Bronze" if f1 >= 0.75 else "—"
+                    st.metric("F1", f"{f1:.3f}", help=f"AI BRIDGE tier: {tier}")
+                    st.metric("Precision", f"{m['precision']:.3f}")
+                    st.metric("Recall", f"{m['recall']:.3f}")
+                else:
+                    st.caption("No eval results yet")
+                st.caption(f"Lexicon: {lex:,} rules")

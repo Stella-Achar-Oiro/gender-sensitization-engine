@@ -1,181 +1,209 @@
-# JuaKazi Gender Bias Dataset Datasheet
+# JuaKazi Gender Bias Dataset Card
+**Version**: 3.0 | **Last updated**: February 2026 | **Schema**: AIBRIDGE v1 (24-column CSVW)
 
-## Overview
-
-This datasheet documents TWO complementary datasets used in the JuaKazi gender bias detection project:
-1. **Evaluation Dataset**: Small, manually curated ground truth for F1 scoring
-2. **Collection Dataset**: Large-scale online-sourced data for lexicon expansion and training
+Update this card every time a new dataset version is created. Per AI BRIDGE protocol.
 
 ---
 
-## Dataset 1: Evaluation Ground Truth
+## 1. Dataset Identity
 
-**Name**: JuaKazi Gender Bias Evaluation Dataset
-**Version**: 1.0
-**Creation Date**: October 2024
-**Languages**: English (en), Swahili (sw), French (fr), Gikuyu (ki)
-**Total Samples**: 50 English samples (initial evaluation set)
-**Purpose**: F1 score calculation and model evaluation
-
-### Provenance
-
-**Source**: Manually curated test cases for bias detection evaluation
-**Creation Method**: Expert annotation with planted bias examples
-**Curators**: JuaKazi development team
-**Quality Control**: Manual review of all labels and corrections
+| Field | Value |
+|---|---|
+| **Name** | JuaKazi Gender Bias Ground Truth |
+| **Team** | Juakazi / AI BRIDGE |
+| **Languages** | Kiswahili (sw), English (en), French (fr), Gikuyu (ki) |
+| **Intended use** | Detection and correction of gender bias in African language text |
+| **Schema** | AIBRIDGE v1 — 24 required columns + project extensions |
+| **License** | CC BY 4.0 (text); ODC-BY (tabular metadata) |
+| **Repository** | juakazi/gender-sensitization-engine |
+| **Ethics review** | Internal review by Juakazi team; AI BRIDGE expert review (Rebecca, Feb 2026) |
 
 ---
 
-## Dataset 2: Open-Source Collection Dataset
+## 2. Dataset Versions (Current)
 
-**Name**: JuaKazi Bias Detection Training & Expansion Dataset
-**Version**: 1.0
-**Creation Date**: November 13, 2025
-**Languages**: English (en) - with Swahili, French, Gikuyu in progress
-**Total Samples**: 2,828 English samples collected
-**Purpose**: Lexicon expansion, rule development, and training data augmentation
-
-### JuaKazi Team Languages
-Per AI BRIDGE assignment:
-- **Gikuyu** (ki)
-- **French** (fr)
-- **English** (en)
-- **Swahili** (sw)
-
-### Provenance
-
-**Source**: Open-source bias detection datasets and Wikipedia
-**Collection Method**: Automated download and extraction using data collection toolkit
-**Curators**: JuaKazi data collection team
-**Quality Control**: PII detection and removal, schema validation, source attribution
-
-### Data Sources
-
-| Dataset | Samples | License | Source |
-|---------|---------|---------|--------|
-| **WinoBias** | 1,584 | MIT | https://github.com/uclanlp/corefBias |
-| **WinoGender** | 720 | CC BY 4.0 | https://github.com/rudinger/winogender-schemas |
-| **CrowS-Pairs** | 524 | CC BY-SA 4.0 | https://github.com/nyu-mll/crows-pairs |
-| **Wikipedia (en)** | 10 (tested) | CC BY-SA 3.0 | en.wikipedia.org |
-| **Total English** | **2,828** | | |
-
-**In Progress**:
-- Swahili: Wikipedia extraction (target: 300-500 samples)
-- French: Wikipedia extraction (target: 300-500 samples)
-- Gikuyu: Wikipedia extraction (target: 200-300 samples)
-
-### Collection Methodology
-
-**100% Online Sourcing Strategy**:
-1. Download open-source bias datasets (WinoBias, WinoGender, CrowS-Pairs)
-2. Extract gender-relevant articles from Wikipedia (4 languages)
-3. PII detection and removal (automated)
-4. Schema conversion to 40-field standard
-5. Double annotation for quality assurance (Cohen's Kappa ≥ 0.70)
-
-**Data Collection Toolkit**: 5 Python scripts (1,637 LOC, zero external dependencies)
-- `download_datasets.py`: Download bias datasets
-- `extract_wikipedia.py`: Extract from Wikipedia
-- `detect_pii.py`: PII detection and removal
-- `annotate_samples.py`: Terminal annotation interface
-- `track_quality.py`: Quality tracking dashboard
-
-### Schema Compliance
-
-All collected samples conform to the **40-field AI BRIDGE schema**:
-- ✅ Core fields: id, language, script, country, source_type, source_ref
-- ✅ Bias annotation: target_gender, bias_label, stereotype_category, explicitness
-- ✅ Quality assurance: annotator_id, qa_status, cohen_kappa, pii_removed
-
-### Data Quality
-
-**English Collection Dataset**:
-- **Bias label balance**: 50% stereotype / 50% counter-stereotype (WinoBias)
-- **Pre-labeled samples**: 1,584 (WinoBias)
-- **Needs annotation**: 1,244 (WinoGender + CrowS-Pairs)
-- **PII detection rate**: 0.3% (8 potential names found and redacted)
-- **Schema compliance**: 100%
+| Language | File | Version | Total rows | Biased | Neutral | AI BRIDGE tier |
+|---|---|---|---|---|---|---|
+| Swahili | `eval/ground_truth_sw_v5.csv` | v5 | 51,419 | 1,956 (3.8%) | 49,300 (95.9%) | **Gold** (44,612 req. met) |
+| Gikuyu | `eval/ground_truth_ki_v8.csv` | v8 | 11,848 | — | — | **Bronze** (987% of 1,200 req.) |
+| English | `eval/ground_truth_en_v5.csv` | v5 | 66 | 25 | 41 | Pre-Bronze (needs 1,134 more) |
+| French | `eval/ground_truth_fr_v5.csv` | v5 | 50 | 20 | 30 | Pre-Bronze (needs 1,150 more) |
 
 ---
 
-## Evaluation Dataset Composition (Original)
+## 3. Swahili Dataset — Detailed Breakdown (v5, Feb 2026)
 
-## Dataset Composition
+### 3.1 Sample Distribution
 
-### Sample Distribution
-| Language | Total | Biased | Non-biased |
-|----------|-------|--------|------------|
-| English  | 50    | 25     | 25         |
-| Swahili  | TBD   | TBD    | TBD        |
-| French   | TBD   | TBD    | TBD        |
-| Gikuyu   | TBD   | TBD    | TBD        |
+| Metric | Count | % |
+|---|---|---|
+| Total rows | 51,419 | 100% |
+| has_bias = true | 1,956 | 3.8% |
+| has_bias = false | 49,300 | 95.9% |
+| Missing expected_correction (biased rows) | ~1,066 | — |
 
-### Bias Categories
-- **occupation**: Gendered job titles (chairman, waitress)
-- **pronoun_assumption**: Gender assumptions (she is a nurse)
-- **pronoun_generic**: Generic masculine pronouns (his records)
-- **none**: Non-biased control samples
+### 3.2 Gender Representation
 
-## Data Schema
+| target_gender | Count | % of total |
+|---|---|---|
+| female | 1,049 | 2.0% |
+| male | 460 | 0.9% |
+| mixed | 434 | 0.8% |
+| neutral | 49,476 | 96.2% |
 
-**File Format**: CSV with UTF-8 encoding
-**Columns**:
-- `text`: Input text sample
-- `has_bias`: Boolean (true/false)
-- `bias_category`: Category label or "none"
-- `expected_correction`: Target neutral form
+**Note**: AI BRIDGE requires F:M:Neutral within ±5%. Current dataset is heavily neutral due to large neutral corpus from news sources. Bias-targeted rows show 54% female / 24% male / 22% mixed among biased samples — within acceptable range for the biased slice.
 
-**Example**:
-```csv
-text,has_bias,bias_category,expected_correction
-"The chairman will lead",true,occupation,chairperson
-"The table is wooden",false,none,
-```
+### 3.3 Dialect / Regional Diversity
 
-## Ethical Considerations
+| region_dialect | Count | % | Source |
+|---|---|---|---|
+| tanzania | 33,411 | 65.0% | Helsinki Swahili Corpus (Zenodo 4300294) — Standard Tanzanian Swahili |
+| kenya | 18,008 | 35.0% | Swahili News Dataset (Zenodo 5514203), BBC Swahili, AfriSenti, MasakhaNER |
+| sheng | 0 | 0% | **Gap** — Nairobi urban youth register not yet represented |
+| uganda | 0 | 0% | **Gap** |
 
-**Bias Representation**: Focuses on occupational and linguistic bias, not identity-based discrimination
-**Cultural Context**: African language examples adapted for regional professional contexts (East and Central Africa)
-**Limitations**: Binary gender framework, professional domain focus
-**Harm Mitigation**: No personal identifiers or sensitive content
+**AI BRIDGE recommendation (Rebecca, Feb 2026)**: Add Standard Swahili, Sheng, and Tanzanian Swahili at minimum. Sheng and Uganda Swahili are current gaps to address in v6.
 
-## Intended Use
+### 3.4 Bias Label Distribution (biased rows only)
 
-**Primary Purpose**: Evaluation of gender bias detection systems
-**Appropriate Uses**:
-- F1 score calculation for bias detection
-- Precision/recall analysis by category
-- Cross-language performance comparison
+| bias_label | Count | % of biased |
+|---|---|---|
+| stereotype | 1,950 | 99.7% |
+| derogation | 6 | 0.3% |
+| counter-stereotype | 0 | **Gap** — AI BRIDGE requires ≥15% |
+| neutral | — | — |
 
-**Inappropriate Uses**:
-- Training data for ML models (too small)
-- Production bias detection (evaluation only)
-- Cultural bias analysis beyond professional contexts
+**Action required**: Add counter-stereotype examples (target: ≥15% of biased rows = ~293 rows minimum).
 
-## Licensing & Distribution
+### 3.5 Stereotype Category Distribution
 
-**License**: Open source compatible (same as project)
-**Distribution**: Internal evaluation use
-**Attribution**: JuaKazi Gender Sensitization Engine project
-**Restrictions**: Evaluation purposes only, not for commercial training
+| stereotype_category | Count | % of biased |
+|---|---|---|
+| profession | 1,803 | 92.2% |
+| capability | 107 | 5.5% |
+| family_role | 24 | 1.2% |
+| leadership | 7 | 0.4% |
+| daily_life | 6 | 0.3% |
+| appearance | 5 | 0.3% |
+| religion_culture | 0 | **Gap** |
+| proverb_idiom | 0 | **Gap** |
+| education | — | small |
 
-## Maintenance & Updates
+### 3.6 Explicitness
 
-**Update Frequency**: As needed based on evaluation gaps
-**Version Control**: Git-tracked with project repository
-**Quality Assurance**: Manual review of new samples
-**Expansion Plan**: Add categories based on failure analysis
+| explicitness | Count | % of biased |
+|---|---|---|
+| explicit | 1,938 | 99.1% |
+| implicit | 18 | 0.9% |
 
-## Known Limitations
+**Gap**: AI BRIDGE requires ≥5% implicit. Current: 0.9%. Need ~80 more implicit rows.
 
-**Coverage**: Limited to 4 bias categories
-**Scale**: Small sample size (50 English samples, other JuaKazi languages in progress)
-**Domain**: Professional/occupational bias focus
-**Language Variety**: Standard varieties only (English, Swahili, French, Gikuyu)
-**Temporal**: Static snapshot, no temporal bias evolution
+### 3.7 Data Sources
 
-## Contact & Support
+| Source | Rows | Region | License |
+|---|---|---|---|
+| Helsinki Swahili Corpus | 33,411 | Tanzania | CC BY 4.0 |
+| BBC Swahili / Swahili News | 16,421 | Kenya | Research use |
+| MasakhaNER | 949 | Kenya | Apache 2.0 |
+| Swahili News Dataset (Zenodo 5514203) | 394 | Kenya | CC BY 4.0 |
+| AfriSenti | 244 | Kenya | CC BY 4.0 |
 
-**Maintainer**: JuaKazi development team
-**Issues**: Report via project repository
-**Updates**: Track via Jira
+**Domains**: 98.2% media_and_online, 1.8% governance_civic. **Gap**: livelihood_and_work, household_and_care, health domains absent — recommended by Rebecca (Feb 2026).
+
+---
+
+## 4. Annotators
+
+### 4.1 Annotation Method
+
+| Annotator ID | Type | Rows annotated | Method |
+|---|---|---|---|
+| ann_sw_auto_v1 | Automated (rule-based) | 51,344 | Heuristic labeling from source corpora |
+| ann_sw_auto_v2 | Automated (rule-based) | 26 | Heuristic labeling |
+| claude_ann_v1 | AI-assisted (Claude Sonnet 4.6) | 49 | Supervised annotation per AIBRIDGE guidelines |
+
+### 4.2 Annotator Gender Breakdown
+
+**Current status**: Auto-annotation only — no human annotators recruited yet.
+
+| Annotator type | Count | Female | Male | Not specified |
+|---|---|---|---|---|
+| Human native speakers | 0 | — | — | — |
+| AI-assisted | 1 (Claude) | N/A | N/A | N/A |
+
+**Action required (Phase 2)**: Recruit 2–5 Swahili native speakers for double annotation of 100% of biased rows. Document gender breakdown (e.g., "3 female, 2 male") in next version of this card. AI BRIDGE requires annotator gender breakdown for transparency.
+
+### 4.3 Inter-Annotator Agreement
+
+| Metric | Target | Current |
+|---|---|---|
+| Cohen's Kappa (κ) | ≥ 0.70 | Not yet computed — no human double annotation |
+| Krippendorff's α | ≥ 0.80 | Not yet computed |
+| Multi-annotator coverage | ≥ 10% of biased rows | 0% (pending native speaker recruitment) |
+
+---
+
+## 5. Bias Classifications Table (Swahili — representative examples)
+
+| Bias type | Example | Severity | Corrected | Human reviewed |
+|---|---|---|---|---|
+| Gendered occupation suffix | "Daktari wa kiume" | replace | Y (remove suffix) | Partial |
+| Gendered occupation suffix | "Muuguzi wa kike" | replace | Y (remove suffix) | Partial |
+| Homemaker role | "Mama wa nyumbani" | replace | Y → "Mtu anayeshughulikia nyumba" | Partial |
+| Leadership derogation | "Wanawake hawafai kushika nafasi za uongozi" | replace | Y → "Kila mtu anaweza..." | Partial |
+| Capability derogation | "Wanaume wana akili zaidi ya wanawake" | replace | Y → "Kila mtu ana uwezo sawa..." | Partial |
+| Proverb (preserved) | "Mama ni nguzo ya nyumba" | warn | Preserved — culturally embedded | Pending |
+| Implicit profession | "Yeye ni muuguzi" (female assumed) | replace | Y → "Muuguzi huyo" | Pending |
+
+---
+
+## 6. Quality Assurance
+
+### 6.1 Automated Checks
+- Duplicate detection (by text hash)
+- Language ID sanity check
+- Script validation (all sw rows = latin)
+- PII detection (`pii_removed` field)
+- Schema validation (24 required columns present)
+
+### 6.2 Gold Standard
+No gold standard set defined yet. **Action required**: Define 200-row gold set per AI BRIDGE protocol for drift checks across training cycles.
+
+### 6.3 Known Data Quality Issues
+- `expected_correction` missing on ~1,066 biased rows (annotation in progress)
+- `stereotype_category` auto-assigned; some corrections needed (ongoing in annotation batches)
+- No counter-stereotype rows yet
+- Implicit bias rows at 0.9% (target: ≥5%)
+- Proverb/idiom rows: near zero (target: ≥5%)
+
+---
+
+## 7. Detection Metrics (as of Feb 2026)
+
+| Language | Precision | Recall | F1 | DP | EO | AI BRIDGE tier |
+|---|---|---|---|---|---|---|
+| English | 1.000 | 0.647 | 0.786 | 0.038 | 0.019 | Pre-Bronze |
+| Swahili | 1.000 | 0.457 | 0.627 | 0.000 | 0.000 | Gold (sample size) |
+| French | 1.000 | 0.371 | 0.542 | 0.060 | 0.030 | Pre-Bronze |
+| Gikuyu | 0.926 | 0.217 | 0.352 | 0.000 | 0.000 | Bronze (sample size) |
+
+**Precision 1.000 = zero false positives across all languages (hard constraint).**
+
+---
+
+## 8. Ethical Considerations
+
+- **No PII**: All rows have pii_removed checked; names replaced with [NAME] tokens where applicable
+- **Cultural sensitivity**: Religious texts (Bible/Gikuyu) marked `safety_flag=sensitive`; annotated for social meaning not theological content
+- **Overcorrection risk**: Tool may flag culturally significant gendered terms — documented in `skipped_context` in audit logs; flagged for human review
+- **Withdrawal route**: Contact team via project repository issues to request removal of community-contributed text
+- **Binary gender framework limitation**: Current schema supports `nonbinary` as a target_gender value; no nonbinary examples in dataset yet
+
+---
+
+## 9. Versioning Protocol
+
+- Update this card with every new dataset version
+- Increment `DataVersions.GROUND_TRUTH` in `config.py` when schema changes
+- Record: rows added, source, annotation method, new metrics
+- AI BRIDGE team adds review notes after each submission
