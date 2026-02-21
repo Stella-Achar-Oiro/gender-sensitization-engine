@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from eval.bias_detector import BiasDetector
 from eval.models import Language
-from api.main import apply_rules_on_spans
+from api.rules_engine import apply_rules_on_spans, build_reason
 
 
 def demo_header():
@@ -50,6 +50,7 @@ def demo_example(detector, text, language, example_num):
         print(f'   "{corrected_text}"')
         if skipped:
             print(f"   (skipped {len(skipped)} term(s) due to context: {[s['term'] for s in skipped]})")
+        print(f"\nReason: {build_reason('rules', applied_edits, skipped)}")
     else:
         print("\nNo corrections needed - text is bias-free!")
 

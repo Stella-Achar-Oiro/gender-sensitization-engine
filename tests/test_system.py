@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 def test_imports():
     """Test all core imports work (ML dependencies are optional)."""
     try:
-        from api.main import app, apply_rules_on_spans
+        from api.main import app
+        from api.rules_engine import apply_rules_on_spans, build_reason
         print("API import OK")
     except Exception as e:
         print(f"Import failed: {e}")
@@ -59,7 +60,7 @@ def test_lexicon():
 def test_correction():
     """Test bias correction pipeline returns correct structure."""
     try:
-        from api.main import apply_rules_on_spans
+        from api.rules_engine import apply_rules_on_spans
 
         test_cases = [
             ("The chairman met with the waitress.", "en"),
@@ -74,6 +75,41 @@ def test_correction():
         return True
     except Exception as e:
         print(f"Correction failed: {e}")
+        return False
+
+
+def test_reason():
+    """Test build_reason produces correct strings for each source type."""
+    try:
+        from api.rules_engine import apply_rules_on_spans, build_reason
+
+        cases = [
+            # (text, lang, expected_source, substring_in_reason)
+            ("The chairman will lead.", "en", "rules", "1 biased term(s) corrected"),
+            ("Hello world.", "en", "rules", "No gender bias detected"),
+        ]
+
+        for text, lang, source, expected_substr in cases:
+            _, edits, _, skipped = apply_rules_on_spans(text, lang)
+            reason = build_reason(source, edits, skipped)
+            ok = expected_substr in reason
+            status = "OK" if ok else "FAIL"
+            print(f"  [{status}] '{text[:40]}' → reason: {reason!r}")
+            if not ok:
+                return False
+
+        # Test preserved and ml sources directly
+        preserved_reason = build_reason("preserved", [], [])
+        assert "preserved" in preserved_reason.lower(), f"Unexpected: {preserved_reason!r}"
+        print(f"  [OK] preserved → {preserved_reason!r}")
+
+        ml_reason = build_reason("ml", [], [])
+        assert "ml" in ml_reason.lower() or "fallback" in ml_reason.lower(), f"Unexpected: {ml_reason!r}"
+        print(f"  [OK] ml → {ml_reason!r}")
+
+        return True
+    except Exception as e:
+        print(f"Reason test failed: {e}")
         return False
 
 
@@ -112,6 +148,7 @@ def main():
         ("Imports", test_imports),
         ("Lexicons", test_lexicon),
         ("Correction API", test_correction),
+        ("Reason Generation", test_reason),
         ("Bias Detector", test_detector),
     ]
 
