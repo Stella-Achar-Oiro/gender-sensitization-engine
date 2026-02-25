@@ -2,6 +2,8 @@
 # Deploys the self-contained tester to:
 # https://juakazike.gitlab.io/gender-sensitization-engine/
 
+image: alpine:latest
+
 stages:
   - deploy
 
