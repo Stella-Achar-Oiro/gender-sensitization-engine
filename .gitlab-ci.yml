@@ -1,0 +1,17 @@
+# GitLab Pages deployment — JuaKazi Bias Tester
+# Deploys the self-contained tester to:
+# https://juakazike.gitlab.io/gender-sensitization-engine/
+
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - echo "Deploying JuaKazi Bias Tester to GitLab Pages…"
+    - echo "Public URL will be https://juakazike.gitlab.io/gender-sensitization-engine/"
+  artifacts:
+    paths:
+      - public   # GitLab Pages serves everything in this folder
+  only:
+    - main       # Only deploy from the main branch
