@@ -73,7 +73,6 @@ eval/results/reporting/
 # Generated files (can be recreated)
 requirements.txt
 
-CLAUDE.md
 .pre-commit-config.yaml
 
 data/MCAAI-MSU-KI-DATA
