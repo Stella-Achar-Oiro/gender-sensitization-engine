@@ -54,6 +54,13 @@ presentation.html
 # Claude Code internal files — not source code
 .claude/
 
+# Git backup directories
+.git.backup/
+.git.bak.orig/
+
+# CLAUDE.md — project-level AI instructions, not committed
+CLAUDE.md
+
 # Temporary session files
 scripts/data_collection/SESSION_SUMMARY.md
 scripts/data_collection/collect_real_data.sh
