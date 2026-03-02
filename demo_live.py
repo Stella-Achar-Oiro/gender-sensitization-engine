@@ -69,7 +69,7 @@ def main():
     print("  - Swahili: 211 rules - Production")
     print("  - French: 78 rules - Beta")
     print("  - Gikuyu: 1,240 rules - Production")
-    print("\n  F1 Scores: EN 0.786 | SW 0.611 | FR 0.542 | KI 0.352")
+    print("\n  F1 Scores: EN 0.786 | SW 0.885 | FR 0.542 | KI 0.352")
     print()
 
     # English Examples
