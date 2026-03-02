@@ -35,7 +35,7 @@ LANGS = {
 
 METRICS = {
     "en": {"f1": 0.786, "precision": 1.000, "recall": 0.647, "tier": "Pre-Bronze",   "samples": 66},
-    "sw": {"f1": 0.802, "precision": 0.970, "recall": 0.684, "tier": "Gold (sample count)", "samples": 51_419},
+    "sw": {"f1": 0.885, "precision": 0.958, "recall": 0.823, "tier": "Gold (sample count)", "samples": 51_419},
     "fr": {"f1": 0.542, "precision": 1.000, "recall": 0.371, "tier": "Pre-Bronze",   "samples": 50},
     "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217, "tier": "Bronze (sample count)", "samples": 11_848},
 }

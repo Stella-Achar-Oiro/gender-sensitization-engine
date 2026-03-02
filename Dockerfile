@@ -14,7 +14,7 @@ COPY pyproject.toml setup.py ./
 COPY ml ./ml
 COPY eval ./eval
 COPY api ./api
-COPY review_ui ./review_ui
+COPY ui ./ui
 COPY scripts ./scripts
 COPY rules ./rules
 
