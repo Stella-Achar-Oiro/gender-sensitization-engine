@@ -8,14 +8,21 @@ Local dev:  streamlit run app.py
 """
 
 import sys
+import traceback
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 import streamlit as st
-from eval.bias_detector import BiasDetector
-from eval.models import Language
-from api.rules_engine import apply_rules_on_spans, build_reason
+
+# ── Import guard — surface errors in UI instead of silent crash ───────────────
+_import_error = None
+try:
+    from eval.bias_detector import BiasDetector
+    from eval.models import Language
+    from api.rules_engine import apply_rules_on_spans, build_reason
+except Exception as _e:
+    _import_error = traceback.format_exc()
 
 # ── Config ────────────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -24,6 +31,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+if _import_error:
+    st.error("**Startup error — engine failed to load:**")
+    st.code(_import_error)
+    st.stop()
 
 # ── Language map ──────────────────────────────────────────────────────────────
 LANGS = {
