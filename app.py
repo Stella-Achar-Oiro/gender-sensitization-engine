@@ -30,7 +30,7 @@ LANGS = {
     "English":  ("en", Language.ENGLISH),
     "Swahili":  ("sw", Language.SWAHILI),
     "French":   ("fr", Language.FRENCH),
-    "Gikuyu":   ("ki", Language.KIKUYU),
+    "Gikuyu":   ("ki", Language.GIKUYU),
 }
 
 METRICS = {
