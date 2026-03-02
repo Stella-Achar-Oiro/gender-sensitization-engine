@@ -157,12 +157,12 @@ with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as
                 label="Input text",
             )
             analyse_btn = gr.Button("Analyse", variant="primary")
-
             gr.Markdown("**Example sentences** (click to load):")
-            example_box = gr.Examples(
-                examples=[[ex, "English"] for ex in EXAMPLES["English"]],
-                inputs=[text_in, lang_dd],
+            example_dd = gr.Dropdown(
+                choices=EXAMPLES["English"],
+                value=None,
                 label="",
+                show_label=False,
             )
 
         with gr.Column(scale=2):
@@ -174,6 +174,17 @@ with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as
                 with gr.Column():
                     gr.Markdown("#### Correction")
                     correct_out = gr.Markdown()
+
+    lang_dd.change(
+        fn=lambda lang: gr.Dropdown(choices=EXAMPLES.get(lang, []), value=None),
+        inputs=lang_dd,
+        outputs=example_dd,
+    )
+    example_dd.change(
+        fn=lambda ex: ex or "",
+        inputs=example_dd,
+        outputs=text_in,
+    )
 
     analyse_btn.click(
         fn=analyse,
