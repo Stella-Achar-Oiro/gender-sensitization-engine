@@ -21,6 +21,7 @@ jobs:
           # Copy the static app to a temp dir
           mkdir -p /tmp/gh-pages-deploy
           cp public/index.html /tmp/gh-pages-deploy/index.html
+          touch /tmp/gh-pages-deploy/.nojekyll
 
           # Push to gh-pages branch (orphan — only index.html)
           cd /tmp/gh-pages-deploy
