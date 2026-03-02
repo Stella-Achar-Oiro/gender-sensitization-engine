@@ -74,6 +74,9 @@ scripts/annotation_prompt.md
 # Generated annotation artifacts
 data/analysis/kappa_overlap_ids.txt
 
+# Ground truth data — tracked in GitLab only (too large for GitHub/Streamlit Cloud)
+eval/ground_truth_*.csv
+
 # Eval HTML reports — generated, not source
 eval/results/reporting/
 
