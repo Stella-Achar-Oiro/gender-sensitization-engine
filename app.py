@@ -68,9 +68,11 @@ EXAMPLES = {
 }
 
 # ── Cached detector ───────────────────────────────────────────────────────────
+RULES_DIR = Path(__file__).resolve().parent / "rules"
+
 @st.cache_resource
 def get_detector():
-    return BiasDetector()
+    return BiasDetector(rules_dir=RULES_DIR)
 
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
