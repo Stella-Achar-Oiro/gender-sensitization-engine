@@ -27,7 +27,7 @@ jobs:
           cd /tmp/gh-pages-deploy
           git init
           git checkout -b gh-pages
-          git add index.html
+          git add index.html .nojekyll
           git commit -m "Deploy live tester [skip ci]"
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Stella-Achar-Oiro/gender-sensitization-engine.git
           git push origin gh-pages --force

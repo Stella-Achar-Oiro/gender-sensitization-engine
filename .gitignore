@@ -77,8 +77,8 @@ data/analysis/kappa_overlap_ids.txt
 # Eval HTML reports — generated, not source
 eval/results/reporting/
 
-# Generated files (can be recreated)
-requirements.txt
+# Exception: requirements.txt needed for Streamlit Cloud deploy
+!requirements.txt
 
 .pre-commit-config.yaml
 
