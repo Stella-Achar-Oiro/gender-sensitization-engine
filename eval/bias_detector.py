@@ -107,7 +107,9 @@ class BiasDetector:
         self,
         rules_dir: Path = Path("rules"),
         enable_ngeli_tracking: bool = True,
-        enable_context_checking: bool = True
+        enable_context_checking: bool = True,
+        enable_ml_fallback: bool = True,
+        ml_threshold: float = 0.75,
     ):
         """
         Initialize the bias detector.
@@ -116,6 +118,8 @@ class BiasDetector:
             rules_dir: Directory containing bias detection rules
             enable_ngeli_tracking: Enable Swahili noun class tracking (default: True)
             enable_context_checking: Enable context-aware correction (default: True)
+            enable_ml_fallback: Run ML classifier when rules find nothing (default: True)
+            ml_threshold: Minimum ML confidence to surface a warn edit (default: 0.75)
         """
         self.rules_loader = RulesLoader(rules_dir)
         self._rules_cache: Dict[Language, List[Dict[str, str]]] = {}
@@ -128,6 +132,10 @@ class BiasDetector:
         # Context-aware correction to preserve meaning
         self.enable_context_checking = enable_context_checking
         self.context_checker = ContextChecker() if enable_context_checking else None
+
+        # ML fallback — Stage 2 classifier for cases rules miss
+        self.enable_ml_fallback = enable_ml_fallback
+        self._ml_threshold = ml_threshold
 
         # Compile counter-stereotype and derogation patterns
         self._compile_special_patterns()
@@ -341,6 +349,27 @@ class BiasDetector:
             # Attach context-skipped edits for transparency
             if skipped_edits:
                 result._skipped_edits = skipped_edits
+
+            # Stage 2 — ML classifier fallback
+            # Only runs when rules found nothing (has_bias=False, no warn_edits).
+            # Produces warn-severity edits only — never replace. Precision preserved.
+            if not has_bias and not warn_edits and self.enable_ml_fallback:
+                try:
+                    from .ml_classifier import classify as ml_classify
+                    ml_score = ml_classify(text, language)
+                    if ml_score >= self._ml_threshold:
+                        ml_edit = {
+                            "from": "",
+                            "to": "",
+                            "severity": "warn",
+                            "reason": f"ML: possible gender bias detected (confidence {ml_score:.0%}) — review recommended",
+                            "source": "ml",
+                            "confidence": ml_score,
+                        }
+                        result.warn_edits = [ml_edit]
+                        result.confidence = ml_score
+                except Exception:
+                    pass  # ML unavailable — rules result stands
 
             return result
 
