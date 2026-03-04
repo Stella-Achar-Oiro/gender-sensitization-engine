@@ -35,15 +35,12 @@ def _ensure_loaded() -> None:
         return
     try:
         from transformers import pipeline as hf_pipeline
-        # local_files_only=True — never block on download during inference.
-        # Pre-download with: python3 -c "from transformers import pipeline; pipeline('text-classification', model='Davlan/afro-xlmr-base')"
         _pipe = hf_pipeline(
             "text-classification",
             model=_MODEL_ID,
             device=-1,          # CPU always — GPU optional via env
             truncation=True,
             max_length=128,
-            local_files_only=True,
         )
     except Exception as exc:
         _load_error = str(exc)

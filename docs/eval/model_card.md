@@ -12,7 +12,7 @@
 | Version | 2.0 (Feb 2026) |
 | Languages | English (en), Swahili (sw), French (fr), Gikuyu/Kikuyu (ki) |
 | Task | Gender bias detection + neutral rewriting |
-| Architecture | Rules engine (primary) + mT5-small (ML fallback) |
+| Architecture | Rules engine (primary) + afro-xlmr-base fine-tuned (ML fallback, Stage 2) |
 | License | MIT |
 | Contact | JuaKazi team / AI BRIDGE submission |
 
@@ -183,7 +183,7 @@ Each edit in the response includes a human-readable `reason` field: e.g., `"flag
 3. **No κ measurement** — All Swahili labels are auto-generated. Cohen's Kappa cannot be reported. Required for AI BRIDGE tier certification.
 4. **Correction quality unvalidated** — No human review sessions completed. Bias removal accuracy for Swahili is unknown.
 5. **Sheng/dialect gap** — System has no training signal from Sheng or Tanzanian coastal Swahili.
-6. **mT5-small fallback** — ML fallback uses a small multilingual model. Output quality not benchmarked against GPT-4 or comparable models.
+6. **ML Stage 2 fallback** — `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned on 51K SW rows). Val metrics: P=0.938, R=0.784, F1=0.854. Produces warn-only edits — never modifies text directly.
 
 ---
 
