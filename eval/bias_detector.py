@@ -232,7 +232,20 @@ class BiasDetector:
                                'mchezaji', 'mbunifu', 'mwanasiasa', 'mbunge', 'gavana',
                                'seneta', 'karani', 'nahodha', 'ofisa', 'afisa',
                                'mkaguzi', 'msimamizi', 'mwenyekiti', 'mkurugenzi',
-                               'mwanasheria', 'mwanauchumi', 'mwanahabari', 'mhusika')
+                               'mwanasheria', 'mwanauchumi', 'mwanahabari', 'mhusika',
+                               # Additional occupations confirmed by AO-001 annotation
+                               'kiongozi', 'viongozi', 'denti', 'madent',
+                               'mgombea', 'wagombea', 'muwakilishi', 'wawakilishi',
+                               'mwakilishi', 'mwanamichezo', 'wanamichezo',
+                               'rapa', 'mwanaharakati', 'wanaharakati',
+                               'wasomi', 'mwanajeshi', 'wanajeshi',
+                               'mwanachama', 'wanachama', 'maskauti',
+                               'mwamuzi', 'wamuzi', 'mwangalizi',
+                               'muigizaji', 'waigizaji', 'mwanasanaa',
+                               'mfanyakazi', 'wafanyakazi', 'mtaalamu', 'wataalamu',
+                               'naibu', 'manaibu', 'kamanda', 'makomanda',
+                               'jenerali', 'majenerali', 'kanali', 'brigadie',
+                               'spika', 'waziri mkuu', 'makamu')
         progress_ctx = re.compile(
             r'\b(wa\s+kwanza|haki\s+za|usawa\s+wa\s+kijinsia|uwezeshaji|kuhamasisha)\b',
             re.IGNORECASE
@@ -251,6 +264,25 @@ class BiasDetector:
 
             # Suppress: pure digit strings (e.g. "100 wa kike")
             if preceding_noun.isdigit():
+                continue
+
+            # Suppress: possessive/demonstrative pronouns that are never occupations
+            NON_OCC_WORDS = {
+                'wake', 'wake', 'yake', 'zake', 'lake', 'chake', 'pake',
+                'wao', 'yao', 'zao', 'lao', 'chao', 'pao',
+                'wetu', 'yetu', 'zetu', 'letu', 'chetu',
+                'wenu', 'yenu', 'zenu', 'lenu',
+                'huyo', 'hao', 'hawa', 'hizi', 'hilo', 'hayo',
+                'mmoja', 'wawili', 'watatu', 'wengi', 'wote', 'wengine',
+                'pekee', 'bora', 'mwingine', 'wengine',
+                'hasa', 'zaidi', 'sana', 'tu', 'pia',
+                'mzee', 'mdogo', 'mkubwa', 'mpya', 'mwisho',
+                'mwana', 'mtoto', 'watoto', 'vijana', 'kijana',
+                'mtu', 'watu', 'binadamu', 'rafiki', 'ndugu',
+                'mwananchi', 'wananchi', 'raia',
+                'shahidi', 'mshtakiwa',
+            }
+            if preceding_noun in NON_OCC_WORDS:
                 continue
 
             # Only fire when preceding word looks like an occupation noun

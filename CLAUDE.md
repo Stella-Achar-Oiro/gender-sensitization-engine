@@ -24,14 +24,16 @@ We are the only tool in East Africa that does **detection + correction + plain-l
 
 | Person | Role | Owns |
 |---|---|---|
-| **Shaka** | Project Lead / Gender Expert | AIBRIDGE submission, Rebecca relationship, annotator recruitment, Dataset Card, sprint decisions |
+| **Project Lead** | Project Lead / Gender Expert | AIBRIDGE submission, AIBRIDGE contact relationship, annotator recruitment, Dataset Card, sprint decisions |
 | **Engineer teammate** | Backend / Eval | run_evaluation.py, API, lexicon changes, eval pipeline, tests |
 | **Data teammate** | Data / Annotation | ground truth expansion, annotation batches, sw-collect, sw-annotate, sw-lexicon |
-| **Frontend teammate** | Product / Web | Next.js app, Vercel deploy, UI components (to be recruited or Shaka does) |
+| **Frontend teammate** | Product / Web | Next.js app, Vercel deploy, UI components (to be recruited or Project Lead does) |
 | **Claude (AI)** | Staff Engineer | Executes all technical tasks via skills and agents — see Section 5 |
 
 **Annotators (human, external):**
-- ann_sw_v2 — current Swahili annotator (batches 001–023 complete)
+- ann_sw_v2 — Swahili annotator (batches 001–023, ~1,069 rows reviewed)
+- ann_sw_v3 — AI annotation pass (13,304 rows annotated, Mar 2026)
+- Human reviewer — batch_024 (274-row review, Mar 2026)
 - 2nd Swahili annotator — **NOT YET RECRUITED** (blocker for Cohen's Kappa)
 - Target: recruit via Masakhane community
 
@@ -44,15 +46,15 @@ Run `python3 run_evaluation.py` to verify.
 | Language | F1 | Precision | Recall | Samples | Honest tier |
 |---|---|---|---|---|---|
 | English | 0.786 | 1.000 | 0.647 | 66 | Pre-Bronze |
-| **Swahili** | **0.885** | **0.958** | **0.823** | **64,723** | Sample count: Gold. IAA: unmeasured. |
+| **Swahili** | **0.771** | **0.734** | **0.811** | **64,723** | Sample count: Gold. IAA: unmeasured. |
 | French | 0.542 | 1.000 | 0.371 | 50 | Pre-Bronze |
 | Kikuyu | 0.352 | 0.926 | 0.217 | 11,848 | Sample count: Bronze. F1: Pre-Bronze |
 
 **Qualifications (do not hide these):**
 - Swahili/Kikuyu Gold/Bronze = sample count only. Cohen's Kappa unmeasurable — 2nd annotator not yet recruited.
-- Precision on SW slightly below 1.000 (0.958) — small number of neutral sentences still flagged.
+- SW F1 updated after ann_sw_v3 pass (13,304 rows annotated). Precision drop 0.958→0.734 is honest signal: `Watoto wa Kike`/`mtoto wa kike`/`mtoto wa kiume` are genuinely ambiguous phrases (advocacy vs prescriptive). Root cause: lexicon over-fires on girls'-rights-advocacy contexts.
 - Low recall = primary F1 driver across all languages. Root cause: lexicon coverage gaps.
-- SW annotation pass complete: batches 001–023 (~1,069 rows reviewed by ann_sw_v2).
+- SW annotation passes complete: ann_sw_v2 (batches 001–023, ~1,069 rows), ann_sw_v3 (13,304 rows, AI pass), human review batch_024 (274 rows).
 
 **ML Classifier (Stage 2):**
 - Model: `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned, 3 epochs, T4 x2)
@@ -157,7 +159,7 @@ Each skill has a full briefing file in `.claude/skills/`.
 
 | Skill | What it does | When to use |
 |---|---|---|
-| `/recruit-annotator` | Generates Masakhane Slack post, annotator onboarding package, export command, and κ verification steps | When Shaka is ready to recruit the 2nd Swahili annotator (AIBRIDGE Bronze blocker) |
+| `/recruit-annotator` | Generates Masakhane Slack post, annotator onboarding package, export command, and κ verification steps | When Project Lead is ready to recruit the 2nd Swahili annotator (AIBRIDGE Bronze blocker) |
 | `/sw-annotate` | Native Swahili annotator — fills target_gender, explicitness, stereotype_category, expected_correction, qa_status | After any new rows are added to ground truth with qa_status=needs_review |
 | `/sw-lexicon` | Expands `lexicon_sw_v3.csv` from corpus evidence. Zero false positives hard constraint. | When adding new occupation/gender terms to Swahili lexicon |
 | `/sw-collect` | Downloads + formats real Swahili text from open datasets (Wikipedia, MasakhaNews, C4, AfriSenti) into AIBRIDGE rows | When we need more ground truth data |
@@ -169,7 +171,7 @@ Each skill has a full briefing file in `.claude/skills/`.
 | `/senior-ai-engineer-review` | Production readiness: API, latency, error handling, security, test coverage | Before any public demo or handoff |
 
 **How agents handle human-only tasks:**
-When a skill identifies a task that requires a human (e.g. recruiting annotators, reaching out to Rebecca, domain name registration), it outputs a clearly labelled `[HUMAN TASK]` block and stops. Claude does not attempt to do it.
+When a skill identifies a task that requires a human (e.g. recruiting annotators, reaching out to AIBRIDGE contact, domain name registration), it outputs a clearly labelled `[HUMAN TASK]` block and stops. Claude does not attempt to do it.
 
 ---
 
@@ -229,7 +231,7 @@ When a skill identifies a task that requires a human (e.g. recruiting annotators
 | Proverbs in lexicon (5 minimum) | ❌ 0 | Coverage gap |
 | Sheng terms in lexicon (10 minimum) | ❌ 0 | Coverage gap |
 
-### AI BRIDGE action items from Rebecca (Feb 13, 2026)
+### AI BRIDGE action items from AIBRIDGE contact (Feb 13, 2026)
 
 | # | Item | Status |
 |---|---|---|
@@ -258,25 +260,29 @@ reason field, review UI, region_dialect, Dataset Card v3, Model Card v2.
 
 ### 🔴 Sprint 2 — Human Annotation + Real Metrics (IN PROGRESS — INCOMPLETE)
 
-**Owner: Shaka + Data teammate + Annotators**
+**Owner: Project Lead + Data teammate + Annotators**
 
 | Task | Owner | Status | Effort |
 |---|---|---|---|
-| Recruit 2nd Swahili native speaker (Masakhane) | Shaka | ❌ Not started | [HUMAN TASK] |
+| Recruit 2nd Swahili native speaker (Masakhane) | Project Lead | ❌ Not started | [HUMAN TASK] |
 | Sample 500 rows with overlapping assignment | Data | ❌ Blocked on annotator | 2h once annotator ready |
 | Annotation session (500 rows, 2 annotators) | Annotators | ❌ Blocked | 1 week |
 | Compute Cohen's Kappa | Engineer | ❌ Blocked | 2h |
 | Run correction_evaluator.py | Engineer | ❌ Not run yet | 2h |
 | Add 5 Swahili proverbs to lexicon | Data / `/sw-lexicon` | ❌ Not started | 3h |
 | Add 10 Sheng terms to lexicon | Data / `/sw-lexicon` | ❌ Not started | 3h |
-| Update Model Card after correction eval | Shaka | ❌ Blocked | 30m |
+| Update Model Card after correction eval | Project Lead | ❌ Blocked | 30m |
+| ~~Fill expected_correction on missing rows~~ | Data | ✅ Done (ann_sw_v3 + human review) | — |
+| ~~ann_sw_v3 AI annotation pass (13,304 rows)~~ | Claude | ✅ Done Mar 2026 | — |
+| ~~Human review batch_024 (274 rows)~~ | Human reviewer | ✅ Done Mar 2026 | — |
+| ~~Detector recall fix (occupation prefix expansion)~~ | Engineer | ✅ Done Mar 2026 | — |
 
 **Sprint 2 cannot close until κ is measured.**
 
 ### 🟡 Sprint 3 — Dataset Balance + AIBRIDGE Submission (NOT STARTED)
 
 **Start only after Sprint 2 closes.**
-**Owner: Data teammate + Engineer + Shaka**
+**Owner: Data teammate + Engineer + Project Lead**
 
 | Task | Owner | Agent | Effort |
 |---|---|---|---|
@@ -289,15 +295,15 @@ reason field, review UI, region_dialect, Dataset Card v3, Model Card v2.
 | Add male stereotype entries (~13 more) | Data | `/sw-lexicon` | 3h |
 | Create 200 gold rows (qa_status=gold) | Data / Annotators | `/sw-annotate` | 1 week |
 | Tag Sheng/Uganda rows | Data | `/sw-collect` | 1 week |
-| Document annotator gender breakdown | Shaka | [HUMAN TASK] | 30m |
+| Document annotator gender breakdown | Project Lead | [HUMAN TASK] | 30m |
 | CSVW JSON-LD metadata | Engineer | — | 4h |
 | PROV lineage | Engineer | — | 4h |
 | DVC tracking setup | Engineer | — | 4h |
-| Update Dataset Card (metrics, domains, annotator breakdown) | Shaka | — | 3h |
+| Update Dataset Card (metrics, domains, annotator breakdown) | Project Lead | — | 3h |
 | Final eval run + confirm all metrics | Engineer | — | 2h |
 | Run `/data-expert-review` before submission | Claude | `/data-expert-review` | 1h |
 | Run `/gender-expert-review` before submission | Claude | `/gender-expert-review` | 1h |
-| Submit to Rebecca / AIBRIDGE | Shaka | [HUMAN TASK] | — |
+| Submit to AIBRIDGE contact / AIBRIDGE | Project Lead | [HUMAN TASK] | — |
 
 ### 🟡 Sprint 4 — Web App (CAN RUN IN PARALLEL WITH SPRINT 3)
 
@@ -422,10 +428,10 @@ Legacy lexicon files — archive or delete:
 
 ## 12. What Each Teammate Picks Up Next
 
-### Shaka (Project Lead)
+### Project Lead (Project Lead)
 **This week:**
 1. Post in Masakhane Slack: recruit 2 Swahili native speakers for 500-row annotation (paid if possible). Share `scripts/export_for_annotation.py` output with them. [HUMAN TASK]
-2. Confirm Rebecca's next review date and what she needs to see. [HUMAN TASK]
+2. Confirm AIBRIDGE contact's next review date and what she needs to see. [HUMAN TASK]
 
 **This week (Claude will do):**
 - Run `/sw-lexicon` to add 5 proverbs + 10 Sheng terms
@@ -434,7 +440,7 @@ Legacy lexicon files — archive or delete:
 
 ### Engineer teammate
 **Pick up:**
-1. Run `python3 run_evaluation.py` and confirm SW F1=0.885 (verify metrics are current)
+1. Run `python3 run_evaluation.py` and confirm SW F1=0.771 (updated Mar 2026 after ann_sw_v3)
 2. Run `python3 eval/correction_evaluator.py` — first time running, paste results
 3. Once 2nd annotator recruited: compute Cohen's Kappa (script exists in `scripts/`)
 4. Sprint 4: scaffold `apps/web/` Next.js app
@@ -445,7 +451,7 @@ Legacy lexicon files — archive or delete:
 2. Run `/sw-collect` for household/care domain rows (target: 200+)
 3. Generate 100 minimal pairs (gender-swap: each occupation × male/female/neutral)
 
-### Frontend teammate (to be recruited or Shaka does)
+### Frontend teammate (to be recruited or Project Lead does)
 **Pick up:**
 1. Read Sprint 4 task list above
 2. Scaffold `apps/web/` with Next.js 14 + Shadcn + Tailwind

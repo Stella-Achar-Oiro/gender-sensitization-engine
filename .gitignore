@@ -94,3 +94,6 @@ data/MCAAI-MSU-KI-DATA
 
 models/bias_detector/*
 .DS_Store
+apps/web/.next/
+apps/web/node_modules/
+apps/web/.env.local
