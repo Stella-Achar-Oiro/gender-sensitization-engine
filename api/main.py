@@ -3,6 +3,7 @@
 import time
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .audit import log as log_audit
 from .ml_rewriter import ml_rewrite
@@ -17,6 +18,12 @@ from eval.correction_evaluator import SemanticPreservationMetrics
 SEMANTIC_THRESHOLD = 0.70
 
 app = FastAPI(title="JuaKazi Correction Engine (hybrid)", version="0.3")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 semantic_metrics = SemanticPreservationMetrics()
 
 
@@ -52,6 +59,7 @@ def rewrite(req: RewriteRequest):
     confidence = {"rules": 0.85, "ml": 0.60, "preserved": 0.95}.get(source, 0.85)
     needs_review = source == "ml" or len(edits) == 0
     reason = build_reason(source, edits, skipped)
+    has_bias_detected = any(e.get("severity") == "replace" for e in edits)
 
     response = {
         "id": req.id,
@@ -64,6 +72,7 @@ def rewrite(req: RewriteRequest):
         "reason": reason,
         "semantic_score": semantic_score,
         "skipped_context": skipped or None,
+        "has_bias_detected": has_bias_detected,
     }
 
     log_audit({

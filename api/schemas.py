@@ -22,3 +22,4 @@ class RewriteResponse(BaseModel):
     reason: str
     semantic_score: float = None
     skipped_context: list = None
+    has_bias_detected: bool = False
