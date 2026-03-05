@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JuaKazi — Gender Bias Detection for African Languages</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green: #1a5c2e;
+    --green-mid: #2d7a45;
+    --green-light: #3d9e5c;
+    --green-dim: #0e3319;
+  }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #000;
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 52px 80px;
+  }
+  .slide.active { display: flex; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 32px;
+    align-self: flex-start;
+  }
+
+  /* ── SLIDE 1 — Title ── */
+  .s1 {
+    background: #000;
+    border: 2px solid var(--green);
+    inset: 20px;
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 52px 80px;
+  }
+  .s1.active { display: flex; }
+
+  .s1 .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 36px;
+  }
+  .s1 .logo-row img { height: 52px; }
+  .s1 .logo-row .brand {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--green-light);
+  }
+  .s1 .kicker {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 22px;
+  }
+  .s1 h1 {
+    font-size: 56px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .s1 h1 span { color: #555; }
+  .s1 .sub {
+    font-size: 16px;
+    color: #777;
+    text-align: center;
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 44px;
+  }
+  .s1 .pills { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .pill {
+    border: 1px solid var(--green);
+    color: var(--green-light);
+    padding: 6px 20px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ── SLIDE 2 — Problem ── */
+  .s2 { background: #fff; color: #000; }
+  .s2 .section-label { color: #bbb; }
+  .s2 h2 {
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 44px;
+    align-self: flex-start;
+    line-height: 1.2;
+    max-width: 680px;
+  }
+  .prob-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; width: 100%; }
+  .prob-card { border-top: 3px solid var(--green); padding-top: 18px; }
+  .prob-card .icon-wrap {
+    width: 38px; height: 38px;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .prob-card .icon-wrap svg { fill: #fff; width: 20px; height: 20px; }
+  .prob-card .num { font-size: 44px; font-weight: 400; line-height: 1; margin-bottom: 10px; color: var(--green); }
+  .prob-card p { font-size: 13px; line-height: 1.7; color: #444; }
+
+  /* ── SLIDE 3 — Differentiator ── */
+  .s3 { background: #000; }
+  .s3 h2 { font-size: 36px; font-weight: 400; margin-bottom: 36px; align-self: flex-start; max-width: 680px; line-height: 1.2; }
+  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+  .diff-card {
+    border: 1px solid #1a1a1a;
+    padding: 24px;
+    background: #070707;
+  }
+  .diff-card.us { border-color: var(--green); background: var(--green-dim); }
+  .diff-label {
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #444;
+    margin-bottom: 14px;
+  }
+  .diff-card.us .diff-label { color: var(--green-light); }
+  .diff-card h3 { font-size: 16px; font-weight: 400; margin-bottom: 14px; color: #888; }
+  .diff-card.us h3 { color: #fff; }
+  .diff-card ul { list-style: none; }
+  .diff-card ul li {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+    padding: 3px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .diff-card.us ul li { color: #aaa; }
+  .diff-card ul li::before { content: '—'; color: #333; flex-shrink: 0; }
+  .diff-card.us ul li::before { color: var(--green-light); }
+
+  /* ── SLIDE 4 — System ── */
+  .s4 { background: #000; }
+  .s4 h2 { font-size: 36px; font-weight: 400; margin-bottom: 32px; align-self: flex-start; max-width: 660px; line-height: 1.2; }
+  .pipeline { display: flex; align-items: stretch; width: 100%; }
+  .pipe-step {
+    flex: 1;
+    border: 1px solid #1e1e1e;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+  }
+  .pipe-step.highlight { border-color: var(--green); background: var(--green-dim); }
+  .pipe-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #333;
+    z-index: 1;
+  }
+  .pipe-step .sn { font-size: 9px; letter-spacing: 0.3em; color: #444; text-transform: uppercase; margin-bottom: 8px; }
+  .pipe-step .st { font-size: 14px; margin-bottom: 6px; }
+  .pipe-step.highlight .st { color: var(--green-light); }
+  .pipe-step .sd { font-size: 11px; color: #666; line-height: 1.5; }
+  .ex-box {
+    margin-top: 28px;
+    border: 1px solid #1e1e1e;
+    padding: 18px 24px;
+    width: 100%;
+    background: #050505;
+  }
+  .ex-lbl { font-size: 9px; letter-spacing: 0.3em; color: #444; text-transform: uppercase; margin-bottom: 10px; }
+  .ex-row { display: flex; align-items: center; gap: 16px; font-size: 13px; flex-wrap: wrap; }
+  .ex-b { color: #666; }
+  .ex-arr { color: var(--green); font-size: 18px; }
+  .ex-a { color: #fff; }
+  .ex-tag {
+    margin-left: auto;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--green-light);
+    text-transform: uppercase;
+    border: 1px solid var(--green);
+    padding: 3px 10px;
+  }
+
+  /* ── SLIDE 5 — Data ── */
+  .s5 { background: #000; }
+  .s5 h2 { font-size: 36px; font-weight: 400; margin-bottom: 28px; align-self: flex-start; line-height: 1.2; }
+  .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+  .data-card { border: 1px solid #1a1a1a; padding: 18px 20px; background: #070707; }
+  .data-card.primary { border-color: var(--green); }
+  .dc-lang { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: #444; margin-bottom: 4px; }
+  .data-card.primary .dc-lang { color: var(--green-light); }
+  .dc-count { font-size: 24px; font-weight: 400; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #1a1a1a; }
+  .dc-count span { font-size: 12px; color: #555; margin-left: 8px; }
+  .src-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .src-lbl { font-size: 11px; color: #777; min-width: 180px; }
+  .src-bar-bg { flex: 1; height: 3px; background: #1a1a1a; position: relative; }
+  .src-bar-fill { position: absolute; left:0; top:0; bottom:0; background: var(--green-light); }
+  .data-card:not(.primary) .src-bar-fill { background: #555; }
+  .src-pct { font-size: 11px; color: #444; min-width: 36px; text-align: right; }
+  .ann-note { margin-top: 8px; font-size: 10px; color: #444; border-top: 1px solid #141414; padding-top: 7px; line-height: 1.55; }
+
+  /* ── SLIDE 6 — Results ── */
+  .s6 { background: #fff; color: #000; }
+  .s6 .section-label { color: #bbb; }
+  .s6 h2 { font-size: 36px; font-weight: 400; margin-bottom: 36px; align-self: flex-start; }
+  .rtable { width: 100%; border-collapse: collapse; }
+  .rtable th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #bbb;
+    border-bottom: 2px solid #000;
+    padding: 0 14px 10px 0;
+  }
+  .rtable td { padding: 12px 14px 12px 0; font-size: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  .rtable tr.hl td { background: #f0f7f2; padding-left: 8px; }
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--green);
+    color: var(--green);
+    padding: 2px 8px;
+  }
+  .badge.grey { border-color: #ccc; color: #aaa; }
+  .bwrap { display: flex; align-items: center; gap: 8px; }
+  .bbg { flex: 1; height: 5px; background: #eee; position: relative; }
+  .bfill { position: absolute; left:0; top:0; bottom:0; background: var(--green); }
+  .bbg.grey .bfill { background: #ccc; }
+  .bval { font-size: 13px; min-width: 42px; font-weight: 700; }
+  .ml-note {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    gap: 32px;
+  }
+  .ml-note strong { color: var(--green); }
+
+  /* ── SLIDE 7 — Roadmap ── */
+  .s7 { background: #000; }
+  .s7 h2 { font-size: 36px; font-weight: 400; margin-bottom: 32px; align-self: flex-start; max-width: 580px; line-height: 1.2; }
+  .roadmap { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; width: 100%; }
+  .rm-col { background: #060606; border: 1px solid #1a1a1a; padding: 22px 20px; }
+  .rm-col.doing { border-color: var(--green); }
+  .rm-phase { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: #444; margin-bottom: 10px; }
+  .rm-col.doing .rm-phase { color: var(--green-light); }
+  .rm-col h3 { font-size: 16px; font-weight: 400; margin-bottom: 14px; border-bottom: 1px solid #1a1a1a; padding-bottom: 12px; color: #666; }
+  .rm-col.done h3 { color: #aaa; }
+  .rm-col.doing h3 { color: #fff; }
+  .rm-col ul { list-style: none; }
+  .rm-col ul li { font-size: 11px; color: #555; line-height: 1.7; padding: 3px 0; display: flex; gap: 8px; }
+  .rm-col.done ul li { color: #666; }
+  .rm-col.doing ul li { color: #999; }
+  .rm-col ul li::before { content: '—'; color: #2a2a2a; flex-shrink: 0; }
+  .rm-col.doing ul li::before { color: var(--green); }
+
+  /* ── Nav ── */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    right: 36px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 100;
+  }
+  .nav button {
+    background: none;
+    border: 1px solid #333;
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .2s;
+  }
+  .nav button:hover { border-color: var(--green-light); }
+  #counter { font-size: 11px; letter-spacing: 0.2em; color: #444; min-width: 40px; text-align: center; }
+
+  /* light slide overrides */
+  .nav.light button { color: #000; border-color: #ccc; }
+  .nav.light button:hover { border-color: var(--green); }
+  .nav.light #counter { color: #bbb; }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1. TITLE -->
+  <div class="slide s1 active">
+    <div class="logo-row">
+      <img src="https://i.postimg.cc/L5mk9h1P/juakazi.png" alt="JuaKazi logo">
+      <span class="brand">JuaKazi</span>
+    </div>
+    <div class="kicker">Mar 2026 — AIBRIDGE Submission</div>
+    <h1>Gender Bias<br><span>Detection &amp; Correction</span><br>for African Languages</h1>
+    <p class="sub">The only engine in East Africa that detects, corrects, and explains gender bias — in Swahili, Gikuyu, English, and French</p>
+    <div class="pills">
+      <div class="pill">Swahili · 64,723 samples</div>
+      <div class="pill">Gikuyu · 11,848 samples</div>
+      <div class="pill">English</div>
+      <div class="pill">French</div>
+    </div>
+  </div>
+
+  <!-- 2. PROBLEM -->
+  <div class="slide s2">
+    <div class="section-label">01 — The Problem</div>
+    <h2>Gender bias in African language text goes undetected — and uncorrected</h2>
+    <div class="prob-grid">
+      <div class="prob-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        </div>
+        <div class="num">4</div>
+        <p>Languages with distinct grammar, noun classes, and bias patterns — each requiring its own detection logic, lexicon, and evaluation pipeline</p>
+      </div>
+      <div class="prob-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+        </div>
+        <div class="num">6+</div>
+        <p>Bias categories to detect: occupation stereotypes, pronoun assumptions, honorifics, morphological gender markers, derogation, counter-stereotype</p>
+      </div>
+      <div class="prob-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        </div>
+        <div class="num">0</div>
+        <p>Other tools in East Africa offering detection + correction + plain-language explanation for Swahili and Gikuyu — JuaKazi is the first</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DIFFERENTIATOR -->
+  <div class="slide s3">
+    <div class="section-label">02 — Our Advantage</div>
+    <h2>Every other team stops at detection. We go further.</h2>
+    <div class="diff-grid">
+      <div class="diff-card">
+        <div class="diff-label">Other Teams</div>
+        <h3>Detection only</h3>
+        <ul>
+          <li>Flag biased text</li>
+          <li>Return a score or label</li>
+          <li>No correction layer</li>
+          <li>No explanation to the user</li>
+          <li>No audit trail</li>
+        </ul>
+      </div>
+      <div class="diff-card us">
+        <div class="diff-label">JuaKazi</div>
+        <h3>Detection + Correction + Explanation</h3>
+        <ul>
+          <li>Detect bias with 10-condition context gating</li>
+          <li>Correct with case-preserving neutral replacement</li>
+          <li>Explain in plain language — reason field on every edit</li>
+          <li>Full JSONL audit log on every rewrite</li>
+          <li>Integration-ready: wrap any team's detector with our correction layer</li>
+        </ul>
+      </div>
+      <div class="diff-card">
+        <div class="diff-label">Integration Plan</div>
+        <h3>When AIBRIDGE ready</h3>
+        <ul>
+          <li>Wire other teams' detectors as Stage 1b</li>
+          <li>JuaKazi correction layer wraps all outputs</li>
+          <li>UI shows "Detected by: [Team X] · Corrected by: JuaKazi"</li>
+        </ul>
+      </div>
+      <div class="diff-card">
+        <div class="diff-label">ML Stage 2</div>
+        <h3>Hybrid architecture</h3>
+        <ul>
+          <li>afro-xlmr-base fine-tuned on 51K Swahili rows</li>
+          <li>v3 training: F1 0.673, P 0.672, R 0.674 — epoch 5</li>
+          <li>Rules engine (Stage 1) always takes priority</li>
+          <li>ML fires only when rules find nothing — warn-only</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SYSTEM -->
+  <div class="slide s4">
+    <div class="section-label">03 — The System</div>
+    <h2>A context-aware rules engine with ML fallback</h2>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="sn">Step 01</div>
+        <div class="st">Lexicon Match</div>
+        <div class="sd">Language-specific CSV rules — 538 EN · 218 SW · 78 FR · 1,240 KI entries</div>
+      </div>
+      <div class="pipe-step">
+        <div class="sn">Step 02</div>
+        <div class="st">Context Check</div>
+        <div class="sd">10 suppression conditions: quote, historical, proper noun, biographical, statistical, medical, counter-stereotype, legal, artistic, organization</div>
+      </div>
+      <div class="pipe-step highlight">
+        <div class="sn">Step 03</div>
+        <div class="st">Correction</div>
+        <div class="sd">Case-preserving neutral replacement · reason field · JSONL audit log on every edit</div>
+      </div>
+      <div class="pipe-step">
+        <div class="sn">Step 04</div>
+        <div class="st">ML Fallback</div>
+        <div class="sd">afro-xlmr-base Stage 2 — warn-only, fires only when rules find nothing</div>
+      </div>
+    </div>
+    <div class="ex-box">
+      <div class="ex-lbl">Live example — Swahili</div>
+      <div class="ex-row">
+        <span class="ex-b">"Daktari wa kiume alipima mgonjwa"</span>
+        <span class="ex-arr">→</span>
+        <span class="ex-a">"Daktari alipima mgonjwa"</span>
+        <span class="ex-tag">occupation · gender marker · replace</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. DATA -->
+  <div class="slide s5">
+    <div class="section-label">04 — Data Collection &amp; Annotation</div>
+    <h2>76,887 real sentences. No synthetic data.</h2>
+    <div class="data-grid">
+
+      <div class="data-card primary">
+        <div class="dc-lang">Swahili — Primary Language</div>
+        <div class="dc-count">64,723 <span>samples · Gold tier (sample count)</span></div>
+        <div class="src-row">
+          <span class="src-lbl">Zenodo Helsinki Tanzanian corpus</span>
+          <div class="src-bar-bg"><div class="src-bar-fill" style="width:51.6%"></div></div>
+          <span class="src-pct">51.6%</span>
+        </div>
+        <div class="src-row">
+          <span class="src-lbl">HuggingFace Swahili News / BBC</span>
+          <div class="src-bar-bg"><div class="src-bar-fill" style="width:27.8%"></div></div>
+          <span class="src-pct">27.8%</span>
+        </div>
+        <div class="src-row">
+          <span class="src-lbl">AfriSenti / MasakhaNER / C4</span>
+          <div class="src-bar-bg"><div class="src-bar-fill" style="width:20.6%"></div></div>
+          <span class="src-pct">20.6%</span>
+        </div>
+        <div class="ann-note">1,069 rows human-annotated (ann_sw_v2) · 13,304 rows AI-annotated (ann_sw_v3) · 274 rows human review (batch_024) · region_dialect tagged: kenya=18,008 · tanzania=33,411 · 15.63% counter-stereotype · 5.01% implicit</div>
+      </div>
+
+      <div class="data-card">
+        <div class="dc-lang">Gikuyu</div>
+        <div class="dc-count">11,848 <span>samples · Bronze tier (sample count)</span></div>
+        <div class="src-row">
+          <span class="src-lbl">AfriNLI / HuggingFace corpora</span>
+          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:62.6%"></div></div>
+          <span class="src-pct">62.6%</span>
+        </div>
+        <div class="src-row">
+          <span class="src-lbl">MasakhaNER NER corpus</span>
+          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:30.7%"></div></div>
+          <span class="src-pct">30.7%</span>
+        </div>
+        <div class="src-row">
+          <span class="src-lbl">eBible.org Kikuyu Bible (CC BY-SA)</span>
+          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:6.7%"></div></div>
+          <span class="src-pct">6.7%</span>
+        </div>
+        <div class="ann-note">Automated + manual review · 307 priority Bible verses · occupation and gender context targeted</div>
+      </div>
+
+      <div class="data-card">
+        <div class="dc-lang">English</div>
+        <div class="dc-count">66 <span>samples · hand-curated</span></div>
+        <div class="src-row">
+          <span class="src-lbl">Hand-authored templates</span>
+          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:100%"></div></div>
+          <span class="src-pct">100%</span>
+        </div>
+        <div class="ann-note">WinoBias / WinoGender / CrowS-Pairs style · occupation, pronoun, honorific bias · manual annotation</div>
+      </div>
+
+      <div class="data-card">
+        <div class="dc-lang">French</div>
+        <div class="dc-count">50 <span>samples · hand-curated</span></div>
+        <div class="src-row">
+          <span class="src-lbl">Hand-authored templates</span>
+          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:100%"></div></div>
+          <span class="src-pct">100%</span>
+        </div>
+        <div class="ann-note">French gender morphology · gendered job titles · pronoun generic use · pending Bronze expansion</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 6. RESULTS -->
+  <div class="slide s6">
+    <div class="section-label">05 — Results</div>
+    <h2>Rules engine: high precision. ML v3: recall improving.</h2>
+    <table class="rtable">
+      <thead>
+        <tr>
+          <th>Language</th>
+          <th>Precision</th>
+          <th>Recall</th>
+          <th>F1</th>
+          <th>Samples</th>
+          <th>Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="hl">
+          <td><strong>Swahili</strong></td>
+          <td>
+            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:73.4%"></div></div><span class="bval">0.734</span></div>
+          </td>
+          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:81.1%"></div></div><span class="bval">0.811</span></div></td>
+          <td><strong>0.771</strong></td>
+          <td>64,723</td>
+          <td><span class="badge">Gold sample</span></td>
+        </tr>
+        <tr>
+          <td>English</td>
+          <td>
+            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:100%"></div></div><span class="bval">1.000</span></div>
+          </td>
+          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:64.7%"></div></div><span class="bval">0.647</span></div></td>
+          <td>0.786</td>
+          <td>66</td>
+          <td><span class="badge grey">Pre-Bronze</span></td>
+        </tr>
+        <tr>
+          <td>French</td>
+          <td>
+            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:100%"></div></div><span class="bval">1.000</span></div>
+          </td>
+          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:37.1%"></div></div><span class="bval">0.371</span></div></td>
+          <td>0.542</td>
+          <td>50</td>
+          <td><span class="badge grey">Pre-Bronze</span></td>
+        </tr>
+        <tr>
+          <td>Gikuyu</td>
+          <td>
+            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:92.6%"></div></div><span class="bval">0.926</span></div>
+          </td>
+          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:21.7%"></div></div><span class="bval">0.217</span></div></td>
+          <td>0.352</td>
+          <td>11,848</td>
+          <td><span class="badge grey">Bronze sample</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="ml-note">
+      <span>ML Stage 2 (afro-xlmr-base v3, epoch 5) — <strong>F1 0.673</strong> &nbsp;·&nbsp; Precision 0.672 &nbsp;·&nbsp; Recall 0.674</span>
+      <span>AIBRIDGE blocker: Cohen's Kappa unmeasured — 2nd annotator not yet recruited</span>
+    </div>
+  </div>
+
+  <!-- 7. ROADMAP -->
+  <div class="slide s7">
+    <div class="section-label">06 — What's Next</div>
+    <h2>Three sprints to AIBRIDGE Bronze</h2>
+    <div class="roadmap">
+      <div class="rm-col done">
+        <div class="rm-phase">Done — Sprints 0–2</div>
+        <h3>Foundation</h3>
+        <ul>
+          <li>64,723 real Swahili sentences</li>
+          <li>13,304 rows AI-annotated (ann_sw_v3)</li>
+          <li>274 rows human review (batch_024)</li>
+          <li>afro-xlmr-base v3 trained — F1 0.673</li>
+          <li>REST API + Next.js frontend deployed</li>
+          <li>AIBRIDGE 24-column schema compliance</li>
+          <li>15.63% counter-stereotype · 5.01% implicit</li>
+          <li>region_dialect tagged (kenya / tanzania)</li>
+          <li>Plain-language reason on every edit</li>
+          <li>Human review UI (Streamlit)</li>
+        </ul>
+      </div>
+      <div class="rm-col doing">
+        <div class="rm-phase">Sprint 2 Close — Blocking</div>
+        <h3>Cohen's Kappa</h3>
+        <ul>
+          <li>Recruit 2nd Swahili annotator (Masakhane)</li>
+          <li>Calibrate using 66-row adjudication guide</li>
+          <li>Independent annotation: 250 overlapping rows</li>
+          <li>Target kappa ≥ 0.70 (AIBRIDGE Bronze)</li>
+          <li>Run correction_evaluator.py (first time)</li>
+          <li>Add 5 Swahili proverbs to lexicon</li>
+          <li>Add 10 Sheng terms to lexicon</li>
+        </ul>
+      </div>
+      <div class="rm-col next">
+        <div class="rm-phase">Sprint 3 — After kappa closes</div>
+        <h3>AIBRIDGE Submission</h3>
+        <ul>
+          <li>100 minimal pairs (gender-swap variants)</li>
+          <li>Health domain rows (200+ minimum)</li>
+          <li>Livelihoods + household domain rows</li>
+          <li>200 gold rows (qa_status=gold)</li>
+          <li>CSVW JSON-LD metadata + PROV lineage</li>
+          <li>DVC tracking setup</li>
+          <li>Annotator gender breakdown documented</li>
+          <li>Final eval run + submit to AIBRIDGE contact</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav" id="nav">
+  <button onclick="nav(-1)">&#8592;</button>
+  <span id="counter">1 / 7</span>
+  <button onclick="nav(1)">&#8594;</button>
+</div>
+
+<script>
+  let cur = 0;
+  const slides = document.querySelectorAll('.slide');
+  const ctr = document.getElementById('counter');
+  const navEl = document.getElementById('nav');
+
+  const lightSlides = new Set([1, 5]); // s2=index1, s6=index5
+
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    ctr.textContent = (cur + 1) + ' / ' + slides.length;
+
+    if (lightSlides.has(cur)) {
+      navEl.classList.add('light');
+    } else {
+      navEl.classList.remove('light');
+    }
+  }
+
+  function nav(d) { show(cur + d); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nav(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    nav(-1);
+  });
+</script>
+</body>
+</html>
