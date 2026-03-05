@@ -77,6 +77,9 @@ data/analysis/kappa_overlap_ids.txt
 # Ground truth data — tracked in GitLab only (too large for GitHub/Streamlit Cloud)
 eval/ground_truth_*.csv
 
+# Annotation exports — share via Google Drive, not git (contains sentence text + PII risk)
+data/annotation_export/
+
 # Eval HTML reports — generated, not source
 eval/results/reporting/
 
