@@ -9,6 +9,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import gradio as gr
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from eval.bias_detector import BiasDetector
 from eval.models import Language
 from api.rules_engine import apply_rules_on_spans, build_reason
@@ -137,6 +140,39 @@ def analyse(text: str, lang_name: str) -> tuple[str, str, str]:
     return f"{verdict}\n\n{metrics_md}", detail_md, correction_md
 
 
+# --- REST API (mounted onto Gradio's FastAPI instance) ---
+
+class _RewriteReq(BaseModel):
+    id: str
+    lang: str
+    text: str
+    region_dialect: str = None
+    flags: list = None
+
+
+def _rewrite_handler(req: _RewriteReq):
+    rewritten, edits, matched, skipped = apply_rules_on_spans(
+        req.text, req.lang, flags=req.flags or None
+    )
+    source = "rules"
+    reason = build_reason(source, edits, skipped)
+    has_bias_detected = any(e.get("severity") == "replace" for e in edits)
+    confidence = 0.85 if edits else 0.95
+    return {
+        "id": req.id,
+        "original_text": req.text,
+        "rewrite": rewritten,
+        "edits": edits,
+        "confidence": confidence,
+        "needs_review": len(edits) == 0,
+        "source": source,
+        "reason": reason,
+        "semantic_score": None,
+        "skipped_context": skipped or None,
+        "has_bias_detected": has_bias_detected,
+    }
+
+
 with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as demo:
     gr.Markdown("# JuaKazi · Gender Bias Detection & Correction")
     gr.Markdown(
@@ -196,6 +232,15 @@ with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as
         inputs=[text_in, lang_dd],
         outputs=[verdict_out, detect_out, correct_out],
     )
+
+app = demo.app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.post("/rewrite")(_rewrite_handler)
 
 if __name__ == "__main__":
     demo.launch()
