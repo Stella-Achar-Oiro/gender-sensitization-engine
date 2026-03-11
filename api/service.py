@@ -3,13 +3,13 @@
 import time
 from typing import Optional
 
+from config import get_semantic_threshold, REWRITE_CONFIDENCE_BY_SOURCE, DEFAULT_REWRITE_CONFIDENCE
 from core.semantic_preservation import SemanticPreservationMetrics
 
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import RewriteResponse
 
-SEMANTIC_THRESHOLD = 0.70
 semantic_metrics = SemanticPreservationMetrics()
 
 
@@ -32,10 +32,11 @@ def rewrite_text(
     ml_info = None
     semantic_score = None
 
+    threshold = get_semantic_threshold()
     if rewritten != text:
         score = semantic_metrics.calculate_composite_preservation_score(text, rewritten)
         semantic_score = score["composite_score"]
-        if semantic_score < SEMANTIC_THRESHOLD:
+        if semantic_score < threshold:
             rewritten, edits, source, semantic_score = text, [], "preserved", 1.0
 
     if matched_rules == 0 and source != "preserved":
@@ -43,7 +44,7 @@ def rewrite_text(
         ml_score = semantic_metrics.calculate_composite_preservation_score(
             text, ml_out["best"]
         )
-        if ml_score["composite_score"] < SEMANTIC_THRESHOLD:
+        if ml_score["composite_score"] < threshold:
             rewritten, source, semantic_score = text, "preserved", 1.0
         else:
             rewritten = ml_out["best"]
@@ -59,7 +60,7 @@ def rewrite_text(
             })
 
     latency_ms = int((time.time() - t0) * 1000)
-    confidence = {"rules": 0.85, "ml": 0.60, "preserved": 0.95}.get(source, 0.85)
+    confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)
     needs_review = source == "ml" or len(edits) == 0
     reason = build_reason(source, edits, skipped)
     has_bias_detected = any(e.get("severity") == "replace" for e in edits)

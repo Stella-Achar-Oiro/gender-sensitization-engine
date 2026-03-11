@@ -1,8 +1,11 @@
 """Project-wide configuration helpers.
 
-Centralizes data version tags so file naming stays consistent.
+Centralizes data version tags, rewrite thresholds, and confidence defaults.
+Override via env: JUAKAZI_SEMANTIC_THRESHOLD (float, default 0.70).
 """
 from __future__ import annotations
+
+import os
 
 
 class DataVersions:
@@ -56,3 +59,25 @@ def lexicon_glob_pattern(version: str | None = None) -> str:
     """Return a glob pattern that matches lexicons for the active version."""
     current_version = version or DataVersions.LEXICON
     return f"lexicon_*_{current_version}.csv"
+
+
+# ---------------------------------------------------------------------------
+# Rewrite / correction (API)
+# ---------------------------------------------------------------------------
+
+def get_semantic_threshold() -> float:
+    """Semantic preservation threshold below which we keep original text. Default 0.70."""
+    raw = os.environ.get("JUAKAZI_SEMANTIC_THRESHOLD", "0.70")
+    try:
+        return float(raw)
+    except ValueError:
+        return 0.70
+
+
+# Confidence by rewrite source (for API response)
+REWRITE_CONFIDENCE_BY_SOURCE: dict[str, float] = {
+    "rules": 0.85,
+    "ml": 0.60,
+    "preserved": 0.95,
+}
+DEFAULT_REWRITE_CONFIDENCE: float = 0.85
