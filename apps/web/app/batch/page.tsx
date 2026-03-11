@@ -179,7 +179,7 @@ export default function BatchPage() {
 
       {rows.length > 0 && (
         <>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Button onClick={runBatch} disabled={loading}>
               {loading ? `Processing… ${progress} / ${rows.length}` : "Run batch"}
             </Button>

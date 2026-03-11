@@ -10,6 +10,12 @@ const TIER_ROWS = [
   ["Gold", "10,000+", "30%", "≥0.80", "≥0.85"],
 ]
 
+const TIER_BADGES = [
+  { tier: "Bronze", color: "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-800", status: "SW/KI sample count met; κ pending for certification" },
+  { tier: "Silver", color: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800/50 dark:text-slate-200 dark:border-slate-600", status: "Target: 5K samples, 20% double-annotated, κ ≥ 0.75" },
+  { tier: "Gold", color: "bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-900/30 dark:text-amber-100 dark:border-amber-700", status: "SW 64K+ samples; F1/κ improvements in progress" },
+]
+
 const CURRENT_METRICS = [
   { lang: "English", f1: "0.786", precision: "1.000", recall: "0.647", samples: "66", tier: "Pre-Bronze" },
   { lang: "Swahili", f1: "0.771", precision: "0.734", recall: "0.811", samples: "64,723", tier: "Gold (sample count)" },
@@ -77,6 +83,20 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-3">
+        <h2 className="text-lg font-semibold">Our tier status</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {TIER_BADGES.map((b) => (
+            <Card key={b.tier} className="border-2">
+              <CardContent className="pt-4 pb-3">
+                <Badge className={`${b.color} border font-semibold`}>{b.tier}</Badge>
+                <p className="text-xs text-muted-foreground mt-2">{b.status}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3">
         <h2 className="text-lg font-semibold">AIBRIDGE tier requirements</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
@@ -113,7 +133,7 @@ export default function AboutPage() {
         </Card>
       </section>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex flex-wrap gap-3 pt-4">
         <Button asChild>
           <Link href="/analyze">Try it now</Link>
         </Button>

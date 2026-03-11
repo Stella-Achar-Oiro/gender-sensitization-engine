@@ -179,6 +179,14 @@ class BiasDetectionResult:
     # has_bias_detected is never set True based on warn_edits alone.
     warn_edits: List[Dict[str, str]] = field(default_factory=list)
 
+    # When detection is from an external team (AIBRIDGE integration), e.g. "external:TeamX".
+    # UI can show "Detected by: TeamX · Corrected by: JuaKazi".
+    detection_source: Optional[str] = None
+
+    # When detection is from an external team (ExternalTeamDetector), set e.g. "external:TeamX"
+    # so the UI can show "Detected by: Team X · Corrected by: JuaKazi".
+    detection_source: Optional[str] = None
+
 
 @dataclass
 class EvaluationMetrics:

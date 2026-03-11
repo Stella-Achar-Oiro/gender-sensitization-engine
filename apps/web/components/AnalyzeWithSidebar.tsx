@@ -36,9 +36,9 @@ export function AnalyzeWithSidebar() {
   }, [])
 
   return (
-    <div className="flex min-h-screen bg-muted/30">
-      {/* Sidebar: logo + analysed texts */}
-      <aside className="w-72 shrink-0 border-r border-border bg-card flex flex-col">
+    <div className="flex flex-col md:flex-row min-h-screen bg-muted/30">
+      {/* Sidebar: logo + analysed texts (hidden on mobile) */}
+      <aside className="hidden md:flex w-72 shrink-0 border-r border-border bg-card flex-col">
         <div className="p-4 border-b border-border">
           <Link href="/" className="text-sm text-muted-foreground hover:underline">
             ← Back
@@ -102,8 +102,8 @@ export function AnalyzeWithSidebar() {
       </aside>
 
       {/* Main: current result + analyzer */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-4 py-6 sm:py-8">
+      <main className="flex-1 overflow-y-auto min-w-0">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6 md:py-8">
           <h1 className="text-2xl font-bold text-foreground">Analyse text for gender bias</h1>
           <p className="text-muted-foreground mt-1 mb-6">
             Paste text in Swahili, English, French, or Kikuyu. The engine detects bias, explains why,
@@ -117,7 +117,7 @@ export function AnalyzeWithSidebar() {
           </Card>
 
           {selected && (
-            <Card className="mt-8 glass">
+            <Card className="mt-6 md:mt-8 glass">
               <CardContent className="pt-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-muted-foreground">
@@ -135,6 +135,41 @@ export function AnalyzeWithSidebar() {
                 <CorrectionPanel result={selected.result} />
               </CardContent>
             </Card>
+          )}
+
+          {/* Mobile: recent analyses list (replaces sidebar) */}
+          {history.length > 0 && (
+            <details className="mt-6 md:hidden border rounded-xl bg-card overflow-hidden">
+              <summary className="p-4 cursor-pointer font-medium text-sm text-foreground">
+                Recent analyses ({history.length})
+              </summary>
+              <ul className="border-t divide-y divide-border max-h-64 overflow-y-auto">
+                {history.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedId(item.id)}
+                      className={`w-full text-left p-3 text-sm ${selectedId === item.id ? "bg-primary/10" : ""}`}
+                    >
+                      <p className="line-clamp-2 text-foreground">
+                        {truncate(item.result.original_text, 72)}
+                      </p>
+                      <div className="mt-1 flex items-center gap-2">
+                        <Badge
+                          variant={item.result.has_bias_detected ? "destructive" : "secondary"}
+                          className="text-xs"
+                        >
+                          {item.result.has_bias_detected ? "Bias" : "OK"}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {item.result.edits.length} edit{item.result.edits.length !== 1 ? "s" : ""}
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
           )}
         </div>
       </main>
