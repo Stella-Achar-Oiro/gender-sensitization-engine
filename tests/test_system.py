@@ -113,6 +113,58 @@ def test_reason():
         return False
 
 
+def test_api_validation():
+    """Test API request validation: invalid lang, empty text, max length, batch shape."""
+    try:
+        from pydantic import ValidationError
+        from api.schemas import RewriteRequest, BatchRewriteRequest
+
+        # Valid request
+        req = RewriteRequest(id="v1", lang="en", text="Hello world.")
+        assert req.lang == "en" and len(req.text) <= 5000
+
+        # Invalid lang → ValidationError
+        try:
+            RewriteRequest(id="x", lang="xx", text="Hi")
+            print("  [FAIL] invalid lang should raise ValidationError")
+            return False
+        except ValidationError:
+            print("  [OK] invalid lang → 422")
+
+        # Empty text → ValidationError (min_length=1)
+        try:
+            RewriteRequest(id="x", lang="en", text="")
+            print("  [FAIL] empty text should raise ValidationError")
+            return False
+        except ValidationError:
+            print("  [OK] empty text → 422")
+
+        # Text over 5000 chars → ValidationError
+        try:
+            RewriteRequest(id="x", lang="en", text="a" * 5001)
+            print("  [FAIL] text over 5000 should raise ValidationError")
+            return False
+        except ValidationError:
+            print("  [OK] text max_length=5000 → 422")
+
+        # Batch: empty items → ValidationError
+        try:
+            BatchRewriteRequest(items=[])
+            print("  [FAIL] empty items should raise ValidationError")
+            return False
+        except ValidationError:
+            print("  [OK] batch empty items → 422")
+
+        # Batch: valid shape
+        batch = BatchRewriteRequest(items=[{"id": "b1", "lang": "en", "text": "Test"}])
+        assert len(batch.items) == 1
+        print("  [OK] batch valid shape accepted")
+        return True
+    except Exception as e:
+        print(f"API validation test failed: {e}")
+        return False
+
+
 def test_detector():
     """Test BiasDetector directly — the core rules engine."""
     try:
@@ -149,6 +201,7 @@ def main():
         ("Lexicons", test_lexicon),
         ("Correction API", test_correction),
         ("Reason Generation", test_reason),
+        ("API validation", test_api_validation),
         ("Bias Detector", test_detector),
     ]
 

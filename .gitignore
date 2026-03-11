@@ -98,3 +98,7 @@ apps/web/.next/
 apps/web/node_modules/
 apps/web/.env.local
 CURSOR_PROMPT.md
+
+# Plan/review docs — ignore for now (session-specific)
+docs/CODE_REVIEW_BERRIJAM.md
+docs/MASTER_PLAN.md

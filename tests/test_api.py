@@ -33,14 +33,16 @@ def test_single_rewrite():
         print("❌ API server not running. Start with: uvicorn api.main:app --reload")
 
 def test_batch_rewrite():
-    """Test batch processing"""
+    """Test batch processing. API expects body: {"items": [RewriteRequest, ...]}."""
     print("\n🧪 Testing Batch Rewrite API")
     
-    batch_payload = [
-        {"id": "batch-001", "lang": "en", "text": "The businessman met his client"},
-        {"id": "batch-002", "lang": "en", "text": "The nurse checked her patient"},
-        {"id": "batch-003", "lang": "sw", "text": "Mwalimu mkuu anafundisha"}
-    ]
+    batch_payload = {
+        "items": [
+            {"id": "batch-001", "lang": "en", "text": "The businessman met his client"},
+            {"id": "batch-002", "lang": "en", "text": "The nurse checked her patient"},
+            {"id": "batch-003", "lang": "sw", "text": "Mwalimu mkuu anafundisha"}
+        ]
+    }
     
     try:
         response = requests.post(f"{API_BASE}/rewrite/batch", json=batch_payload)

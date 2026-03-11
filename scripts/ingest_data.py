@@ -201,14 +201,14 @@ def call_batch_api_and_save(input_jsonl: Path, api_url: str = DEFAULT_API_BATCH,
         for line in fin:
             buffer.append(json.loads(line))
             if len(buffer) >= chunk_size:
-                r = requests.post(api_url, json=buffer, timeout=120)
+                r = requests.post(api_url, json={"items": buffer}, timeout=120)
                 r.raise_for_status()
                 for obj in r.json():
                     fout.write(json.dumps(obj, ensure_ascii=False) + "\n")
                 buffer = []
         # flush remainder
         if buffer:
-            r = requests.post(api_url, json=buffer, timeout=120)
+            r = requests.post(api_url, json={"items": buffer}, timeout=120)
             r.raise_for_status()
             for obj in r.json():
                 fout.write(json.dumps(obj, ensure_ascii=False) + "\n")
