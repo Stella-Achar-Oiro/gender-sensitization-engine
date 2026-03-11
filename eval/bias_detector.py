@@ -19,6 +19,7 @@ from .models import (
 from .data_loader import RulesLoader, DataLoadError
 from .ngeli_tracker import NgeliTracker, NounClass
 from .context_checker import ContextChecker, ContextCheckResult
+from .detector_patterns import DetectorPatterns
 
 
 # Set up module logger
@@ -34,91 +35,9 @@ class BiasDetector:
     """
     Service for detecting gender bias in text using rules-based approach.
 
-    This class encapsulates the bias detection logic and provides a clean interface
-    for evaluating text samples. Implements AI BRIDGE bias constructs.
+    Composes pattern config (DetectorPatterns), lexicon matching (rules + context),
+    and result building. Implements AI BRIDGE bias constructs.
     """
-
-    # Counter-stereotype patterns by language
-    # These indicate role reversals or challenges to traditional gender norms
-    COUNTER_STEREOTYPE_PATTERNS = {
-        Language.ENGLISH: [
-            # Family role reversals
-            (r'\b(father|dad|husband)\b.*(caregiver|nurtur|cook|clean|homemaker|stay.at.home)',
-             StereotypeCategory.FAMILY_ROLE, TargetGender.MALE),
-            (r'\b(mother|mom|wife)\b.*(breadwinner|provider|work.*(full.time|office)|career)',
-             StereotypeCategory.FAMILY_ROLE, TargetGender.FEMALE),
-            # Professional role reversals
-            (r'\b(female|woman|she)\b.*(engineer|mechanic|pilot|ceo|surgeon|firefighter)',
-             StereotypeCategory.PROFESSION, TargetGender.FEMALE),
-            (r'\b(male|man|he)\b.*(nurse|secretary|receptionist|kindergarten|nanny)',
-             StereotypeCategory.PROFESSION, TargetGender.MALE),
-            # Leadership
-            (r'\b(she|her|woman|female)\b.*(lead|command|chief|director|president|boss)',
-             StereotypeCategory.LEADERSHIP, TargetGender.FEMALE),
-        ],
-        Language.SWAHILI: [
-            # Family role reversals (Swahili) - more specific patterns
-            (r'\bbaba\b.+\b(anale[zl]a|anapika|anasafisha|anakaa\s+nyumbani)',
-             StereotypeCategory.FAMILY_ROLE, TargetGender.MALE),
-            (r'\bmama\b.+\b(anafanya\s+kazi\s+ofisi|ni\s+mkurugenzi|anaongoza)',
-             StereotypeCategory.FAMILY_ROLE, TargetGender.FEMALE),
-            # Professional role reversals - more specific
-            (r'\bmwanamke\b.+\b(mhandisi|rubani|fundi\s+wa\s+magari)',
-             StereotypeCategory.PROFESSION, TargetGender.FEMALE),
-            (r'\bmwanamume\b.+\b(muuguzi|mkunga|mlezi\s+wa\s+watoto)',
-             StereotypeCategory.PROFESSION, TargetGender.MALE),
-        ],
-    }
-
-    # Swahili gendered-suffix patterns — catch "[occupation] wa kiume/wa kike" on ANY occupation.
-    # These are the highest-volume recall gap: 1,847 sentences in SW ground truth use this
-    # construction with occupations not individually listed in the lexicon.
-    # Correction: remove " wa kiume" / " wa kike" suffix, preserve the occupation term.
-    # Pattern requires a Swahili word (m-wa class prefix likely) before the suffix.
-    SW_GENDERED_SUFFIX_PATTERNS = [
-        # wa kiume — male gender marker on occupation
-        (r'\b(\w+)\s+(wa\s+kiume)\b', 'wa kiume', TargetGender.MALE),
-        # wa kike — female gender marker on occupation
-        (r'\b(\w+)\s+(wa\s+kike)\b', 'wa kike', TargetGender.FEMALE),
-        # watoto wa kike / watoto wa kiume — children gendered (family_role not profession)
-        # handled by same patterns above; stereotype_category set to profession by default,
-        # overridden to family_role when "watoto" is the preceding noun
-    ]
-    # Compiled at init time by _compile_special_patterns
-    _sw_gendered_suffix_compiled: list = []
-
-    # Derogation patterns - language that demeans or disparages
-    DEROGATION_PATTERNS = {
-        Language.ENGLISH: [
-            (r'\b(just|only|merely)\s+a\s+(woman|girl|female|housewife)',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(woman|women|female|girl).*(can\'t|cannot|unable|incapable|shouldn\'t|could\s+never)',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(women|woman)\s+(cannot|can\'t)\s+be\s+(good|great|effective)',
-             StereotypeCategory.LEADERSHIP, TargetGender.FEMALE),
-            (r'\b(like\s+a\s+girl|throw.like.a.girl|cry.like)',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(too\s+emotional|hysterical|overreact)',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            (r'\b(real\s+men\s+don\'t|man\s+up|be\s+a\s+man)',
-             StereotypeCategory.CAPABILITY, TargetGender.MALE),
-        ],
-        Language.SWAHILI: [
-            # Dismissive "ni tu mwanamke/msichana" = "s/he is just a woman"
-            # Must be predicate construction (ni + tu), not bare "tu mwanamke" which is too broad
-            (r'\bni\s+tu\s+(mwanamke|msichana)\b',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            # Direct derogation: "mwanamke/msichana hawezi" where hawezi is a direct predicate
-            # Exclude medical contexts (kuzaa, kukoma, kupenda) and counter-stereotype quotations
-            # (hawezi bila kuwezeshwa = quoting stereotype in order to reject it)
-            (r'\b(mwanamke|msichana)\b\s+hawezi\b(?!\s+(?:kuzaa|kukoma|kupenda|kunifikia|kufikia|kukufikia|bila\s+kuwezeshwa))',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-            # Require "kama mwanamke/msichana" to be followed by a negative/derogatory term,
-            # not just any noun phrase (e.g. "kama mwanamke wa imani" is biographical)
-            (r'\b(kama\s+msichana|kama\s+mwanamke)\b.{0,30}\b(dhaifu|hawezi|haiwezi|hana nguvu|anapiga|analia)',
-             StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
-        ],
-    }
 
     def __init__(
         self,
@@ -141,8 +60,7 @@ class BiasDetector:
         self.rules_loader = RulesLoader(rules_dir)
         self._rules_cache: Dict[Language, List[Dict[str, str]]] = {}
         self._compiled_patterns: Dict[Language, List[re.Pattern]] = {}
-        self._counter_stereotype_patterns: Dict[Language, List[tuple]] = {}
-        self._derogation_patterns: Dict[Language, List[tuple]] = {}
+        self._pattern_config = DetectorPatterns()
         self.enable_ngeli_tracking = enable_ngeli_tracking
         self.ngeli_tracker = NgeliTracker() if enable_ngeli_tracking else None
 
@@ -153,158 +71,6 @@ class BiasDetector:
         # ML fallback — Stage 2 classifier for cases rules miss
         self.enable_ml_fallback = enable_ml_fallback
         self._ml_threshold = ml_threshold
-
-        # Compile counter-stereotype and derogation patterns
-        self._compile_special_patterns()
-
-    def _compile_special_patterns(self) -> None:
-        """Compile counter-stereotype, derogation, and SW gendered-suffix regex patterns."""
-        for lang, patterns in self.COUNTER_STEREOTYPE_PATTERNS.items():
-            self._counter_stereotype_patterns[lang] = [
-                (re.compile(p[0], re.IGNORECASE), p[1], p[2]) for p in patterns
-            ]
-
-        for lang, patterns in self.DEROGATION_PATTERNS.items():
-            self._derogation_patterns[lang] = [
-                (re.compile(p[0], re.IGNORECASE), p[1], p[2]) for p in patterns
-            ]
-
-        self._sw_gendered_suffix_compiled = [
-            (re.compile(p[0], re.IGNORECASE), p[1], p[2])
-            for p in self.SW_GENDERED_SUFFIX_PATTERNS
-        ]
-
-    def _detect_counter_stereotype(self, text: str, language: Language) -> Optional[Dict[str, Any]]:
-        """
-        Detect counter-stereotype patterns in text.
-
-        Counter-stereotypes challenge or contradict common gender stereotypes.
-        These should be preserved, not corrected.
-        """
-        patterns = self._counter_stereotype_patterns.get(language, [])
-        for pattern, category, gender in patterns:
-            if pattern.search(text):
-                return {
-                    'bias_label': BiasLabel.COUNTER_STEREOTYPE,
-                    'stereotype_category': category,
-                    'target_gender': gender,
-                    'explicitness': Explicitness.EXPLICIT,
-                    'matched_pattern': pattern.pattern
-                }
-        return None
-
-    def _detect_derogation(self, text: str, language: Language) -> Optional[Dict[str, Any]]:
-        """
-        Detect derogatory language patterns in text.
-
-        Derogation is language that demeans or disparages a gender group.
-        """
-        patterns = self._derogation_patterns.get(language, [])
-        for pattern, category, gender in patterns:
-            if pattern.search(text):
-                return {
-                    'bias_label': BiasLabel.DEROGATION,
-                    'stereotype_category': category,
-                    'target_gender': gender,
-                    'explicitness': Explicitness.EXPLICIT,
-                    'matched_pattern': pattern.pattern
-                }
-        return None
-
-    def _detect_sw_gendered_suffix(self, text: str) -> Optional[Dict[str, Any]]:
-        """
-        Detect Swahili gendered occupation suffixes: 'wa kiume' / 'wa kike'.
-
-        These appear on any occupation noun (daktari wa kike, profesa wa kiume,
-        mbunge wa kike, etc.) and are the highest-volume recall gap in SW detection.
-        Correction: remove the gender suffix, preserve the occupation term.
-        """
-        # Occupation nouns in Swahili follow m-wa noun class or are loanwords.
-        # We require the preceding word to start with an occupation-class prefix
-        # OR be an explicitly known occupation loanword.
-        # This is an allowlist approach — only fire on words that look like occupations.
-        OCCUPATION_PREFIXES = ('dakt', 'muuguzi', 'mhand', 'dereva', 'rubani', 'mwali',
-                               'polisi', 'askari', 'waziri', 'rais', 'mgomba', 'msema',
-                               'mwanas', 'mkuru', 'mhudumu', 'mkulima', 'mvuvi', 'mwimb',
-                               'meneja', 'mhasi', 'mpishi', 'mfanya', 'wakili', 'profes',
-                               'majaji', 'meya', 'mtend', 'mstaa', 'mzalis', 'mlezi',
-                               'fundi', 'kocha', 'mshauri', 'mcheza', 'mwandishi',
-                               'mchezaji', 'mbunifu', 'mwanasiasa', 'mbunge', 'gavana',
-                               'seneta', 'karani', 'nahodha', 'ofisa', 'afisa',
-                               'mkaguzi', 'msimamizi', 'mwenyekiti', 'mkurugenzi',
-                               'mwanasheria', 'mwanauchumi', 'mwanahabari', 'mhusika',
-                               # Additional occupations confirmed by AO-001 annotation
-                               'kiongozi', 'viongozi', 'denti', 'madent',
-                               'mgombea', 'wagombea', 'muwakilishi', 'wawakilishi',
-                               'mwakilishi', 'mwanamichezo', 'wanamichezo',
-                               'rapa', 'mwanaharakati', 'wanaharakati',
-                               'wasomi', 'mwanajeshi', 'wanajeshi',
-                               'mwanachama', 'wanachama', 'maskauti',
-                               'mwamuzi', 'wamuzi', 'mwangalizi',
-                               'muigizaji', 'waigizaji', 'mwanasanaa',
-                               'mfanyakazi', 'wafanyakazi', 'mtaalamu', 'wataalamu',
-                               'naibu', 'manaibu', 'kamanda', 'makomanda',
-                               'jenerali', 'majenerali', 'kanali', 'brigadie',
-                               'spika', 'waziri mkuu', 'makamu')
-        progress_ctx = re.compile(
-            r'\b(wa\s+kwanza|haki\s+za|usawa\s+wa\s+kijinsia|uwezeshaji|kuhamasisha)\b',
-            re.IGNORECASE
-        )
-
-        for compiled, suffix, target_gender in self._sw_gendered_suffix_compiled:
-            m = compiled.search(text)
-            if not m:
-                continue
-
-            # Suppress: progress/achievement reporting context
-            if progress_ctx.search(text):
-                continue
-
-            preceding_noun = m.group(1).lower()
-
-            # Suppress: pure digit strings (e.g. "100 wa kike")
-            if preceding_noun.isdigit():
-                continue
-
-            # Suppress: possessive/demonstrative pronouns that are never occupations
-            NON_OCC_WORDS = {
-                'wake', 'wake', 'yake', 'zake', 'lake', 'chake', 'pake',
-                'wao', 'yao', 'zao', 'lao', 'chao', 'pao',
-                'wetu', 'yetu', 'zetu', 'letu', 'chetu',
-                'wenu', 'yenu', 'zenu', 'lenu',
-                'huyo', 'hao', 'hawa', 'hizi', 'hilo', 'hayo',
-                'mmoja', 'wawili', 'watatu', 'wengi', 'wote', 'wengine',
-                'pekee', 'bora', 'mwingine', 'wengine',
-                'hasa', 'zaidi', 'sana', 'tu', 'pia',
-                'mzee', 'mdogo', 'mkubwa', 'mpya', 'mwisho',
-                'mwana', 'mtoto', 'watoto', 'vijana', 'kijana',
-                'mtu', 'watu', 'binadamu', 'rafiki', 'ndugu',
-                'mwananchi', 'wananchi', 'raia',
-                'shahidi', 'mshtakiwa',
-            }
-            if preceding_noun in NON_OCC_WORDS:
-                continue
-
-            # Only fire when preceding word looks like an occupation noun
-            if not any(preceding_noun.startswith(p) for p in OCCUPATION_PREFIXES):
-                continue
-
-            # Build correction: remove the gender suffix span
-            corrected = compiled.sub(lambda match: match.group(1), text).strip()
-            corrected = re.sub(r'  +', ' ', corrected)
-
-            cat = StereotypeCategory.FAMILY_ROLE if preceding_noun in {'mzazi', 'mlezi'} \
-                else StereotypeCategory.PROFESSION
-
-            return {
-                'from': m.group(0),
-                'to': m.group(1),
-                'suffix': suffix,
-                'corrected_text': corrected,
-                'target_gender': target_gender,
-                'stereotype_category': cat,
-            }
-        return None
 
     def detect_bias(self, text: str, language: Language) -> BiasDetectionResult:
         """
@@ -328,7 +94,7 @@ class BiasDetector:
         """
         try:
             # First check for derogation (highest priority - most harmful)
-            derogation_result = self._detect_derogation(text, language)
+            derogation_result = self._pattern_config.detect_derogation(text, language)
             if derogation_result:
                 return BiasDetectionResult(
                     text=text,
@@ -349,7 +115,7 @@ class BiasDetector:
             # Swahili gendered-suffix pattern: "[occupation] wa kiume/wa kike"
             # Fires on any occupation — covers the 1,847-sentence recall gap
             if language == Language.SWAHILI:
-                sw_suffix = self._detect_sw_gendered_suffix(text)
+                sw_suffix = self._pattern_config.detect_sw_gendered_suffix(text)
                 if sw_suffix:
                     return BiasDetectionResult(
                         text=text,
@@ -373,7 +139,7 @@ class BiasDetector:
                     )
 
             # Check for counter-stereotype (should be preserved, not corrected)
-            counter_result = self._detect_counter_stereotype(text, language)
+            counter_result = self._pattern_config.detect_counter_stereotype(text, language)
             if counter_result:
                 return BiasDetectionResult(
                     text=text,
