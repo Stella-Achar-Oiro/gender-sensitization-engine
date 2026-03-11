@@ -125,6 +125,7 @@ run_evaluation.py
 | [ui/components.py](ui/components.py) | render_stats_panel, render_edits, render_review_form |
 | [config.py](config.py) | DataVersions, RegionDialects |
 | [gradio_app.py](gradio_app.py) | Gradio public demo (HF Spaces) |
+| [docs/UI_APPS.md](docs/UI_APPS.md) | Canonical list of UI entry points (Next.js, Streamlit, Gradio) |
 | [run_evaluation.py](run_evaluation.py) | Main eval entry point |
 | [demo_live.py](demo_live.py) | Interactive CLI demo |
 
