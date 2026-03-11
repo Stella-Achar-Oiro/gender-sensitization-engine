@@ -59,6 +59,7 @@ Run `python3 run_evaluation.py` to verify.
 **ML Classifier (Stage 2):**
 - Model: `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned, 3 epochs, T4 x2)
 - Val metrics: P=0.938, R=0.784, F1=0.854, Loss=0.047
+- **Retraining:** Run `scripts/stratified_split.py --language sw` then `python3 ml/train_classifier.py --use-splits --epochs 5`. Val F1/precision/recall are written to `output_dir/val_metrics.json`; update Model Card after each retrain.
 - Activated via `JUAKAZI_ML_MODEL` env var in HF Space
 - Stage 2 warn-only — never replaces text, never sets has_bias_detected=True directly
 
