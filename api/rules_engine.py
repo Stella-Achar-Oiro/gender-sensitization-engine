@@ -1,32 +1,18 @@
-"""Rules engine — loads lexicon, applies corrections, builds edit/reason output."""
+"""Rules engine — applies corrections, builds edit/reason output. Uses core for rules and context."""
 
 import re
-import sys
 from pathlib import Path
 
-import pandas as pd
+from core.context_checker import should_apply_correction
+from core.rules_loader import load_rules as _load_rules
 
 BASE = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(BASE))
-
-from config import lexicon_filename
-from eval.context_checker import should_apply_correction
-
 RULES_DIR = BASE / "rules"
-
-
-def load_rules(lang: str) -> list[dict]:
-    path = RULES_DIR / lexicon_filename(lang)
-    if not path.exists():
-        return []
-    df = pd.read_csv(path, on_bad_lines="skip")
-    return [{col: str(row.get(col, "")) for col in df.columns} for _, row in df.iterrows()]
-
 
 # Module-level cache — loaded once at import time
 RULES: dict[str, list[dict]] = {
-    "en": load_rules("en"),
-    "sw": load_rules("sw"),
+    "en": _load_rules("en", RULES_DIR),
+    "sw": _load_rules("sw", RULES_DIR),
 }
 
 
@@ -41,11 +27,15 @@ def _preserve_case(orig: str, replacement: str) -> str:
 def _make_edit(orig: str, replacement: str, rule: dict) -> dict:
     tags = rule.get("tags", "") or "occupation/role"
     severity = rule.get("severity", "replace")
+    bias_type = rule.get("bias_label", "stereotype")
+    stereotype_category = rule.get("stereotype_category", "profession")
     return {
         "from": orig,
         "to": replacement,
         "severity": severity,
         "tags": tags,
+        "bias_type": bias_type,
+        "stereotype_category": stereotype_category,
         "reason": f"'{orig}' is gender-biased ({tags}); use gender-neutral '{replacement}'",
     }
 

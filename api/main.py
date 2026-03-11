@@ -11,10 +11,7 @@ from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import BatchRewriteRequest, RewriteRequest, RewriteResponse
 
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from eval.correction_evaluator import SemanticPreservationMetrics
+from core.semantic_preservation import SemanticPreservationMetrics
 
 logger = logging.getLogger(__name__)
 SEMANTIC_THRESHOLD = 0.70

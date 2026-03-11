@@ -3,18 +3,14 @@
 import csv
 from pathlib import Path
 
-from config import lexicon_filename, ground_truth_filename
+from config import ground_truth_filename
+from core.rules_loader import load_rules as load_rules_from_core
+
 
 def load_rules(lang):
-    """Load bias detection rules."""
-    rules = []
-    rules_path = Path("rules") / lexicon_filename(lang)
-    with open(rules_path, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row.get('biased'):
-                rules.append(row['biased'].lower())
-    return rules
+    """Load bias detection rules (list of lowercased biased terms). Uses core.rules_loader."""
+    rules = load_rules_from_core(lang)
+    return [r["biased"].lower() for r in rules if r.get("biased")]
 
 def detect_bias_main(text, lang):
     """Main detector using rules."""
