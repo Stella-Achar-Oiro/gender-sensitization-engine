@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 
-export function SeverityBadge({ severity }: { severity: "replace" | "warn" }) {
+export function SeverityBadge({ severity }: { severity: string }) {
   return severity === "replace" ? (
     <Badge className="bg-red-100 text-red-800 border-red-300">Bias detected</Badge>
   ) : (

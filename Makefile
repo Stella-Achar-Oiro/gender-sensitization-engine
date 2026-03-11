@@ -1,9 +1,9 @@
 # JuaKazi Development Makefile
 # Docker-first approach for consistency and reproducibility
 
-.PHONY: build build-fresh up down logs shell clean-docker \
+.PHONY: build build-fresh up up-web down logs shell clean-docker \
 	test eval train compare collect verify-week2 \
-	dev-test dev-eval dev-ui format lint clean help
+	run run-api run-web dev dev-test dev-eval dev-ui format lint clean help
 
 # Default target - show help
 .DEFAULT_GOAL := help
@@ -17,7 +17,8 @@ help:
 	@echo "  make build-fresh      Build Docker image (no cache, clean build)"
 	@echo "  make test             Run all tests (192 tests)"
 	@echo "  make eval             Run F1 evaluation across all languages"
-	@echo "  make up               Start API (:8000) + UI (:8501) services"
+	@echo "  make up               Start API (:8000) + Streamlit UI (:8501)"
+	@echo "  make up-web           Start API (:8000) + Next.js web (:3000)"
 	@echo "  make down             Stop all services"
 	@echo "  make logs             View service logs (follow mode)"
 	@echo "  make shell            Open bash shell in container"
@@ -28,10 +29,13 @@ help:
 	@echo "  make collect          Show data collection sources"
 	@echo "  make verify-week2     Verify complete Week 2 workflow"
 	@echo ""
-	@echo "Quick Local Dev (Optional - for fast iteration):"
+	@echo "Quick Local Dev (open UI at http://localhost:3000):"
+	@echo "  make run              Start API + Next.js with one command; Ctrl+C stops both"
+	@echo "  make run-api          API only (:8000)"
+	@echo "  make run-web          Next.js only (:3000; run API in other terminal if needed)"
 	@echo "  make dev-test         Run tests locally (requires local setup)"
 	@echo "  make dev-eval         Run evaluation locally"
-	@echo "  make dev-ui           Launch testing UI (Streamlit)"
+	@echo "  make dev-ui           Launch Streamlit UI at http://localhost:8501"
 	@echo ""
 	@echo "Code Quality:"
 	@echo "  make format           Format code with black and isort"
@@ -65,8 +69,12 @@ eval:
 
 # Service management
 up:
-	@echo "Starting API (:8000) and UI (:8501) services..."
+	@echo "Starting API (:8000) and Streamlit UI (:8501)..."
 	docker-compose up -d api ui
+
+up-web:
+	@echo "Starting API (:8000) and Next.js web (:3000)..."
+	docker-compose up -d api web
 
 down:
 	@echo "Stopping all services..."
@@ -131,6 +139,23 @@ verify-week2:
 # ============================================================================
 # QUICK LOCAL DEV (Optional - for fast iteration during development)
 # ============================================================================
+# One command: make run — starts API + Next.js, open http://localhost:3000. Ctrl+C stops both.
+
+run:
+	@test -f apps/web/.env.local || cp apps/web/.env.local.example apps/web/.env.local; \
+	echo "Starting API + Next.js. Open http://localhost:3000 — Ctrl+C stops both."; \
+	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000 & API_PID=$$!; \
+	cd apps/web && npm run dev; kill $$API_PID 2>/dev/null; true
+
+dev: run
+
+run-api:
+	@echo "API only at http://localhost:8000"
+	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+
+run-web:
+	@echo "Next.js only at http://localhost:3000 (start API first: make run-api)"
+	cd apps/web && npm run dev
 
 dev-test:
 	@echo "Running tests locally (requires local Python setup)..."

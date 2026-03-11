@@ -15,7 +15,12 @@ const EXAMPLES: Record<Language, string> = {
   ki: "Mũndũ-mũrũme nĩ we mũtongoria wa nyũmba.",
 }
 
-export function TextAnalyzer() {
+interface TextAnalyzerProps {
+  /** When set (e.g. analyze page with sidebar), parent shows the result; we don’t render CorrectionPanel here. */
+  onAnalyzed?: (result: RewriteResponse) => void
+}
+
+export function TextAnalyzer({ onAnalyzed }: TextAnalyzerProps) {
   const [lang, setLang] = useState<Language>("sw")
   const [text, setText] = useState("")
   const [loading, setLoading] = useState(false)
@@ -34,12 +39,13 @@ export function TextAnalyzer() {
         text: text.trim(),
       })
       setResult(res)
+      onAnalyzed?.(res)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong")
     } finally {
       setLoading(false)
     }
-  }, [text, lang])
+  }, [text, lang, onAnalyzed])
 
   const handleExample = () => {
     setText(EXAMPLES[lang])
@@ -60,7 +66,7 @@ export function TextAnalyzer() {
         value={text}
         onChange={(e) => { setText(e.target.value); setResult(null) }}
         rows={5}
-        className="resize-none text-base"
+        className="resize-none text-base min-h-[120px] sm:min-h-[140px]"
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAnalyze()
         }}
@@ -80,7 +86,7 @@ export function TextAnalyzer() {
         </p>
       )}
 
-      {result && <CorrectionPanel result={result} />}
+      {result && !onAnalyzed && <CorrectionPanel result={result} />}
     </div>
   )
 }

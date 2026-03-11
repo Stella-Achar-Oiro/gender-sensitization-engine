@@ -16,6 +16,20 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Local development (one command)
+
+From the **repo root**:
+
+```bash
+make run
+```
+
+Then open **http://localhost:3000** and click **Analyse**. This starts the API and the Next.js UI together; Ctrl+C stops both. The UI calls the backend via a dev proxy (`/api` → backend), so Analyse works without any `.env` setup.
+
+### Docker (API + Next.js)
+
+From the **repo root**: `make up-web` — starts API on :8000 and this app on :3000. Open http://localhost:3000; the app is built with `NEXT_PUBLIC_API_URL=http://localhost:8000` so the browser can reach the API.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

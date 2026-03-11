@@ -18,7 +18,7 @@ services:
     networks:
       - juakazi-network
 
-  # Review UI service
+  # Review UI service (Streamlit)
   ui:
     build: .
     container_name: juakazi-ui
@@ -30,7 +30,22 @@ services:
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
-    command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+    command: streamlit run ui/app.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - api
+    networks:
+      - juakazi-network
+
+  # Next.js frontend (API at :8000, Web at :3000; browser calls host so API URL = http://localhost:8000)
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    container_name: juakazi-web
+    ports:
+      - "3000:3000"
     depends_on:
       - api
     networks:

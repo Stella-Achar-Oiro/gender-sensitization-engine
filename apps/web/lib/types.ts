@@ -4,8 +4,8 @@ export interface Edit {
   from: string
   to: string
   severity: "replace" | "warn"
-  bias_type: string
-  stereotype_category: string
+  bias_type?: string
+  stereotype_category?: string
   reason?: string
 }
 

@@ -13,7 +13,7 @@ export function CorrectionPanel({ result }: Props) {
   return (
     <div className="space-y-4">
       {/* Reason */}
-      <Card className={hasBias ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}>
+      <Card className={`glass-subtle ${hasBias ? "border-red-200/50 bg-red-50/80" : "border-green-200/50 bg-green-50/80"}`}>
         <CardContent className="pt-4 pb-3">
           <p className="text-sm font-medium">
             {hasBias ? "⚠️ " : "✅ "}
@@ -25,7 +25,7 @@ export function CorrectionPanel({ result }: Props) {
       {/* Side by side */}
       {hasBias && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
+          <Card className="glass-subtle">
             <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm text-muted-foreground">Original</CardTitle>
             </CardHeader>
@@ -35,7 +35,7 @@ export function CorrectionPanel({ result }: Props) {
               </p>
             </CardContent>
           </Card>
-          <Card className="border-green-200">
+          <Card className="glass-subtle border-green-200/50">
             <CardHeader className="pb-2 pt-4">
               <CardTitle className="text-sm text-muted-foreground">Suggested correction</CardTitle>
             </CardHeader>
@@ -66,7 +66,7 @@ export function CorrectionPanel({ result }: Props) {
 
       {/* Confidence + source */}
       <p className="text-xs text-muted-foreground">
-        Confidence: {Math.round(result.confidence * 100)}% · Source: {result.source}
+        Confidence: {Math.round(result.confidence * 100)}% · Detected by: {result.source}
         {result.semantic_score !== undefined && ` · Semantic score: ${result.semantic_score.toFixed(2)}`}
       </p>
     </div>
