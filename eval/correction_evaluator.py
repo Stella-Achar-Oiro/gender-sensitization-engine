@@ -9,7 +9,6 @@
 """
 
 import csv
-import json
 import re
 import sys
 from collections import defaultdict
@@ -27,6 +26,7 @@ from core.rules_loader import load_rules as load_rules_from_core
 from core.semantic_preservation import SemanticPreservationMetrics
 from eval.bias_detector import BiasDetector
 from eval.data_loader import GroundTruthLoader
+from eval.eval_report_io import write_report_txt, write_results_json
 from eval.models import BiasCategory, Language
 
 
@@ -533,25 +533,13 @@ class CorrectionEvaluator:
             report += "\n"
         return report
 
-    # save metrics to JSON
     def save_results_to_json(self, results: dict[str, Any], output_path: Path) -> None:
-        """Save evaluation results to a JSON file."""
-        try:
-            with open(output_path, "w", encoding="utf-8") as f:
-                json.dump(results, f, ensure_ascii=False, indent=4)
-            print(f"Results saved to {output_path}")
-        except OSError as e:
-            print(f"Error saving results to {output_path}: {e}")
+        """Save evaluation results to a JSON file (delegates to eval_report_io)."""
+        write_results_json(results, output_path)
 
-    # save report to markdown well formatted and readable
     def save_report_to_txt(self, report: str, output_path: Path) -> None:
-        """Save evaluation report to a markdown file."""
-        try:
-            with open(output_path, "w", encoding="utf-8") as f:
-                f.write(report)
-            print(f"Report saved to {output_path}")
-        except OSError as e:
-            print(f"Error saving report to {output_path}: {e}")
+        """Save evaluation report to a text file (delegates to eval_report_io)."""
+        write_report_txt(report, output_path)
 
 
 if __name__ == "__main__":

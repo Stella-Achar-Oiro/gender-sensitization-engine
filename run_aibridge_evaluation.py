@@ -2,6 +2,8 @@
 """
 AI BRIDGE compliant evaluation with fairness metrics.
 
+Deprecated: prefer  python run_evaluation.py --fairness  (single entry point).
+
 This script runs comprehensive evaluation including:
 - F1, Precision, Recall (standard metrics)
 - Demographic Parity (DP)
@@ -182,4 +184,10 @@ def main():
 
 
 if __name__ == "__main__":
+    import warnings
+    warnings.warn(
+        "run_aibridge_evaluation.py is deprecated. Use: python run_evaluation.py --fairness",
+        DeprecationWarning,
+        stacklevel=1,
+    )
     main()
