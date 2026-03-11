@@ -126,6 +126,7 @@ run_evaluation.py
 | [config.py](config.py) | DataVersions, RegionDialects |
 | [gradio_app.py](gradio_app.py) | Gradio public demo (HF Spaces) |
 | [docs/UI_APPS.md](docs/UI_APPS.md) | Canonical list of UI entry points (Next.js, Streamlit, Gradio) |
+| [docs/DATA_PROMPTS.md](docs/DATA_PROMPTS.md) | Exact prompts and commands for Sprint 2/3 data work (annotators, κ, proverbs, Sheng) |
 | [run_evaluation.py](run_evaluation.py) | Main eval entry point |
 | [demo_live.py](demo_live.py) | Interactive CLI demo |
 
