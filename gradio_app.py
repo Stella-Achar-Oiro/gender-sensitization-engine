@@ -173,7 +173,7 @@ def _rewrite_handler(req: _RewriteReq):
     }
 
 
-with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title="JuaKazi · Gender Bias Tester") as demo:
     gr.Markdown("# JuaKazi · Gender Bias Detection & Correction")
     gr.Markdown(
         "Real Python engine · Rules-based · 4 languages · AIBRIDGE-compliant · "
@@ -233,7 +233,7 @@ with gr.Blocks(title="JuaKazi · Gender Bias Tester", theme=gr.themes.Soft()) as
         outputs=[verdict_out, detect_out, correct_out],
     )
 
-app = demo.app
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -241,6 +241,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.post("/rewrite")(_rewrite_handler)
+app = gr.mount_gradio_app(app, demo, path="/")
 
 if __name__ == "__main__":
-    demo.launch()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)

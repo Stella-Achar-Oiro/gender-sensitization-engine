@@ -1,0 +1,80 @@
+<View>
+  <!-- ── Header ── -->
+  <Header value="JuaKazi · Swahili Gender Bias Annotation" style="font-size:18px;font-weight:700;color:#1a5c2e;margin-bottom:4px;" />
+  <Header value="Read the sentence carefully. Does it enforce a gender role, restrict capability by gender, or use a gendered occupational term unnecessarily?" style="font-size:13px;color:#4a5568;font-weight:400;margin-bottom:16px;" />
+
+  <!-- ── Source text ── -->
+  <View style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:16px;">
+    <Header value="Sentence" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px;" />
+    <Text name="text" value="$text" style="font-size:16px;line-height:1.7;color:#1a202c;" />
+  </View>
+
+  <!-- ── Context note (pre-filled by engineer) ── -->
+  <View style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px;margin-bottom:16px;" visibleWhen="$context_note">
+    <Header value="Context note from engineer" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#92400e;margin-bottom:6px;" />
+    <Text name="context_note" value="$context_note" style="font-size:13px;color:#78350f;" />
+  </View>
+
+  <!-- ── Instruction ── -->
+  <View style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;margin-bottom:20px;" visibleWhen="$instruction">
+    <Header value="Instruction" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#166534;margin-bottom:6px;" />
+    <Text name="instruction" value="$instruction" style="font-size:13px;color:#14532d;" />
+  </View>
+
+  <!-- ── Q1: Has bias ── -->
+  <View style="margin-bottom:20px;">
+    <Header value="1. Does this sentence contain gender bias?" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:10px;" />
+    <Choices name="has_bias" toName="text" choice="single" showInLine="true" required="true">
+      <Choice value="true"  style="background:#fee2e2;color:#991b1b;border-radius:6px;padding:6px 14px;font-weight:600;" />
+      <Choice value="false" style="background:#dcfce7;color:#166534;border-radius:6px;padding:6px 14px;font-weight:600;" />
+    </Choices>
+  </View>
+
+  <!-- ── Q2: Stereotype category (only if bias=true) ── -->
+  <View style="margin-bottom:20px;" visibleWhen="choice-selected" whenTagName="has_bias" whenChoiceValue="true">
+    <Header value="2. Stereotype category" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:10px;" />
+    <Choices name="stereotype_category" toName="text" choice="single" required="true">
+      <Choice value="occupational_stereotype" />
+      <Choice value="family_role" />
+      <Choice value="leadership" />
+      <Choice value="appearance" />
+      <Choice value="sexuality" />
+      <Choice value="violence" />
+      <Choice value="derogation" />
+      <Choice value="counter_stereotype" />
+      <Choice value="other" />
+    </Choices>
+  </View>
+
+  <!-- ── Q3: Explicitness (only if bias=true) ── -->
+  <View style="margin-bottom:20px;" visibleWhen="choice-selected" whenTagName="has_bias" whenChoiceValue="true">
+    <Header value="3. How explicit is the bias?" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:10px;" />
+    <Choices name="explicitness" toName="text" choice="single" required="true">
+      <Choice value="explicit"  label="Explicit — bias is stated directly" />
+      <Choice value="implicit"  label="Implicit — bias is implied or structural" />
+    </Choices>
+  </View>
+
+  <!-- ── Q4: Expected correction (only if bias=true) ── -->
+  <View style="margin-bottom:20px;" visibleWhen="choice-selected" whenTagName="has_bias" whenChoiceValue="true">
+    <Header value="4. Write the corrected sentence (gender-neutral)" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:6px;" />
+    <Header value="Remove gendered terms. Keep everything else identical." style="font-size:12px;color:#6b7280;font-weight:400;margin-bottom:8px;" />
+    <TextArea name="expected_correction" toName="text" placeholder="Type the corrected sentence here…" rows="3" maxSubmissions="1" />
+  </View>
+
+  <!-- ── Q5: Confidence ── -->
+  <View style="margin-bottom:20px;">
+    <Header value="5. How confident are you in this label?" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:10px;" />
+    <Choices name="annotator_confidence" toName="text" choice="single" showInLine="true" required="true">
+      <Choice value="high"   label="High — I am sure" style="background:#dcfce7;color:#166534;border-radius:6px;padding:5px 12px;" />
+      <Choice value="medium" label="Medium — mostly sure" style="background:#fef9c3;color:#854d0e;border-radius:6px;padding:5px 12px;" />
+      <Choice value="low"    label="Low — uncertain, needs review" style="background:#fee2e2;color:#991b1b;border-radius:6px;padding:5px 12px;" />
+    </Choices>
+  </View>
+
+  <!-- ── Q6: Notes (optional) ── -->
+  <View style="margin-bottom:8px;">
+    <Header value="6. Notes (optional) — explain your decision if confidence is low or the case is unusual" style="font-size:15px;font-weight:600;color:#1a202c;margin-bottom:8px;" />
+    <TextArea name="annotator_notes" toName="text" placeholder="Optional: explain your reasoning…" rows="2" maxSubmissions="1" />
+  </View>
+</View>

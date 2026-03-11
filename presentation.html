@@ -1,683 +1,1078 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JuaKazi — Gender Bias Detection for African Languages</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JuaKazi — Gender Sensitization Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-  :root {
-    --green: #1a5c2e;
-    --green-mid: #2d7a45;
-    --green-light: #3d9e5c;
-    --green-dim: #0e3319;
-  }
+  <style>
+    :root {
+      --navy-primary:   #1a5c2e;
+      --navy-secondary: #236b36;
+      --navy-hover:     #2d8044;
+      --navy-light:     #38a169;
+      --navy-dark:      #145224;
+      --data-blue:      #4299E1;
+      --data-purple:    #9F7AEA;
+      --data-teal:      #38B2AC;
+      --data-indigo:    #667EEA;
+      --success:        #68D391;
+      --warning:        #F6E05E;
+      --error:          #FC8181;
+      --info:           #63B3ED;
+      --sage-green:     #68D391;
+      --coral-red:      #FC8181;
+      --bright-amber:   #F6E05E;
+      --gray-50:        #F9FAFB;
+      --gray-100:       #F3F4F6;
+      --gray-200:       #E5E7EB;
+      --gray-300:       #D1D5DB;
+      --gray-400:       #9CA3AF;
+      --gray-500:       #6B7280;
+      --gray-600:       #4B5563;
+      --gray-700:       #374151;
+      --gray-800:       #1F2937;
+      --gray-900:       #111827;
+      --bg-primary:     #FFFFFF;
+      --bg-secondary:   #F8FAFC;
+      --bg-tertiary:    #F1F5F9;
+      --bg-inverse:     #1a5c2e;
+      --text-primary:   #1A202C;
+      --text-secondary: #4A5568;
+      --text-tertiary:  #A0AEC0;
+      --text-inverse:   #FFFFFF;
+      --border-light:   #E2E8F0;
+      --border-medium:  #CBD5E0;
+      --border-dark:    #A0AEC0;
+      --font-primary: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+      --radius: 10px;
+      --shadow: 0 2px 16px rgba(26,92,46,.10);
+    }
 
-  body {
-    font-family: 'Georgia', serif;
-    background: #000;
-    color: #fff;
-    height: 100vh;
-    overflow: hidden;
-  }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-primary);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+    }
 
-  .deck { width: 100vw; height: 100vh; position: relative; }
+    .icon {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 400;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+    .icon--filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .icon--lg  { font-size: 36px; }
+    .icon--xl  { font-size: 48px; }
+    .icon--sm  { font-size: 18px; }
 
-  .slide {
-    position: absolute;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 52px 80px;
-  }
-  .slide.active { display: flex; }
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 52px;
+      background: var(--navy-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      border-bottom: 1px solid var(--navy-secondary);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-inverse);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+    .nav-logo { height: 28px; width: auto; border-radius: 6px; }
+    .nav-links { display: flex; gap: 2px; }
+    .nav-links a {
+      color: rgba(255,255,255,.6);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 6px;
+      transition: all .15s;
+    }
+    .nav-links a:hover { color: var(--text-inverse); background: var(--navy-secondary); }
 
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: #555;
-    margin-bottom: 32px;
-    align-self: flex-start;
-  }
+    .progress-bar {
+      position: fixed;
+      top: 52px; left: 0;
+      height: 2px;
+      background: var(--navy-light);
+      width: 0%;
+      z-index: 99;
+      transition: width .2s;
+    }
 
-  /* ── SLIDE 1 — Title ── */
-  .s1 {
-    background: #000;
-    border: 2px solid var(--green);
-    inset: 20px;
-    position: absolute;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 52px 80px;
-  }
-  .s1.active { display: flex; }
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 100px 80px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) { .slide { padding: 90px 24px 48px; } }
 
-  .s1 .logo-row {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 36px;
-  }
-  .s1 .logo-row img { height: 52px; }
-  .s1 .logo-row .brand {
-    font-size: 28px;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    color: var(--green-light);
-  }
-  .s1 .kicker {
-    font-size: 11px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: #444;
-    margin-bottom: 22px;
-  }
-  .s1 h1 {
-    font-size: 56px;
-    font-weight: 400;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    text-align: center;
-    margin-bottom: 22px;
-  }
-  .s1 h1 span { color: #555; }
-  .s1 .sub {
-    font-size: 16px;
-    color: #777;
-    text-align: center;
-    max-width: 580px;
-    line-height: 1.65;
-    margin-bottom: 44px;
-  }
-  .s1 .pills { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-  .pill {
-    border: 1px solid var(--green);
-    color: var(--green-light);
-    padding: 6px 20px;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
+    .slide--hero   { background: var(--navy-primary); color: var(--text-inverse); }
+    .slide--dark   { background: var(--navy-primary); color: var(--text-inverse); }
+    .slide--dark2  { background: var(--gray-900);     color: var(--text-inverse); }
+    .slide--light  { background: var(--bg-primary); }
+    .slide--muted  { background: var(--bg-secondary); }
+    .slide--tinted { background: var(--bg-tertiary); }
 
-  /* ── SLIDE 2 — Problem ── */
-  .s2 { background: #fff; color: #000; }
-  .s2 .section-label { color: #bbb; }
-  .s2 h2 {
-    font-size: 36px;
-    font-weight: 400;
-    margin-bottom: 44px;
-    align-self: flex-start;
-    line-height: 1.2;
-    max-width: 680px;
-  }
-  .prob-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; width: 100%; }
-  .prob-card { border-top: 3px solid var(--green); padding-top: 18px; }
-  .prob-card .icon-wrap {
-    width: 38px; height: 38px;
-    background: var(--green);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 12px;
-  }
-  .prob-card .icon-wrap svg { fill: #fff; width: 20px; height: 20px; }
-  .prob-card .num { font-size: 44px; font-weight: 400; line-height: 1; margin-bottom: 10px; color: var(--green); }
-  .prob-card p { font-size: 13px; line-height: 1.7; color: #444; }
+    .watermark {
+      position: absolute;
+      top: 60px; right: 72px;
+      font-size: 120px;
+      font-weight: 700;
+      opacity: .04;
+      color: var(--navy-primary);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .slide--dark  .watermark,
+    .slide--dark2 .watermark { color: #fff; }
 
-  /* ── SLIDE 3 — Differentiator ── */
-  .s3 { background: #000; }
-  .s3 h2 { font-size: 36px; font-weight: 400; margin-bottom: 36px; align-self: flex-start; max-width: 680px; line-height: 1.2; }
-  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
-  .diff-card {
-    border: 1px solid #1a1a1a;
-    padding: 24px;
-    background: #070707;
-  }
-  .diff-card.us { border-color: var(--green); background: var(--green-dim); }
-  .diff-label {
-    font-size: 9px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: #444;
-    margin-bottom: 14px;
-  }
-  .diff-card.us .diff-label { color: var(--green-light); }
-  .diff-card h3 { font-size: 16px; font-weight: 400; margin-bottom: 14px; color: #888; }
-  .diff-card.us h3 { color: #fff; }
-  .diff-card ul { list-style: none; }
-  .diff-card ul li {
-    font-size: 12px;
-    color: #555;
-    line-height: 1.7;
-    padding: 3px 0;
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-  }
-  .diff-card.us ul li { color: #aaa; }
-  .diff-card ul li::before { content: '—'; color: #333; flex-shrink: 0; }
-  .diff-card.us ul li::before { color: var(--green-light); }
+    .slide-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: .5;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .slide-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 2px;
+    }
 
-  /* ── SLIDE 4 — System ── */
-  .s4 { background: #000; }
-  .s4 h2 { font-size: 36px; font-weight: 400; margin-bottom: 32px; align-self: flex-start; max-width: 660px; line-height: 1.2; }
-  .pipeline { display: flex; align-items: stretch; width: 100%; }
-  .pipe-step {
-    flex: 1;
-    border: 1px solid #1e1e1e;
-    padding: 20px 16px;
-    text-align: center;
-    position: relative;
-  }
-  .pipe-step.highlight { border-color: var(--green); background: var(--green-dim); }
-  .pipe-step:not(:last-child)::after {
-    content: '→';
-    position: absolute;
-    right: -16px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 20px;
-    color: #333;
-    z-index: 1;
-  }
-  .pipe-step .sn { font-size: 9px; letter-spacing: 0.3em; color: #444; text-transform: uppercase; margin-bottom: 8px; }
-  .pipe-step .st { font-size: 14px; margin-bottom: 6px; }
-  .pipe-step.highlight .st { color: var(--green-light); }
-  .pipe-step .sd { font-size: 11px; color: #666; line-height: 1.5; }
-  .ex-box {
-    margin-top: 28px;
-    border: 1px solid #1e1e1e;
-    padding: 18px 24px;
-    width: 100%;
-    background: #050505;
-  }
-  .ex-lbl { font-size: 9px; letter-spacing: 0.3em; color: #444; text-transform: uppercase; margin-bottom: 10px; }
-  .ex-row { display: flex; align-items: center; gap: 16px; font-size: 13px; flex-wrap: wrap; }
-  .ex-b { color: #666; }
-  .ex-arr { color: var(--green); font-size: 18px; }
-  .ex-a { color: #fff; }
-  .ex-tag {
-    margin-left: auto;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--green-light);
-    text-transform: uppercase;
-    border: 1px solid var(--green);
-    padding: 3px 10px;
-  }
+    h1 { font-size: clamp(38px, 6vw, 68px); font-weight: 700; line-height: 1.08; letter-spacing: -1.5px; }
+    h2 { font-size: clamp(24px, 3.5vw, 38px); font-weight: 700; line-height: 1.15; letter-spacing: -1px; margin-bottom: 32px; }
+    h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: inherit; }
+    .subtitle { font-size: clamp(15px, 1.8vw, 19px); opacity: .75; margin-top: 18px; max-width: 580px; line-height: 1.65; }
 
-  /* ── SLIDE 5 — Data ── */
-  .s5 { background: #000; }
-  .s5 h2 { font-size: 36px; font-weight: 400; margin-bottom: 28px; align-self: flex-start; line-height: 1.2; }
-  .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
-  .data-card { border: 1px solid #1a1a1a; padding: 18px 20px; background: #070707; }
-  .data-card.primary { border-color: var(--green); }
-  .dc-lang { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: #444; margin-bottom: 4px; }
-  .data-card.primary .dc-lang { color: var(--green-light); }
-  .dc-count { font-size: 24px; font-weight: 400; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #1a1a1a; }
-  .dc-count span { font-size: 12px; color: #555; margin-left: 8px; }
-  .src-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .src-lbl { font-size: 11px; color: #777; min-width: 180px; }
-  .src-bar-bg { flex: 1; height: 3px; background: #1a1a1a; position: relative; }
-  .src-bar-fill { position: absolute; left:0; top:0; bottom:0; background: var(--green-light); }
-  .data-card:not(.primary) .src-bar-fill { background: #555; }
-  .src-pct { font-size: 11px; color: #444; min-width: 36px; text-align: right; }
-  .ann-note { margin-top: 8px; font-size: 10px; color: #444; border-top: 1px solid #141414; padding-top: 7px; line-height: 1.55; }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 52px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,.15);
+    }
+    .hero-stat .num { font-size: 40px; font-weight: 700; line-height: 1; color: var(--navy-light); }
+    .hero-stat .lbl { font-size: 12px; font-weight: 500; opacity: .6; margin-top: 6px; }
 
-  /* ── SLIDE 6 — Results ── */
-  .s6 { background: #fff; color: #000; }
-  .s6 .section-label { color: #bbb; }
-  .s6 h2 { font-size: 36px; font-weight: 400; margin-bottom: 36px; align-self: flex-start; }
-  .rtable { width: 100%; border-collapse: collapse; }
-  .rtable th {
-    text-align: left;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: #bbb;
-    border-bottom: 2px solid #000;
-    padding: 0 14px 10px 0;
-  }
-  .rtable td { padding: 12px 14px 12px 0; font-size: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
-  .rtable tr.hl td { background: #f0f7f2; padding-left: 8px; }
-  .badge {
-    display: inline-block;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    border: 1px solid var(--green);
-    color: var(--green);
-    padding: 2px 8px;
-  }
-  .badge.grey { border-color: #ccc; color: #aaa; }
-  .bwrap { display: flex; align-items: center; gap: 8px; }
-  .bbg { flex: 1; height: 5px; background: #eee; position: relative; }
-  .bfill { position: absolute; left:0; top:0; bottom:0; background: var(--green); }
-  .bbg.grey .bfill { background: #ccc; }
-  .bval { font-size: 13px; min-width: 42px; font-weight: 700; }
-  .ml-note {
-    margin-top: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 14px;
-    font-size: 12px;
-    color: #888;
-    display: flex;
-    gap: 32px;
-  }
-  .ml-note strong { color: var(--green); }
+    .grid { display: grid; gap: 18px; }
+    .grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .grid--4 { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 900px) { .grid--3 { grid-template-columns: repeat(2, 1fr); } .grid--4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px) { .grid--2, .grid--3, .grid--4 { grid-template-columns: 1fr; } }
 
-  /* ── SLIDE 7 — Roadmap ── */
-  .s7 { background: #000; }
-  .s7 h2 { font-size: 36px; font-weight: 400; margin-bottom: 32px; align-self: flex-start; max-width: 580px; line-height: 1.2; }
-  .roadmap { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; width: 100%; }
-  .rm-col { background: #060606; border: 1px solid #1a1a1a; padding: 22px 20px; }
-  .rm-col.doing { border-color: var(--green); }
-  .rm-phase { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: #444; margin-bottom: 10px; }
-  .rm-col.doing .rm-phase { color: var(--green-light); }
-  .rm-col h3 { font-size: 16px; font-weight: 400; margin-bottom: 14px; border-bottom: 1px solid #1a1a1a; padding-bottom: 12px; color: #666; }
-  .rm-col.done h3 { color: #aaa; }
-  .rm-col.doing h3 { color: #fff; }
-  .rm-col ul { list-style: none; }
-  .rm-col ul li { font-size: 11px; color: #555; line-height: 1.7; padding: 3px 0; display: flex; gap: 8px; }
-  .rm-col.done ul li { color: #666; }
-  .rm-col.doing ul li { color: #999; }
-  .rm-col ul li::before { content: '—'; color: #2a2a2a; flex-shrink: 0; }
-  .rm-col.doing ul li::before { color: var(--green); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+    @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
 
-  /* ── Nav ── */
-  .nav {
-    position: fixed;
-    bottom: 28px;
-    right: 36px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    z-index: 100;
-  }
-  .nav button {
-    background: none;
-    border: 1px solid #333;
-    color: #fff;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color .2s;
-  }
-  .nav button:hover { border-color: var(--green-light); }
-  #counter { font-size: 11px; letter-spacing: 0.2em; color: #444; min-width: 40px; text-align: center; }
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .card--navy { background: var(--navy-secondary); border-color: var(--navy-hover); color: var(--text-inverse); }
+    .card--dark2 { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.1); color: var(--text-inverse); }
+    .card-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+      color: var(--navy-primary);
+    }
+    .card--navy .card-icon-wrap,
+    .card--dark2 .card-icon-wrap { background: rgba(255,255,255,.12); color: var(--text-inverse); }
+    .card p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
+    .card--navy p, .card--dark2 p { color: rgba(255,255,255,.65); }
 
-  /* light slide overrides */
-  .nav.light button { color: #000; border-color: #ccc; }
-  .nav.light button:hover { border-color: var(--green); }
-  .nav.light #counter { color: #bbb; }
-</style>
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
+    .badge .icon { font-size: 12px; }
+    .badge--success { background: rgba(104,211,145,.15); color: #276749; }
+    .badge--warning { background: rgba(246,224,94,.2);  color: #744210; }
+    .badge--info    { background: rgba(99,179,237,.15); color: #1a365d; }
+    .badge--navy    { background: rgba(56,161,105,.15); color: var(--navy-dark); }
+    .badge--purple  { background: rgba(159,122,234,.15); color: #553c9a; }
+    .badge--teal    { background: rgba(56,178,172,.15); color: #234e52; }
+    .badge--error   { background: rgba(252,129,129,.15); color: #9b2c2c; }
+
+    pre {
+      background: var(--gray-900);
+      color: var(--gray-200);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.75;
+      border: 1px solid var(--gray-800);
+    }
+    code { font-family: var(--font-mono); font-size: .88em; }
+    .tok-kw   { color: #63B3ED; }
+    .tok-fn   { color: #9F7AEA; }
+    .tok-cls  { color: #F6E05E; }
+    .tok-str  { color: #68D391; }
+    .tok-cm   { color: var(--gray-500); font-style: italic; }
+    .tok-num  { color: #FC8181; }
+
+    .endpoint { display: flex; align-items: baseline; gap: 10px; padding: 6px 10px; border-radius: 6px; margin-bottom: 2px; font-size: 13px; transition: background .1s; }
+    .endpoint:hover { background: var(--bg-tertiary); }
+    .method { font-family: var(--font-mono); font-size: 10px; font-weight: 700; min-width: 36px; letter-spacing: .5px; }
+    .method--post { color: var(--sage-green); }
+    .method--get  { color: var(--info); }
+    .ep-path { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+
+    .timeline { display: flex; gap: 0; align-items: stretch; }
+    .timeline-step { flex: 1; position: relative; }
+    .timeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 14px solid var(--border-light);
+      z-index: 2;
+    }
+    .timeline-inner {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 18px 14px;
+      text-align: center;
+      margin: 0 10px;
+      box-shadow: var(--shadow);
+      height: 100%;
+    }
+    .timeline-step:first-child .timeline-inner { margin-left: 0; }
+    .timeline-step:last-child  .timeline-inner { margin-right: 0; }
+    .timeline-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--navy-primary);
+      color: var(--text-inverse);
+      font-weight: 700;
+      font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+    }
+    .timeline-inner h4 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .timeline-inner p  { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--navy-primary); color: var(--text-inverse); padding: 10px 14px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; }
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child  { border-radius: 0 8px 0 0; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--bg-secondary); }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .pill { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; border: 1.5px solid; }
+    .pill--fw  { border-color: var(--data-blue);   color: var(--data-blue); }
+    .pill--ml  { border-color: var(--data-purple); color: var(--data-purple); }
+    .pill--db  { border-color: var(--data-teal);   color: var(--data-teal); }
+    .pill--ui  { border-color: var(--navy-light);  color: var(--navy-light); }
+    .pill--dev { border-color: var(--gray-400);    color: var(--gray-500); }
+    .pill--int { border-color: var(--data-indigo); color: var(--data-indigo); }
+
+    .callout {
+      border-left: 3px solid var(--navy-light);
+      background: rgba(56,161,105,.07);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--text-primary);
+      margin: 16px 0;
+    }
+    .callout--dark { border-left-color: rgba(255,255,255,.5); background: rgba(255,255,255,.07); color: var(--text-inverse); }
+
+    .divider { height: 1px; background: var(--border-light); margin: 24px 0; }
+
+    .checklist { list-style: none; }
+    .checklist li { padding: 5px 0 5px 26px; position: relative; font-size: 14px; color: inherit; }
+    .checklist li .icon { position: absolute; left: 0; top: 4px; font-size: 16px; color: var(--success); }
+    .checklist li .icon--warn { color: var(--warning); }
+    .checklist li .icon--err  { color: var(--error); }
+
+    .stat-block { text-align: center; padding: 20px 12px; }
+    .stat-block .big { font-size: 44px; font-weight: 700; line-height: 1; color: var(--navy-light); }
+    .stat-block .lbl { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.55); margin-top: 6px; }
+
+    .arch-layer { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; font-size: 13px; font-weight: 500; }
+    .arch-layer .icon { font-size: 18px; }
+    .arch-layer--ui   { background: rgba(56,161,105,.12); color: #145224; border-left: 3px solid var(--navy-light); }
+    .arch-layer--api  { background: rgba(56,178,172,.12); color: #234e52; border-left: 3px solid var(--data-teal); }
+    .arch-layer--svc  { background: rgba(104,211,145,.12); color: #276749; border-left: 3px solid var(--success); }
+    .arch-layer--algo { background: rgba(159,122,234,.12); color: #553c9a; border-left: 3px solid var(--data-purple); }
+    .arch-layer--db   { background: rgba(246,224,94,.15); color: #744210; border-left: 3px solid var(--warning); }
+    .arch-layer--ml   { background: rgba(99,179,237,.12); color: #1a365d; border-left: 3px solid var(--info); }
+
+    .metric-row { margin-bottom: 14px; }
+    .metric-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .metric-bar { height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; }
+    .metric-fill { height: 100%; border-radius: 4px; background: var(--navy-light); }
+    .metric-fill--warn { background: var(--warning); }
+    .metric-fill--err  { background: var(--error); }
+
+    .slide-footer {
+      position: absolute;
+      bottom: 22px; left: 80px; right: 80px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      opacity: .35;
+    }
+
+    .sprint-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+    .sprint--done   { background: rgba(104,211,145,.15); color: #276749; border: 1px solid rgba(104,211,145,.3); }
+    .sprint--active { background: rgba(246,224,94,.15); color: #744210; border: 1px solid rgba(246,224,94,.3); }
+    .sprint--next   { background: rgba(99,179,237,.12); color: #1a365d; border: 1px solid rgba(99,179,237,.25); }
+
+    @media print {
+      nav, .progress-bar { display: none; }
+      .slide { page-break-after: always; min-height: auto; }
+    }
+  </style>
 </head>
 <body>
-<div class="deck">
 
-  <!-- 1. TITLE -->
-  <div class="slide s1 active">
-    <div class="logo-row">
-      <img src="https://i.postimg.cc/L5mk9h1P/juakazi.png" alt="JuaKazi logo">
-      <span class="brand">JuaKazi</span>
+<nav>
+  <div class="nav-brand">
+    <img src="https://i.postimg.cc/L5mk9h1P/juakazi.png" alt="JuaKazi" class="nav-logo" />
+    JuaKazi
+  </div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#problem">Problem</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#data">Data</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#api">API</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#stack">Stack</a>
+  </div>
+</nav>
+<div class="progress-bar" id="progress"></div>
+
+
+<!-- ══ 1. HERO ══ -->
+<section class="slide slide--hero" id="overview">
+  <div class="watermark">01</div>
+  <div class="slide-label">AIBRIDGE · East Africa</div>
+  <h1>JuaKazi</h1>
+  <p class="subtitle">
+    <strong>Detects, corrects, and explains</strong>
+    gender bias in African-language text — Swahili, Kikuyu, English, and French.
+    Detection is common. JuaKazi goes further.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num">4</div>
+      <div class="lbl">Languages supported</div>
     </div>
-    <div class="kicker">Mar 2026 — AIBRIDGE Submission</div>
-    <h1>Gender Bias<br><span>Detection &amp; Correction</span><br>for African Languages</h1>
-    <p class="sub">The only engine in East Africa that detects, corrects, and explains gender bias — in Swahili, Gikuyu, English, and French</p>
-    <div class="pills">
-      <div class="pill">Swahili · 64,723 samples</div>
-      <div class="pill">Gikuyu · 11,848 samples</div>
-      <div class="pill">English</div>
-      <div class="pill">French</div>
+    <div class="hero-stat">
+      <div class="num">64K+</div>
+      <div class="lbl">Swahili ground truth rows</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">0.771</div>
+      <div class="lbl">Swahili F1 (64,723 samples)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">3-stage</div>
+      <div class="lbl">Detection pipeline</div>
     </div>
   </div>
-
-  <!-- 2. PROBLEM -->
-  <div class="slide s2">
-    <div class="section-label">01 — The Problem</div>
-    <h2>Gender bias in African language text goes undetected — and uncorrected</h2>
-    <div class="prob-grid">
-      <div class="prob-card">
-        <div class="icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-        </div>
-        <div class="num">4</div>
-        <p>Languages with distinct grammar, noun classes, and bias patterns — each requiring its own detection logic, lexicon, and evaluation pipeline</p>
-      </div>
-      <div class="prob-card">
-        <div class="icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
-        </div>
-        <div class="num">6+</div>
-        <p>Bias categories to detect: occupation stereotypes, pronoun assumptions, honorifics, morphological gender markers, derogation, counter-stereotype</p>
-      </div>
-      <div class="prob-card">
-        <div class="icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
-        </div>
-        <div class="num">0</div>
-        <p>Other tools in East Africa offering detection + correction + plain-language explanation for Swahili and Gikuyu — JuaKazi is the first</p>
-      </div>
-    </div>
+  <div class="slide-footer" style="color:rgba(255,255,255,.3)">
+    <span>JuaKazi Gender Sensitization Engine</span><span>Mar 2026</span>
   </div>
+</section>
 
-  <!-- 3. DIFFERENTIATOR -->
-  <div class="slide s3">
-    <div class="section-label">02 — Our Advantage</div>
-    <h2>Every other team stops at detection. We go further.</h2>
-    <div class="diff-grid">
-      <div class="diff-card">
-        <div class="diff-label">Other Teams</div>
-        <h3>Detection only</h3>
-        <ul>
-          <li>Flag biased text</li>
-          <li>Return a score or label</li>
-          <li>No correction layer</li>
-          <li>No explanation to the user</li>
-          <li>No audit trail</li>
-        </ul>
+
+<!-- ══ 2. PROBLEM ══ -->
+<section class="slide slide--light" id="problem">
+  <div class="watermark">02</div>
+  <div class="slide-label">Problem</div>
+  <h2>Gender bias in African-language text</h2>
+
+  <div class="two-col">
+    <div>
+      <div class="callout">
+        <strong>The gap:</strong> Existing NLP bias tools are built for English, on Western datasets.
+        African languages — especially Swahili and Kikuyu — have near-zero coverage.
       </div>
-      <div class="diff-card us">
-        <div class="diff-label">JuaKazi</div>
-        <h3>Detection + Correction + Explanation</h3>
-        <ul>
-          <li>Detect bias with 10-condition context gating</li>
-          <li>Correct with case-preserving neutral replacement</li>
-          <li>Explain in plain language — reason field on every edit</li>
-          <li>Full JSONL audit log on every rewrite</li>
-          <li>Integration-ready: wrap any team's detector with our correction layer</li>
-        </ul>
-      </div>
-      <div class="diff-card">
-        <div class="diff-label">Integration Plan</div>
-        <h3>When AIBRIDGE ready</h3>
-        <ul>
-          <li>Wire other teams' detectors as Stage 1b</li>
-          <li>JuaKazi correction layer wraps all outputs</li>
-          <li>UI shows "Detected by: [Team X] · Corrected by: JuaKazi"</li>
-        </ul>
-      </div>
-      <div class="diff-card">
-        <div class="diff-label">ML Stage 2</div>
-        <h3>Hybrid architecture</h3>
-        <ul>
-          <li>afro-xlmr-base fine-tuned on 51K Swahili rows</li>
-          <li>v3 training: F1 0.673, P 0.672, R 0.674 — epoch 5</li>
-          <li>Rules engine (Stage 1) always takes priority</li>
-          <li>ML fires only when rules find nothing — warn-only</li>
-        </ul>
+      <div class="grid grid--2" style="margin-top:20px;">
+        <div class="card">
+          <div class="card-icon-wrap"><span class="icon icon--lg">language</span></div>
+          <h3>Language gap</h3>
+          <p>Swahili is spoken by 200M people. No production-grade gender bias detector existed before JuaKazi.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon-wrap"><span class="icon icon--lg">find_replace</span></div>
+          <h3>Correction gap</h3>
+          <p>Other tools stop at detection. JuaKazi produces a corrected rewrite with a plain-language explanation.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon-wrap"><span class="icon icon--lg">work</span></div>
+          <h3>Labour market context</h3>
+          <p>Biased job ads and HR text in East Africa reinforce occupational segregation. JuaKazi targets this domain.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon-wrap"><span class="icon icon--lg">hub</span></div>
+          <h3>Integration layer</h3>
+          <p>AIBRIDGE plan: wrap other teams' detectors with JuaKazi's correction layer. One API for detection + fix.</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 4. SYSTEM -->
-  <div class="slide s4">
-    <div class="section-label">03 — The System</div>
-    <h2>A context-aware rules engine with ML fallback</h2>
-    <div class="pipeline">
-      <div class="pipe-step">
-        <div class="sn">Step 01</div>
-        <div class="st">Lexicon Match</div>
-        <div class="sd">Language-specific CSV rules — 538 EN · 218 SW · 78 FR · 1,240 KI entries</div>
+    <div>
+      <h3 style="margin-bottom:16px;">Bias types we address</h3>
+      <div style="margin-bottom:10px;">
+        <span class="badge badge--error" style="margin-bottom:6px;display:inline-flex;"><span class="icon icon--sm">report</span>&nbsp;Derogation</span>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">"Mwanamke ni nyumba." — women belong in the home. Explicit, highest priority.</p>
       </div>
-      <div class="pipe-step">
-        <div class="sn">Step 02</div>
-        <div class="st">Context Check</div>
-        <div class="sd">10 suppression conditions: quote, historical, proper noun, biographical, statistical, medical, counter-stereotype, legal, artistic, organization</div>
+      <div class="divider"></div>
+      <div style="margin-bottom:10px;">
+        <span class="badge badge--warning" style="margin-bottom:6px;display:inline-flex;"><span class="icon icon--sm">warning</span>&nbsp;Occupational stereotype</span>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">"Daktari wa kiume" (male doctor) — implies doctoring is a male role.</p>
       </div>
-      <div class="pipe-step highlight">
-        <div class="sn">Step 03</div>
-        <div class="st">Correction</div>
-        <div class="sd">Case-preserving neutral replacement · reason field · JSONL audit log on every edit</div>
+      <div class="divider"></div>
+      <div style="margin-bottom:10px;">
+        <span class="badge badge--info" style="margin-bottom:6px;display:inline-flex;"><span class="icon icon--sm">info</span>&nbsp;Generic masculine</span>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">"Each employee must submit his report." — masculine default erases women.</p>
       </div>
-      <div class="pipe-step">
-        <div class="sn">Step 04</div>
-        <div class="st">ML Fallback</div>
-        <div class="sd">afro-xlmr-base Stage 2 — warn-only, fires only when rules find nothing</div>
-      </div>
-    </div>
-    <div class="ex-box">
-      <div class="ex-lbl">Live example — Swahili</div>
-      <div class="ex-row">
-        <span class="ex-b">"Daktari wa kiume alipima mgonjwa"</span>
-        <span class="ex-arr">→</span>
-        <span class="ex-a">"Daktari alipima mgonjwa"</span>
-        <span class="ex-tag">occupation · gender marker · replace</span>
+      <div class="divider"></div>
+      <div>
+        <span class="badge badge--teal" style="margin-bottom:6px;display:inline-flex;"><span class="icon icon--sm">shield</span>&nbsp;Counter-stereotype</span>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">"Mwanamke mhandisi alitengeneza daraja." — preserved as positive signal, never corrected.</p>
       </div>
     </div>
   </div>
 
-  <!-- 5. DATA -->
-  <div class="slide s5">
-    <div class="section-label">04 — Data Collection &amp; Annotation</div>
-    <h2>76,887 real sentences. No synthetic data.</h2>
-    <div class="data-grid">
+  <div class="slide-footer">
+    <span>JuaKazi — Problem</span><span>Mar 2026</span>
+  </div>
+</section>
 
-      <div class="data-card primary">
-        <div class="dc-lang">Swahili — Primary Language</div>
-        <div class="dc-count">64,723 <span>samples · Gold tier (sample count)</span></div>
-        <div class="src-row">
-          <span class="src-lbl">Zenodo Helsinki Tanzanian corpus</span>
-          <div class="src-bar-bg"><div class="src-bar-fill" style="width:51.6%"></div></div>
-          <span class="src-pct">51.6%</span>
+
+<!-- ══ 3. ARCHITECTURE ══ -->
+<section class="slide slide--muted" id="architecture">
+  <div class="watermark">03</div>
+  <div class="slide-label">Technical</div>
+  <h2>System architecture</h2>
+
+  <div class="two-col">
+    <div>
+      <div class="arch-layer arch-layer--ui">
+        <span class="icon">monitor</span>
+        <div>
+          <strong>Next.js Frontend — Vercel</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">Analyze page · BiasSpans · CorrectionPanel · ReasonTooltip · Sprint 4</div>
         </div>
-        <div class="src-row">
-          <span class="src-lbl">HuggingFace Swahili News / BBC</span>
-          <div class="src-bar-bg"><div class="src-bar-fill" style="width:27.8%"></div></div>
-          <span class="src-pct">27.8%</span>
-        </div>
-        <div class="src-row">
-          <span class="src-lbl">AfriSenti / MasakhaNER / C4</span>
-          <div class="src-bar-bg"><div class="src-bar-fill" style="width:20.6%"></div></div>
-          <span class="src-pct">20.6%</span>
-        </div>
-        <div class="ann-note">1,069 rows human-annotated (ann_sw_v2) · 13,304 rows AI-annotated (ann_sw_v3) · 274 rows human review (batch_024) · region_dialect tagged: kenya=18,008 · tanzania=33,411 · 15.63% counter-stereotype · 5.01% implicit</div>
       </div>
-
-      <div class="data-card">
-        <div class="dc-lang">Gikuyu</div>
-        <div class="dc-count">11,848 <span>samples · Bronze tier (sample count)</span></div>
-        <div class="src-row">
-          <span class="src-lbl">AfriNLI / HuggingFace corpora</span>
-          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:62.6%"></div></div>
-          <span class="src-pct">62.6%</span>
+      <div class="arch-layer arch-layer--ui" style="opacity:.55;border-left-style:dashed;">
+        <span class="icon">web</span>
+        <div>
+          <strong>Gradio UI — HuggingFace Spaces</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">Public demo · 4 languages · example sentences · metrics footer</div>
         </div>
-        <div class="src-row">
-          <span class="src-lbl">MasakhaNER NER corpus</span>
-          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:30.7%"></div></div>
-          <span class="src-pct">30.7%</span>
-        </div>
-        <div class="src-row">
-          <span class="src-lbl">eBible.org Kikuyu Bible (CC BY-SA)</span>
-          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:6.7%"></div></div>
-          <span class="src-pct">6.7%</span>
-        </div>
-        <div class="ann-note">Automated + manual review · 307 priority Bible verses · occupation and gender context targeted</div>
       </div>
-
-      <div class="data-card">
-        <div class="dc-lang">English</div>
-        <div class="dc-count">66 <span>samples · hand-curated</span></div>
-        <div class="src-row">
-          <span class="src-lbl">Hand-authored templates</span>
-          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:100%"></div></div>
-          <span class="src-pct">100%</span>
+      <div class="arch-layer arch-layer--api">
+        <span class="icon">hub</span>
+        <div>
+          <strong>FastAPI — mounted on HF Space</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">POST /rewrite · CORS open · JSONL audit log · gr.mount_gradio_app</div>
         </div>
-        <div class="ann-note">WinoBias / WinoGender / CrowS-Pairs style · occupation, pronoun, honorific bias · manual annotation</div>
       </div>
-
-      <div class="data-card">
-        <div class="dc-lang">French</div>
-        <div class="dc-count">50 <span>samples · hand-curated</span></div>
-        <div class="src-row">
-          <span class="src-lbl">Hand-authored templates</span>
-          <div class="src-bar-bg grey"><div class="src-bar-fill" style="width:100%"></div></div>
-          <span class="src-pct">100%</span>
+      <div class="arch-layer arch-layer--svc">
+        <span class="icon">rule</span>
+        <div>
+          <strong>Rules Engine</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">apply_rules_on_spans · ContextChecker (10 conditions) · build_reason</div>
         </div>
-        <div class="ann-note">French gender morphology · gendered job titles · pronoun generic use · pending Bronze expansion</div>
       </div>
+      <div class="arch-layer arch-layer--algo">
+        <span class="icon">psychology</span>
+        <div>
+          <strong>BiasDetector — 3-stage pipeline</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">Derogation patterns → Counter-stereotype → Lexicon rules</div>
+        </div>
+      </div>
+      <div class="arch-layer arch-layer--ml">
+        <span class="icon">model_training</span>
+        <div>
+          <strong>ML Stage 2 — afro-xlmr-base</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">juakazike/sw-bias-classifier-v1 · warn-only · SW fallback · threshold 0.75</div>
+        </div>
+      </div>
+      <div class="arch-layer arch-layer--db">
+        <span class="icon">table_chart</span>
+        <div>
+          <strong>Lexicons + Ground Truth</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">4 CSV lexicons · 64,723-row SW ground truth · JSONL audit log</div>
+        </div>
+      </div>
+    </div>
 
+    <div>
+      <div class="callout"><strong>Key design principles</strong></div>
+      <ul class="checklist" style="margin-top:16px;">
+        <li><span class="icon">check_circle</span>Detection → Correction → Explanation in one API call</li>
+        <li><span class="icon">check_circle</span>ContextChecker gates all rules — 10 conditions prevent FPs in quotes, historical text, biographical references, etc.</li>
+        <li><span class="icon">check_circle</span><code>severity=warn</code> never sets <code>has_bias_detected=True</code></li>
+        <li><span class="icon">check_circle</span>Counter-stereotype patterns preserved, never corrected</li>
+        <li><span class="icon">check_circle</span>ML Stage 2 is warn-only fallback — rules always take precedence</li>
+        <li><span class="icon">check_circle</span>Every rewrite audit-logged to <code>audit_logs/rewrites.jsonl</code></li>
+        <li><span class="icon">check_circle</span>AIBRIDGE-compliant 24-column schema on all ground truth files</li>
+      </ul>
+      <div class="divider"></div>
+      <pre style="font-size:12px;">
+<span class="tok-cls">Input text</span>
+  → <span class="tok-fn">BiasDetector.detect_bias()</span>
+      ├── <span class="tok-str">DEROGATION_PATTERNS</span>    <span class="tok-cm"># highest priority</span>
+      ├── <span class="tok-str">COUNTER_STEREOTYPE</span>      <span class="tok-cm"># preserve, no correction</span>
+      └── <span class="tok-str">Lexicon rules</span>           <span class="tok-cm"># ContextChecker gated</span>
+            ├── severity=replace → has_bias_detected=<span class="tok-num">True</span>
+            └── severity=warn   → informational only
+
+  Stage 2 (SW only, JUAKAZI_ML_MODEL set):
+  → <span class="tok-fn">MLBiasDetector.classify()</span>
+      └── threshold=<span class="tok-num">0.75</span> → warn_edits only</pre>
     </div>
   </div>
 
-  <!-- 6. RESULTS -->
-  <div class="slide s6">
-    <div class="section-label">05 — Results</div>
-    <h2>Rules engine: high precision. ML v3: recall improving.</h2>
-    <table class="rtable">
-      <thead>
-        <tr>
-          <th>Language</th>
-          <th>Precision</th>
-          <th>Recall</th>
-          <th>F1</th>
-          <th>Samples</th>
-          <th>Tier</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hl">
-          <td><strong>Swahili</strong></td>
-          <td>
-            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:73.4%"></div></div><span class="bval">0.734</span></div>
-          </td>
-          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:81.1%"></div></div><span class="bval">0.811</span></div></td>
-          <td><strong>0.771</strong></td>
-          <td>64,723</td>
-          <td><span class="badge">Gold sample</span></td>
-        </tr>
-        <tr>
-          <td>English</td>
-          <td>
-            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:100%"></div></div><span class="bval">1.000</span></div>
-          </td>
-          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:64.7%"></div></div><span class="bval">0.647</span></div></td>
-          <td>0.786</td>
-          <td>66</td>
-          <td><span class="badge grey">Pre-Bronze</span></td>
-        </tr>
-        <tr>
-          <td>French</td>
-          <td>
-            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:100%"></div></div><span class="bval">1.000</span></div>
-          </td>
-          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:37.1%"></div></div><span class="bval">0.371</span></div></td>
-          <td>0.542</td>
-          <td>50</td>
-          <td><span class="badge grey">Pre-Bronze</span></td>
-        </tr>
-        <tr>
-          <td>Gikuyu</td>
-          <td>
-            <div class="bwrap"><div class="bbg"><div class="bfill" style="width:92.6%"></div></div><span class="bval">0.926</span></div>
-          </td>
-          <td><div class="bwrap"><div class="bbg"><div class="bfill" style="width:21.7%"></div></div><span class="bval">0.217</span></div></td>
-          <td>0.352</td>
-          <td>11,848</td>
-          <td><span class="badge grey">Bronze sample</span></td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="ml-note">
-      <span>ML Stage 2 (afro-xlmr-base v3, epoch 5) — <strong>F1 0.673</strong> &nbsp;·&nbsp; Precision 0.672 &nbsp;·&nbsp; Recall 0.674</span>
-      <span>AIBRIDGE blocker: Cohen's Kappa unmeasured — 2nd annotator not yet recruited</span>
-    </div>
+  <div class="slide-footer">
+    <span>JuaKazi — Architecture</span><span>Mar 2026</span>
   </div>
+</section>
 
-  <!-- 7. ROADMAP -->
-  <div class="slide s7">
-    <div class="section-label">06 — What's Next</div>
-    <h2>Three sprints to AIBRIDGE Bronze</h2>
-    <div class="roadmap">
-      <div class="rm-col done">
-        <div class="rm-phase">Done — Sprints 0–2</div>
-        <h3>Foundation</h3>
-        <ul>
-          <li>64,723 real Swahili sentences</li>
-          <li>13,304 rows AI-annotated (ann_sw_v3)</li>
-          <li>274 rows human review (batch_024)</li>
-          <li>afro-xlmr-base v3 trained — F1 0.673</li>
-          <li>REST API + Next.js frontend deployed</li>
-          <li>AIBRIDGE 24-column schema compliance</li>
-          <li>15.63% counter-stereotype · 5.01% implicit</li>
-          <li>region_dialect tagged (kenya / tanzania)</li>
-          <li>Plain-language reason on every edit</li>
-          <li>Human review UI (Streamlit)</li>
-        </ul>
+
+<!-- ══ 4. DATA ══ -->
+<section class="slide slide--light" id="data">
+  <div class="watermark">04</div>
+  <div class="slide-label">Dataset</div>
+  <h2>Ground truth &amp; lexicons</h2>
+
+  <div class="two-col">
+    <div>
+      <h3 style="margin-bottom:14px;">Ground truth files</h3>
+      <table style="margin-bottom:24px;">
+        <thead>
+          <tr><th>Language</th><th>Rows</th><th>Annotation</th><th>AIBRIDGE tier</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Swahili</strong></td>
+            <td>64,723</td>
+            <td>1,069 human + 13,304 AI pass</td>
+            <td><span class="badge badge--success">Gold (sample count)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Kikuyu</strong></td>
+            <td>11,848</td>
+            <td>Partial</td>
+            <td><span class="badge badge--navy">Bronze (sample count)</span></td>
+          </tr>
+          <tr>
+            <td><strong>English</strong></td>
+            <td>66</td>
+            <td>Hand-curated</td>
+            <td><span class="badge badge--warning">Pre-Bronze</span></td>
+          </tr>
+          <tr>
+            <td><strong>French</strong></td>
+            <td>50</td>
+            <td>Hand-curated</td>
+            <td><span class="badge badge--warning">Pre-Bronze</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-bottom:10px;">Lexicons</h3>
+      <table>
+        <thead>
+          <tr><th>File</th><th>Entries</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>lexicon_sw_v3.csv</code></td><td>218</td><td><span class="badge badge--success">Production</span></td></tr>
+          <tr><td><code>lexicon_ki_v3.csv</code></td><td>1,240</td><td><span class="badge badge--success">Production</span></td></tr>
+          <tr><td><code>lexicon_en_v3.csv</code></td><td>538</td><td><span class="badge badge--success">Production</span></td></tr>
+          <tr><td><code>lexicon_fr_v3.csv</code></td><td>78</td><td><span class="badge badge--navy">Beta</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:14px;">AIBRIDGE schema compliance (24 columns)</h3>
+      <ul class="checklist">
+        <li><span class="icon">check_circle</span><code>target_gender=neutral</code> on all non-biased rows (49,868 fixed)</li>
+        <li><span class="icon">check_circle</span><code>stereotype_category</code> filled on all <code>has_bias=true</code> rows</li>
+        <li><span class="icon">check_circle</span><code>explicitness</code> filled on all <code>has_bias=true</code> rows</li>
+        <li><span class="icon">check_circle</span>PII scrubbed — 110 rows, <code>pii_removed=true</code></li>
+        <li><span class="icon">check_circle</span>Counter-stereotype ≥15% — <strong>15.63%</strong> (10,115 rows)</li>
+        <li><span class="icon">check_circle</span>Implicit rows ≥5% — <strong>5.01%</strong> (3,244 rows)</li>
+        <li><span class="icon">check_circle</span><code>region_dialect</code>: kenya=18,008 · tanzania=33,411</li>
+        <li><span class="icon">check_circle</span>Dataset Card v3 · Model Card v2</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="callout" style="border-left-color:var(--error);background:rgba(252,129,129,.07);">
+        <strong style="color:#9b2c2c;">Still missing (AIBRIDGE blockers)</strong><br>
+        <span style="font-size:13px;color:var(--text-secondary);">
+          Cohen's Kappa (κ) — 2nd annotator in progress [HUMAN TASK]<br>
+          200 gold rows (qa_status=gold) for drift monitoring<br>
+          Non-news domains: health, livelihoods, household (98.2% media now)<br>
+          100 minimal pairs · CSVW metadata · PROV lineage · DVC tracking
+        </span>
       </div>
-      <div class="rm-col doing">
-        <div class="rm-phase">Sprint 2 Close — Blocking</div>
-        <h3>Cohen's Kappa</h3>
-        <ul>
-          <li>Recruit 2nd Swahili annotator (Masakhane)</li>
-          <li>Calibrate using 66-row adjudication guide</li>
-          <li>Independent annotation: 250 overlapping rows</li>
-          <li>Target kappa ≥ 0.70 (AIBRIDGE Bronze)</li>
-          <li>Run correction_evaluator.py (first time)</li>
-          <li>Add 5 Swahili proverbs to lexicon</li>
-          <li>Add 10 Sheng terms to lexicon</li>
-        </ul>
-      </div>
-      <div class="rm-col next">
-        <div class="rm-phase">Sprint 3 — After kappa closes</div>
-        <h3>AIBRIDGE Submission</h3>
-        <ul>
-          <li>100 minimal pairs (gender-swap variants)</li>
-          <li>Health domain rows (200+ minimum)</li>
-          <li>Livelihoods + household domain rows</li>
-          <li>200 gold rows (qa_status=gold)</li>
-          <li>CSVW JSON-LD metadata + PROV lineage</li>
-          <li>DVC tracking setup</li>
-          <li>Annotator gender breakdown documented</li>
-          <li>Final eval run + submit to AIBRIDGE contact</li>
-        </ul>
+
+      <div class="callout" style="margin-top:12px;">
+        <strong>Annotation passes complete</strong><br>
+        <span style="font-size:13px;color:var(--text-secondary);">
+          ann_sw_v2: batches 001–023 (~1,069 rows reviewed)<br>
+          ann_sw_v3: 13,304 rows AI-annotated (Mar 2026)<br>
+          Human review batch_024: 274 rows (Mar 2026)
+        </span>
       </div>
     </div>
   </div>
 
-</div>
+  <div class="slide-footer">
+    <span>JuaKazi — Dataset</span><span>Mar 2026</span>
+  </div>
+</section>
 
-<!-- Navigation -->
-<div class="nav" id="nav">
-  <button onclick="nav(-1)">&#8592;</button>
-  <span id="counter">1 / 7</span>
-  <button onclick="nav(1)">&#8594;</button>
-</div>
+
+<!-- ══ 5. METRICS ══ -->
+<section class="slide slide--dark" id="metrics">
+  <div class="watermark">05</div>
+  <div class="slide-label">Performance</div>
+  <h2>Evaluation metrics — Mar 2026</h2>
+
+  <div class="grid grid--4" style="margin-bottom:32px;">
+    <div class="stat-block"><div class="big">0.771</div><div class="lbl">Swahili F1</div></div>
+    <div class="stat-block"><div class="big">0.786</div><div class="lbl">English F1</div></div>
+    <div class="stat-block"><div class="big">0.854</div><div class="lbl">ML v1 F1 (val)</div></div>
+    <div class="stat-block"><div class="big">64K</div><div class="lbl">SW ground truth rows</div></div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="color:#fff;margin-bottom:16px;">Rules-based detection</h3>
+      <div class="metric-row">
+        <div class="metric-label"><span>Swahili F1</span><span>0.771</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:77.1%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label"><span>Swahili Precision</span><span>0.734</span></div>
+        <div class="metric-bar"><div class="metric-fill metric-fill--warn" style="width:73.4%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label"><span>Swahili Recall</span><span>0.811</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:81.1%"></div></div>
+      </div>
+      <div class="divider" style="background:rgba(255,255,255,.1)"></div>
+      <div class="metric-row">
+        <div class="metric-label"><span>English F1</span><span>0.786</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:78.6%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label"><span>English Precision</span><span>1.000</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:100%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label"><span>English Recall</span><span>0.647</span></div>
+        <div class="metric-bar"><div class="metric-fill metric-fill--warn" style="width:64.7%"></div></div>
+      </div>
+      <div class="divider" style="background:rgba(255,255,255,.1)"></div>
+      <div class="metric-row">
+        <div class="metric-label"><span>French F1</span><span>0.542</span></div>
+        <div class="metric-bar"><div class="metric-fill metric-fill--warn" style="width:54.2%"></div></div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label"><span>Kikuyu F1</span><span>0.352</span></div>
+        <div class="metric-bar"><div class="metric-fill metric-fill--err" style="width:35.2%"></div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="color:#fff;margin-bottom:16px;">ML Stage 2 — afro-xlmr-base</h3>
+      <div class="card card--dark2">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.5);">juakazike/sw-bias-classifier-v1</span>
+          <span class="badge badge--success">Active on HF Space</span>
+        </div>
+        <div class="metric-row" style="margin-bottom:10px;">
+          <div class="metric-label" style="color:rgba(255,255,255,.8)"><span>Precision</span><span>0.938</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:93.8%"></div></div>
+        </div>
+        <div class="metric-row" style="margin-bottom:10px;">
+          <div class="metric-label" style="color:rgba(255,255,255,.8)"><span>Recall</span><span>0.784</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:78.4%"></div></div>
+        </div>
+        <div class="metric-row" style="margin-bottom:10px;">
+          <div class="metric-label" style="color:rgba(255,255,255,.8)"><span>F1</span><span>0.854</span></div>
+          <div class="metric-bar"><div class="metric-fill" style="width:85.4%"></div></div>
+        </div>
+        <p style="font-size:12px;margin-top:12px;">3 epochs · T4 x2 · 51K SW training rows · warn-only stage · never sets has_bias_detected=True directly</p>
+      </div>
+
+      <div class="callout callout--dark" style="margin-top:16px;">
+        <strong>Honest qualifications</strong><br>
+        <span style="font-size:13px;opacity:.75;">
+          SW Gold = sample count only. κ unmeasurable — 2nd annotator not yet recruited.<br>
+          SW precision drop (0.958→0.734) from ann_sw_v3: <code>Watoto wa Kike</code> / <code>mtoto wa kike</code> are genuinely ambiguous (advocacy vs prescriptive context). Accepted and documented.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer" style="color:rgba(255,255,255,.3)">
+    <span>JuaKazi — Metrics</span><span>Mar 2026</span>
+  </div>
+</section>
+
+
+<!-- ══ 6. API ══ -->
+<section class="slide slide--muted" id="api">
+  <div class="watermark">06</div>
+  <div class="slide-label">API</div>
+  <h2>REST API — <code style="font-size:.65em;color:var(--navy-primary)">POST /rewrite</code></h2>
+
+  <div class="two-col">
+    <div>
+      <div style="margin-bottom:18px;">
+        <span class="badge badge--success" style="margin-bottom:10px;display:inline-flex;">
+          <span class="icon icon--sm">edit_note</span>&nbsp;Endpoints
+        </span>
+        <div class="endpoint"><span class="method method--post">POST</span><span class="ep-path">/rewrite</span></div>
+        <div class="endpoint"><span class="method method--get">GET</span><span class="ep-path">/</span><span style="font-size:12px;color:var(--text-tertiary);">&nbsp;— Gradio demo UI</span></div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="slide-label" style="font-size:10px;margin-bottom:8px;">Request body</div>
+        <pre style="background:var(--gray-900);border:none;padding:14px;font-size:12px;margin-top:0;">{
+  <span class="tok-str">"id"</span>: <span class="tok-str">"req-001"</span>,
+  <span class="tok-str">"lang"</span>: <span class="tok-str">"sw"</span>,
+  <span class="tok-str">"text"</span>: <span class="tok-str">"Daktari wa kiume alipima mgonjwa."</span>,
+  <span class="tok-str">"region_dialect"</span>: <span class="tok-str">"kenya"</span>
+}</pre>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div class="slide-label" style="font-size:10px;margin-bottom:8px;">Response</div>
+        <pre style="background:var(--gray-900);border:none;padding:14px;font-size:12px;margin-top:0;">{
+  <span class="tok-str">"rewrite"</span>: <span class="tok-str">"Daktari alipima mgonjwa."</span>,
+  <span class="tok-str">"has_bias_detected"</span>: <span class="tok-num">true</span>,
+  <span class="tok-str">"confidence"</span>: <span class="tok-num">0.85</span>,
+  <span class="tok-str">"source"</span>: <span class="tok-str">"rules"</span>,
+  <span class="tok-str">"reason"</span>: <span class="tok-str">"Occupational gender marking removed"</span>,
+  <span class="tok-str">"edits"</span>: [{
+    <span class="tok-str">"from"</span>: <span class="tok-str">"Daktari wa kiume"</span>,
+    <span class="tok-str">"to"</span>: <span class="tok-str">"Daktari"</span>,
+    <span class="tok-str">"severity"</span>: <span class="tok-str">"replace"</span>,
+    <span class="tok-str">"bias_type"</span>: <span class="tok-str">"occupational_stereotype"</span>
+  }]
+}</pre>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="margin-bottom:14px;">What the API returns</h3>
+      <ul class="checklist">
+        <li><span class="icon">check_circle</span><strong>Corrected rewrite</strong> — gender-neutral text ready to use</li>
+        <li><span class="icon">check_circle</span><strong>has_bias_detected</strong> — boolean flag for downstream systems</li>
+        <li><span class="icon">check_circle</span><strong>edits array</strong> — every change with from/to/severity/bias_type</li>
+        <li><span class="icon">check_circle</span><strong>reason</strong> — plain-language explanation for each edit</li>
+        <li><span class="icon">check_circle</span><strong>confidence</strong> — 0.85 if edits made, 0.95 if clean</li>
+        <li><span class="icon">check_circle</span><strong>source</strong> — "rules" | "ml" for audit transparency</li>
+        <li><span class="icon">check_circle</span><strong>skipped_context</strong> — terms gated by context checker</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3 style="margin-bottom:10px;">Deployment</h3>
+      <div class="arch-layer arch-layer--api">
+        <span class="icon">cloud</span>
+        <div>
+          <strong>HuggingFace Spaces</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">juakazike/gender-sensitization-engine · FastAPI + Gradio · gr.mount_gradio_app</div>
+        </div>
+      </div>
+      <div class="arch-layer arch-layer--ui" style="margin-top:6px;">
+        <span class="icon">web</span>
+        <div>
+          <strong>Vercel (Next.js) — Sprint 4</strong>
+          <div style="font-size:12px;opacity:.7;margin-top:2px;">apps/web/ · wires to HF Spaces /rewrite · Swahili default</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:16px;font-size:13px;">
+        <span class="icon icon--sm" style="vertical-align:middle;margin-right:4px;color:var(--navy-light);">link</span>
+        Live: <code>juakazike-gender-sensitization-engine.hf.space</code><br>
+        API: <code>POST /rewrite</code> · CORS open · JSON body
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>JuaKazi — API</span><span>Mar 2026</span>
+  </div>
+</section>
+
+
+<!-- ══ 7. ROADMAP ══ -->
+<section class="slide slide--light" id="roadmap">
+  <div class="watermark">07</div>
+  <div class="slide-label">Sprint Plan</div>
+  <h2>Roadmap — 4 sprints</h2>
+
+  <div class="timeline" style="margin-bottom:36px;">
+    <div class="timeline-step">
+      <div class="timeline-inner">
+        <div class="timeline-num" style="background:var(--success);color:#145224;">✓</div>
+        <h4>Sprint 0</h4>
+        <p>Stabilise — 3 bugs fixed, tests 5/5, merged to main</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-inner">
+        <div class="timeline-num" style="background:var(--success);color:#145224;">✓</div>
+        <h4>Sprint 1</h4>
+        <p>Explainability — reason field, review UI, Dataset Card v3</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-inner" style="border-color:var(--warning);box-shadow:0 0 0 2px rgba(246,224,94,.2);">
+        <div class="timeline-num" style="background:var(--warning);color:#744210;">2</div>
+        <h4>Sprint 2 🔴</h4>
+        <p>Human annotation + IAA — κ blocker: 2nd annotator needed</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-inner" style="opacity:.6;">
+        <div class="timeline-num" style="background:var(--info);color:#1a365d;">3</div>
+        <h4>Sprint 3</h4>
+        <p>Dataset balance — domains, minimal pairs, AIBRIDGE submission</p>
+      </div>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-inner" style="opacity:.6;">
+        <div class="timeline-num" style="background:var(--data-purple);color:#fff;">4</div>
+        <h4>Sprint 4</h4>
+        <p>Web app — Next.js + Vercel, BiasSpans, CorrectionPanel, batch CSV</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="sprint-badge sprint--active">🔴 Sprint 2 — IN PROGRESS</div>
+      <ul class="checklist" style="margin-top:8px;">
+        <li><span class="icon">check_circle</span>ann_sw_v3 AI annotation (13,304 rows) — DONE</li>
+        <li><span class="icon">check_circle</span>Human review batch_024 (274 rows) — DONE</li>
+        <li><span class="icon">check_circle</span>Detector recall fix (OCCUPATION_PREFIXES expanded) — DONE</li>
+        <li><span class="icon">check_circle</span>ML v1 fine-tuned (F1=0.854 val) — DONE</li>
+        <li><span class="icon icon--warn">warning</span>Recruit 2nd Swahili annotator — <strong>[HUMAN TASK]</strong></li>
+        <li><span class="icon icon--warn">warning</span>500-row overlap annotation — blocked on annotator</li>
+        <li><span class="icon icon--warn">warning</span>Compute Cohen's Kappa — blocked</li>
+        <li><span class="icon icon--err">cancel</span>5 Swahili proverbs + 10 Sheng terms to lexicon</li>
+        <li><span class="icon icon--err">cancel</span>Run correction_evaluator.py (never run)</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="sprint-badge sprint--next">🟡 Sprint 3 — after κ measured</div>
+      <ul class="checklist" style="margin-top:8px;">
+        <li><span class="icon icon--err">cancel</span>100 minimal pairs (gender-swap variants)</li>
+        <li><span class="icon icon--err">cancel</span>Health + livelihoods + household rows (200+ each)</li>
+        <li><span class="icon icon--err">cancel</span>200 gold rows (qa_status=gold)</li>
+        <li><span class="icon icon--err">cancel</span>CSVW · PROV lineage · DVC tracking</li>
+        <li><span class="icon icon--err">cancel</span>AIBRIDGE submission</li>
+      </ul>
+
+      <div class="sprint-badge sprint--next" style="margin-top:16px;">🟡 Sprint 4 — parallel with Sprint 3</div>
+      <ul class="checklist" style="margin-top:8px;">
+        <li><span class="icon icon--err">cancel</span>Next.js 14 scaffold (Shadcn, Tailwind, TypeScript)</li>
+        <li><span class="icon icon--err">cancel</span>BiasSpans + CorrectionPanel + ReasonTooltip</li>
+        <li><span class="icon icon--err">cancel</span>Batch CSV upload/download page</li>
+        <li><span class="icon icon--err">cancel</span>Vercel deploy wired to HF Spaces /rewrite</li>
+        <li><span class="icon icon--err">cancel</span>ExternalTeamDetector stub for AIBRIDGE integration</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>JuaKazi — Roadmap</span><span>Mar 2026</span>
+  </div>
+</section>
+
+
+<!-- ══ 8. STACK ══ -->
+<section class="slide slide--muted" id="stack">
+  <div class="watermark">08</div>
+  <div class="slide-label">Technology</div>
+  <h2>Tech stack</h2>
+
+  <div class="grid grid--3" style="margin-bottom:28px;">
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">psychology</span></div>
+      <h3>Detection engine</h3>
+      <p>Pure Python rules engine with regex patterns, ContextChecker (10 conditions), and ngeli (noun class) tracking for Swahili grammar.</p>
+      <div class="pills">
+        <span class="pill pill--dev">Python 3.11</span>
+        <span class="pill pill--dev">regex</span>
+        <span class="pill pill--dev">csv</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">model_training</span></div>
+      <h3>ML classifier</h3>
+      <p>afro-xlmr-base fine-tuned on 51K Swahili rows. WeightedTrainer + minority oversampling. Trained on Kaggle T4 x2.</p>
+      <div class="pills">
+        <span class="pill pill--ml">HuggingFace</span>
+        <span class="pill pill--ml">afro-xlmr</span>
+        <span class="pill pill--ml">PyTorch</span>
+        <span class="pill pill--ml">Transformers</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">hub</span></div>
+      <h3>Backend API</h3>
+      <p>FastAPI mounted on Gradio app via <code>gr.mount_gradio_app</code>. REST at /rewrite. CORS open. Pydantic schemas.</p>
+      <div class="pills">
+        <span class="pill pill--db">FastAPI</span>
+        <span class="pill pill--db">Pydantic</span>
+        <span class="pill pill--db">Gradio 6.x</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">monitor</span></div>
+      <h3>Frontend — Sprint 4</h3>
+      <p>Next.js 14 on Vercel. TypeScript, Tailwind CSS, Shadcn UI. Swahili default. Mobile + desktop responsive.</p>
+      <div class="pills">
+        <span class="pill pill--fw">Next.js 14</span>
+        <span class="pill pill--fw">TypeScript</span>
+        <span class="pill pill--fw">Tailwind</span>
+        <span class="pill pill--fw">Shadcn</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">cloud</span></div>
+      <h3>Deployment</h3>
+      <p>HuggingFace Spaces for API + Gradio demo. Vercel for Next.js frontend. Kaggle for model training.</p>
+      <div class="pills">
+        <span class="pill pill--ui">HF Spaces</span>
+        <span class="pill pill--ui">Vercel</span>
+        <span class="pill pill--ui">Kaggle</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon-wrap"><span class="icon icon--lg">bar_chart</span></div>
+      <h3>Evaluation pipeline</h3>
+      <p>run_evaluation.py → F1/Precision/Recall for 4 languages. FairnessCalculator. SemanticPreservationMetrics. Kappa script.</p>
+      <div class="pills">
+        <span class="pill pill--int">scikit-learn</span>
+        <span class="pill pill--int">numpy</span>
+        <span class="pill pill--int">pandas</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card--navy">
+    <div class="slide-label" style="color:rgba(255,255,255,.45)">What makes JuaKazi different from every other AIBRIDGE team</div>
+    <div class="grid grid--3" style="margin-top:14px;">
+      <div style="text-align:center;padding:12px;">
+        <div style="font-size:20px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:8px;">Other teams</div>
+        <div style="font-size:13px;opacity:.65;">Detection only</div>
+      </div>
+      <div style="text-align:center;padding:12px;border-left:1px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.1);">
+        <div style="font-size:14px;font-weight:600;color:var(--success);margin-bottom:6px;">JuaKazi adds</div>
+        <div style="font-size:13px;opacity:.75;line-height:1.8;">
+          ✓ Corrected rewrite<br>
+          ✓ Plain-language reason<br>
+          ✓ Audit trail<br>
+          ✓ Severity tiers (replace / warn)
+        </div>
+      </div>
+      <div style="text-align:center;padding:12px;">
+        <div style="font-size:14px;font-weight:600;color:var(--info);margin-bottom:6px;">AIBRIDGE plan</div>
+        <div style="font-size:13px;opacity:.75;line-height:1.8;">
+          Wire other teams as<br>Stage 1b detectors.<br>JuaKazi correction<br>layer wraps all of them.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-footer">
+    <span>JuaKazi — Stack</span><span>Mar 2026</span>
+  </div>
+</section>
+
 
 <script>
-  let cur = 0;
-  const slides = document.querySelectorAll('.slide');
-  const ctr = document.getElementById('counter');
-  const navEl = document.getElementById('nav');
-
-  const lightSlides = new Set([1, 5]); // s2=index1, s6=index5
-
-  function show(n) {
-    slides[cur].classList.remove('active');
-    cur = (n + slides.length) % slides.length;
-    slides[cur].classList.add('active');
-    ctr.textContent = (cur + 1) + ' / ' + slides.length;
-
-    if (lightSlides.has(cur)) {
-      navEl.classList.add('light');
-    } else {
-      navEl.classList.remove('light');
-    }
-  }
-
-  function nav(d) { show(cur + d); }
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nav(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    nav(-1);
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('progress');
+    const h = document.documentElement;
+    const pct = (h.scrollTop || document.body.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    el.style.width = pct + '%';
   });
 </script>
 </body>

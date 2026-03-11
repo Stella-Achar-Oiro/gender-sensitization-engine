@@ -52,7 +52,7 @@ python3 tests/test_demo.py          # Complete demo
 
 # Services (requires optional dependencies)
 uvicorn api.main:app --reload --host 0.0.0.0 --port 8000  # API
-streamlit run review_ui/app.py --server.port 8501         # UI
+streamlit run ui/app.py --server.port 8501                # UI
 ```
 
 ### Test Individual Language

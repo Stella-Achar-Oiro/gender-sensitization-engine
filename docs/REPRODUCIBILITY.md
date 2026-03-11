@@ -540,7 +540,7 @@ tail -5 audit_logs/rewrites.jsonl | python3 -m json.tool
 pip install streamlit
 
 # Start review UI
-streamlit run review_ui/app.py --server.port 8501
+streamlit run ui/app.py --server.port 8501
 
 # Or using make
 make run-ui
