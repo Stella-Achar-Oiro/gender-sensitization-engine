@@ -17,9 +17,9 @@ const TIER_BADGES = [
 ]
 
 const CURRENT_METRICS = [
-  { lang: "English", f1: "0.786", precision: "1.000", recall: "0.647", samples: "66", tier: "Pre-Bronze" },
-  { lang: "Swahili", f1: "0.771", precision: "0.734", recall: "0.811", samples: "64,723", tier: "Gold (sample count)" },
-  { lang: "French", f1: "0.542", precision: "1.000", recall: "0.371", samples: "50", tier: "Pre-Bronze" },
+  { lang: "English", f1: "0.847", precision: "1.000", recall: "0.735", samples: "66", tier: "Pre-Bronze" },
+  { lang: "Swahili", f1: "0.771", precision: "0.735", recall: "0.810", samples: "64,723", tier: "Gold (sample count)" },
+  { lang: "French", f1: "0.571", precision: "1.000", recall: "0.400", samples: "50", tier: "Pre-Bronze" },
   { lang: "Kikuyu", f1: "0.352", precision: "0.926", recall: "0.217", samples: "11,848", tier: "Bronze (sample count)" },
 ]
 
@@ -36,6 +36,9 @@ export default function AboutPage() {
       <div>
         <Link href="/" className="text-sm text-muted-foreground hover:underline">← Back</Link>
         <h1 className="text-2xl font-bold mt-4">About JuaKazi</h1>
+        <p className="text-muted-foreground mt-2 text-sm max-w-xl">
+          JuaKazi detects, corrects, and explains gender bias in African-language text — Swahili, Kikuyu, English, and French. We support 4 languages, 64K+ Swahili ground-truth rows, and a rules-based plus ML pipeline. Metrics below come from <code className="text-xs bg-muted px-1 rounded">run_evaluation.py</code>.
+        </p>
       </div>
 
       <section className="space-y-3">
@@ -54,6 +57,9 @@ export default function AboutPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Current metrics (Mar 2026)</h2>
+        <p className="text-xs text-muted-foreground">
+          From <code className="bg-muted px-1 rounded">run_evaluation.py</code>. To refresh: <code className="bg-muted px-1 rounded">make dev-eval</code> or <code className="bg-muted px-1 rounded">python3 run_evaluation.py</code>.
+        </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
