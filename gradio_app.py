@@ -259,8 +259,8 @@ CSS = """
     --jk-muted:     #94a3b8;
 }
 
-/* Page background */
-.gradio-container { background: var(--jk-bg) !important; }
+/* Page background — let Gradio theme handle bg, only tint slightly */
+.gradio-container { background: #0f1117 !important; color: #e2e8f0 !important; }
 
 /* Glass card helper */
 .glass {
@@ -348,24 +348,7 @@ td { color: #e2e8f0 !important; font-size:0.82rem !important; border-bottom:1px 
 }
 """
 
-_theme = gr.themes.Base(
-    primary_hue=gr.themes.colors.indigo,
-    secondary_hue=gr.themes.colors.slate,
-    neutral_hue=gr.themes.colors.slate,
-).set(
-    button_primary_background_fill="linear-gradient(135deg, #6366f1, #4f46e5)",
-    button_primary_background_fill_hover="linear-gradient(135deg, #4f46e5, #4338ca)",
-    button_primary_text_color="#ffffff",
-    button_secondary_background_fill="rgba(99,102,241,0.15)",
-    button_secondary_background_fill_hover="rgba(99,102,241,0.28)",
-    button_secondary_text_color="#c7d2fe",
-    button_secondary_border_color="rgba(99,102,241,0.3)",
-    body_background_fill="#0d1117",
-    block_background_fill="#0d1117",
-    input_background_fill="rgba(255,255,255,0.05)",
-    input_border_color="rgba(255,255,255,0.13)",
-    input_border_color_focus="rgba(99,102,241,0.6)",
-)
+_theme = gr.themes.Soft(primary_hue=gr.themes.colors.indigo)
 
 with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
 
@@ -403,11 +386,11 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
                         label="Input text",
                         show_label=False,
                     )
-                    gr.Markdown("*Sample sentences — click one to load into the box above, then click **Analyse**.*")
-                    examples_ui = gr.Examples(
-                        examples=[[ex] for ex in EXAMPLES["English"]],
-                        inputs=text_in,
-                        label=None,
+                    example_dd = gr.Dropdown(
+                        choices=EXAMPLES["English"],
+                        value=None,
+                        label="Sample sentences (select to load)",
+                        interactive=True,
                     )
                     analyse_btn = gr.Button("Analyse", variant="primary", size="lg", elem_classes=["analyse-btn"])
 
@@ -438,13 +421,12 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
 
                     gr.HTML('<div class="section-label" style="margin-top:16px">F1 trend by version</div>')
                     trend_plot = gr.LinePlot(
+                        value=None,
                         x="Version",
                         y="F1",
                         color="Language",
-                        tooltip=["Version", "Language", "F1"],
-                        x_title="Version tag",
-                        y_title="F1 score",
                         height=300,
+                        label="F1 by version",
                     )
 
     # ── Helper: build trend dataframe ─────────────────────────────────────────
@@ -464,23 +446,22 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
         rows, ts = load_registry_table()
         return rows, ts, _trend_data(rows)
 
-    # ── Wire language change: update metrics and example sentences for that language ──
-    _has_examples_dataset = hasattr(examples_ui, "dataset")
-
+    # ── Wire language change: update metrics and example sentences ────────────
     def on_lang_change(lang):
         new_exs = EXAMPLES.get(lang, [])
-        metrics = sidebar_metrics(lang)
-        if _has_examples_dataset:
-            return metrics, gr.Dataset(samples=[[ex] for ex in new_exs])
-        return metrics
+        return sidebar_metrics(lang), gr.update(choices=new_exs, value=None)
 
-    _lang_outputs = [metrics_html]
-    if _has_examples_dataset:
-        _lang_outputs.append(examples_ui.dataset)
     lang_dd.change(
         fn=on_lang_change,
         inputs=lang_dd,
-        outputs=_lang_outputs,
+        outputs=[metrics_html, example_dd],
+    )
+
+    # ── Wire example dropdown → populate textbox ──────────────────────────────
+    example_dd.change(
+        fn=lambda ex: ex or "",
+        inputs=example_dd,
+        outputs=text_in,
     )
 
     # ── Wire Analyse button and Enter in textbox ──────────────────────────────
@@ -499,16 +480,11 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
     demo.load(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_plot])
     refresh_btn.click(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_plot])
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Mount /rewrite onto Gradio's own FastAPI app — no path conflicts
+app = demo.app
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.post("/rewrite")(_rewrite_handler)
-app = gr.mount_gradio_app(app, demo, path="/", theme=_theme, css=CSS)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860, theme=_theme, css=CSS)
