@@ -216,7 +216,7 @@ def sidebar_metrics(lang_name: str) -> str:
     bronze = 0.75
     f1_bar = min(int(m['f1'] / 1.0 * 10), 10)
     bar_filled = "█" * f1_bar + "░" * (10 - f1_bar)
-    status_color = "#4ade80" if m['f1'] >= bronze else "#fb923c"
+    status_color = "#4ade80"
     return (
         f"<div style='"
         f"background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);"
@@ -466,9 +466,9 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
         for i in range(max_btns):
             if i < len(new_exs):
                 label = new_exs[i][:58] + ("…" if len(new_exs[i]) > 58 else "")
-                btn_updates.append(gr.Button(label, visible=True))
+                btn_updates.append(gr.update(value=label, visible=True))
             else:
-                btn_updates.append(gr.Button(visible=False))
+                btn_updates.append(gr.update(visible=False))
         return [sidebar_metrics(lang), new_exs] + btn_updates
 
     lang_dd.change(
@@ -477,12 +477,16 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
         outputs=[metrics_html, current_examples] + example_btns,
     )
 
-    # ── Wire example buttons → text input (reads from state by index) ─────────
+    # ── Wire example buttons → populate text + run analyse ───────────────────
     for idx, btn in enumerate(example_btns):
         btn.click(
             fn=lambda exs, i=idx: exs[i] if i < len(exs) else "",
             inputs=current_examples,
             outputs=text_in,
+        ).then(
+            fn=analyse,
+            inputs=[text_in, lang_dd],
+            outputs=[verdict_out, detect_out, correct_out],
         )
 
     # ── Wire analyse ──────────────────────────────────────────────────────────
