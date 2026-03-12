@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 venv/
 .venv/
+.ls_venv/
+.label_studio_data/
 *.env
 logs/
 audit_logs/
@@ -80,8 +82,9 @@ eval/ground_truth_*.csv
 # Annotation exports — share via Google Drive, not git (contains sentence text + PII risk)
 data/annotation_export/
 
-# Eval HTML reports — generated, not source
+# Eval reports and splits — generated, not source
 eval/results/reporting/
+eval/results/splits/
 
 # Exception: requirements.txt needed for Streamlit Cloud deploy
 !requirements.txt
@@ -90,10 +93,8 @@ eval/results/reporting/
 
 data/MCAAI-MSU-KI-DATA
 .DS_Store
-*/*/.DS_Store
 
 models/bias_detector/*
-.DS_Store
 apps/web/.next/
 apps/web/node_modules/
 apps/web/.env.local

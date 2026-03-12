@@ -1,0 +1,25 @@
+# JuaKazi Correction API — minimal image for Railway / Render / Fly.io.
+# Build: docker build -f Dockerfile.api -t juakazi-api .
+# Run:   docker run -p 8000:8000 -e PORT=8000 juakazi-api
+
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# API needs: api/, core/, config.py, rules/, pyproject
+COPY pyproject.toml setup.py ./
+COPY api ./api
+COPY core ./core
+COPY config.py ./
+COPY rules ./rules
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -e ".[api]"
+
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+RUN mkdir -p audit_logs
+
+EXPOSE 8000
+# Railway/Render set PORT; default 8000 for local
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

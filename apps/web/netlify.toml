@@ -1,0 +1,16 @@
+# Netlify deploy config for JuaKazi web app (Next.js)
+# Use when repo root is set to apps/web in Netlify, or when deploying from monorepo with base dir.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+  # Next.js on Netlify uses their runtime; ensure env is set in Netlify UI:
+  # NEXT_PUBLIC_API_URL = your API URL (e.g. https://your-api.up.railway.app)
+
+# Redirect SPA-style routes to index (Next.js handles routing)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = true
+  conditions = {Role = ["next"]}

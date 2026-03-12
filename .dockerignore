@@ -56,6 +56,19 @@ audit_logs/*
 !audit_logs/.gitkeep
 reports/*
 
+# Exclude heavy dirs so Dockerfile.api build context stays under Railway 4GB limit
+apps/
+eval/
+data/
+scripts/
+ml/
+docs/
+tests/
+ui/
+.thelogicvault/
+*.zip
+*.pdf
+
 # Docker
 Dockerfile
 docker-compose.yml

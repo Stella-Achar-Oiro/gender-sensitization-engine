@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // standalone = for Docker/Vercel; Netlify uses default output
+  ...(process.env.NETLIFY ? {} : { output: "standalone" as const }),
   images: {
     remotePatterns: [{ protocol: "https", hostname: "i.postimg.cc", pathname: "/**" }],
   },
