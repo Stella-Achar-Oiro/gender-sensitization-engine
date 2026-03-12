@@ -334,16 +334,7 @@ button.primary:hover, .analyse-btn button:hover { opacity: 0.88 !important; }
     background: rgba(99,102,241,0.25) !important;
 }
 
-/* Tabs */
-.tab-nav button {
-    color: #94a3b8 !important;
-    border-bottom: 2px solid transparent !important;
-    font-weight: 500 !important;
-}
-.tab-nav button.selected {
-    color: #818cf8 !important;
-    border-bottom-color: #6366f1 !important;
-}
+/* Tabs: avoid overriding .tab-nav so Gradio’s tab clicks work; style via theme only */
 
 /* Dataframe */
 table { background: transparent !important; }
@@ -376,7 +367,7 @@ _theme = gr.themes.Base(
     input_border_color_focus="rgba(99,102,241,0.6)",
 )
 
-with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) as demo:
+with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
 
     # ── Header ────────────────────────────────────────────────────────────────
     gr.HTML("""
@@ -392,27 +383,13 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) 
 
         # ── Sidebar ───────────────────────────────────────────────────────────
         with gr.Column(scale=1, min_width=220):
-            gr.HTML('<div class="section-label">Language</div>')
-            lang_dd = gr.Radio(
+            lang_dd = gr.Dropdown(
+                label="Language",
                 choices=list(LANGS.keys()),
                 value="English",
-                label="",
-                show_label=False,
                 interactive=True,
             )
             metrics_html = gr.HTML(sidebar_metrics("English"))
-
-            gr.HTML('<div class="section-label" style="margin-top:18px">Examples</div>')
-            # One dropdown per language; clicking an example fills text and runs analysis
-            example_choices = [(ex[:60] + ("…" if len(ex) > 60 else ""), ex) for ex in EXAMPLES["English"]]
-            example_dropdown = gr.Dropdown(
-                choices=example_choices,
-                value=None,
-                label="",
-                show_label=False,
-                interactive=True,
-                allow_custom_value=False,
-            )
 
         # ── Main content ──────────────────────────────────────────────────────
         with gr.Column(scale=3):
@@ -426,7 +403,13 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) 
                         label="Input text",
                         show_label=False,
                     )
-                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg")
+                    gr.Markdown("*Sample sentences — click one to load into the box above, then click **Analyse**.*")
+                    examples_ui = gr.Examples(
+                        examples=[[ex] for ex in EXAMPLES["English"]],
+                        inputs=text_in,
+                        label=None,
+                    )
+                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg", elem_classes=["analyse-btn"])
 
                     verdict_out = gr.Markdown()
 
@@ -447,7 +430,7 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) 
                     versions_table = gr.Dataframe(
                         headers=["Tag", "Date", "Commit", "EN F1", "SW F1", "FR F1", "KI F1", "Notes"],
                         datatype=["str", "str", "str", "str", "str", "str", "str", "str"],
-                        col_count=(8, "fixed"),
+                        column_count=(8, "fixed"),
                         interactive=False,
                         label="",
                         wrap=True,
@@ -481,39 +464,26 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) 
         rows, ts = load_registry_table()
         return rows, ts, _trend_data(rows)
 
-    # ── Wire sidebar language change ──────────────────────────────────────────
+    # ── Wire language change: update metrics and example sentences for that language ──
+    _has_examples_dataset = hasattr(examples_ui, "dataset")
+
     def on_lang_change(lang):
         new_exs = EXAMPLES.get(lang, [])
-        choices = [(ex[:60] + ("…" if len(ex) > 60 else ""), ex) for ex in new_exs]
-        return sidebar_metrics(lang), gr.update(choices=choices, value=None)
+        metrics = sidebar_metrics(lang)
+        if _has_examples_dataset:
+            return metrics, gr.Dataset(samples=[[ex] for ex in new_exs])
+        return metrics
 
+    _lang_outputs = [metrics_html]
+    if _has_examples_dataset:
+        _lang_outputs.append(examples_ui.dataset)
     lang_dd.change(
         fn=on_lang_change,
         inputs=lang_dd,
-        outputs=[metrics_html, example_dropdown],
+        outputs=_lang_outputs,
     )
 
-    # ── Wire example dropdown: select example → fill text, run analyse, switch to Analyse tab ──
-    def on_example_select(selected_value, lang):
-        if not selected_value or not selected_value.strip():
-            return {}  # e.g. language change set dropdown to None — don't clear outputs
-        text = selected_value.strip()
-        verdict, detail, correction = analyse(text, lang)
-        return {
-            text_in: text,
-            verdict_out: verdict,
-            detect_out: detail,
-            correct_out: correction,
-            tabs: gr.update(selected="analyse"),
-        }
-
-    example_dropdown.change(
-        fn=on_example_select,
-        inputs=[example_dropdown, lang_dd],
-        outputs=[text_in, verdict_out, detect_out, correct_out, tabs],
-    )
-
-    # ── Wire analyse ──────────────────────────────────────────────────────────
+    # ── Wire Analyse button and Enter in textbox ──────────────────────────────
     analyse_btn.click(
         fn=analyse,
         inputs=[text_in, lang_dd],
@@ -537,7 +507,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.post("/rewrite")(_rewrite_handler)
-app = gr.mount_gradio_app(app, demo, path="/")
+app = gr.mount_gradio_app(app, demo, path="/", theme=_theme, css=CSS)
 
 if __name__ == "__main__":
     import uvicorn
