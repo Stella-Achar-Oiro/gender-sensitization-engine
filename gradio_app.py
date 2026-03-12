@@ -306,16 +306,17 @@ textarea:focus, input[type=text]:focus {
     box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
 }
 
-/* Primary button */
-button.primary {
+/* Primary / Analyse button */
+button.primary, .analyse-btn button {
     background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
     border: none !important;
     border-radius: 10px !important;
+    color: #fff !important;
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     transition: opacity 0.15s !important;
 }
-button.primary:hover { opacity: 0.88 !important; }
+button.primary:hover, .analyse-btn button:hover { opacity: 0.88 !important; }
 
 /* Example buttons */
 .example-btn button {
@@ -400,7 +401,7 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
                         label="Input text",
                         show_label=False,
                     )
-                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg")
+                    analyse_btn = gr.Button("Analyse", size="lg", elem_classes=["analyse-btn"])
 
                     verdict_out = gr.Markdown()
 
@@ -455,9 +456,6 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
         rows, ts = load_registry_table()
         return rows, ts, _trend_data(rows)
 
-    # State holds the current example list so button clicks read the right text
-    current_examples = gr.State(EXAMPLES["English"])
-
     # ── Wire sidebar language change ──────────────────────────────────────────
     def on_lang_change(lang):
         new_exs = EXAMPLES.get(lang, [])
@@ -469,24 +467,30 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
                 btn_updates.append(gr.update(value=label, visible=True))
             else:
                 btn_updates.append(gr.update(visible=False))
-        return [sidebar_metrics(lang), new_exs] + btn_updates
+        return [sidebar_metrics(lang)] + btn_updates
 
     lang_dd.change(
         fn=on_lang_change,
         inputs=lang_dd,
-        outputs=[metrics_html, current_examples] + example_btns,
+        outputs=[metrics_html] + example_btns,
     )
 
     # ── Wire example buttons → populate text + run analyse ───────────────────
+    # Each button knows its own text via closure; lang read from lang_dd at click time
     for idx, btn in enumerate(example_btns):
+        all_texts = [EXAMPLES[lang][idx] if idx < len(EXAMPLES[lang]) else "" for lang in LANGS]
+
+        def make_handler(btn_idx):
+            def handler(lang):
+                exs = EXAMPLES.get(lang, [])
+                text = exs[btn_idx] if btn_idx < len(exs) else ""
+                return text, *analyse(text, lang)
+            return handler
+
         btn.click(
-            fn=lambda exs, i=idx: exs[i] if i < len(exs) else "",
-            inputs=current_examples,
-            outputs=text_in,
-        ).then(
-            fn=analyse,
-            inputs=[text_in, lang_dd],
-            outputs=[verdict_out, detect_out, correct_out],
+            fn=make_handler(idx),
+            inputs=lang_dd,
+            outputs=[text_in, verdict_out, detect_out, correct_out],
         )
 
     # ── Wire analyse ──────────────────────────────────────────────────────────
