@@ -357,7 +357,26 @@ td { color: #e2e8f0 !important; font-size:0.82rem !important; border-bottom:1px 
 }
 """
 
-with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.themes.Base()) as demo:
+_theme = gr.themes.Base(
+    primary_hue=gr.themes.colors.indigo,
+    secondary_hue=gr.themes.colors.slate,
+    neutral_hue=gr.themes.colors.slate,
+).set(
+    button_primary_background_fill="linear-gradient(135deg, #6366f1, #4f46e5)",
+    button_primary_background_fill_hover="linear-gradient(135deg, #4f46e5, #4338ca)",
+    button_primary_text_color="#ffffff",
+    button_secondary_background_fill="rgba(99,102,241,0.15)",
+    button_secondary_background_fill_hover="rgba(99,102,241,0.28)",
+    button_secondary_text_color="#c7d2fe",
+    button_secondary_border_color="rgba(99,102,241,0.3)",
+    body_background_fill="#0d1117",
+    block_background_fill="#0d1117",
+    input_background_fill="rgba(255,255,255,0.05)",
+    input_border_color="rgba(255,255,255,0.13)",
+    input_border_color_focus="rgba(99,102,241,0.6)",
+)
+
+with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=_theme) as demo:
 
     # ── Header ────────────────────────────────────────────────────────────────
     gr.HTML("""
@@ -379,29 +398,35 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
                 value="English",
                 label="",
                 show_label=False,
+                interactive=True,
             )
             metrics_html = gr.HTML(sidebar_metrics("English"))
 
             gr.HTML('<div class="section-label" style="margin-top:18px">Examples</div>')
-            with gr.Column(elem_classes=["example-btn"]):
-                example_btns = [
-                    gr.Button(ex[:58] + ("…" if len(ex) > 58 else ""), size="sm")
-                    for ex in EXAMPLES["English"]
-                ]
+            # One dropdown per language; clicking an example fills text and runs analysis
+            example_choices = [(ex[:60] + ("…" if len(ex) > 60 else ""), ex) for ex in EXAMPLES["English"]]
+            example_dropdown = gr.Dropdown(
+                choices=example_choices,
+                value=None,
+                label="",
+                show_label=False,
+                interactive=True,
+                allow_custom_value=False,
+            )
 
         # ── Main content ──────────────────────────────────────────────────────
         with gr.Column(scale=3):
-            with gr.Tabs():
+            with gr.Tabs() as tabs:
 
-                # Tab 1 — Analyse
-                with gr.Tab("Analyse"):
+                # Tab 1 — Analyse (id for programmatic switch)
+                with gr.Tab("Analyse", id="analyse"):
                     text_in = gr.Textbox(
                         lines=4,
                         placeholder="Type or paste a sentence to analyse…",
                         label="Input text",
                         show_label=False,
                     )
-                    analyse_btn = gr.Button("Analyse", size="lg", elem_classes=["analyse-btn"])
+                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg")
 
                     verdict_out = gr.Markdown()
 
@@ -414,7 +439,7 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
                             correct_out = gr.Markdown()
 
                 # Tab 2 — Model Versions
-                with gr.Tab("Model Versions"):
+                with gr.Tab("Model Versions", id="versions"):
                     with gr.Row():
                         refresh_btn = gr.Button("Refresh", size="sm")
                         registry_ts = gr.Markdown()
@@ -459,39 +484,34 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", css=CSS, theme=gr.theme
     # ── Wire sidebar language change ──────────────────────────────────────────
     def on_lang_change(lang):
         new_exs = EXAMPLES.get(lang, [])
-        max_btns = len(EXAMPLES["English"])
-        btn_updates = []
-        for i in range(max_btns):
-            if i < len(new_exs):
-                label = new_exs[i][:58] + ("…" if len(new_exs[i]) > 58 else "")
-                btn_updates.append(gr.update(value=label, visible=True))
-            else:
-                btn_updates.append(gr.update(visible=False))
-        return [sidebar_metrics(lang)] + btn_updates
+        choices = [(ex[:60] + ("…" if len(ex) > 60 else ""), ex) for ex in new_exs]
+        return sidebar_metrics(lang), gr.update(choices=choices, value=None)
 
     lang_dd.change(
         fn=on_lang_change,
         inputs=lang_dd,
-        outputs=[metrics_html] + example_btns,
+        outputs=[metrics_html, example_dropdown],
     )
 
-    # ── Wire example buttons → populate text + run analyse ───────────────────
-    # Each button knows its own text via closure; lang read from lang_dd at click time
-    for idx, btn in enumerate(example_btns):
-        all_texts = [EXAMPLES[lang][idx] if idx < len(EXAMPLES[lang]) else "" for lang in LANGS]
+    # ── Wire example dropdown: select example → fill text, run analyse, switch to Analyse tab ──
+    def on_example_select(selected_value, lang):
+        if not selected_value or not selected_value.strip():
+            return {}  # e.g. language change set dropdown to None — don't clear outputs
+        text = selected_value.strip()
+        verdict, detail, correction = analyse(text, lang)
+        return {
+            text_in: text,
+            verdict_out: verdict,
+            detect_out: detail,
+            correct_out: correction,
+            tabs: gr.update(selected="analyse"),
+        }
 
-        def make_handler(btn_idx):
-            def handler(lang):
-                exs = EXAMPLES.get(lang, [])
-                text = exs[btn_idx] if btn_idx < len(exs) else ""
-                return text, *analyse(text, lang)
-            return handler
-
-        btn.click(
-            fn=make_handler(idx),
-            inputs=lang_dd,
-            outputs=[text_in, verdict_out, detect_out, correct_out],
-        )
+    example_dropdown.change(
+        fn=on_example_select,
+        inputs=[example_dropdown, lang_dd],
+        outputs=[text_in, verdict_out, detect_out, correct_out, tabs],
+    )
 
     # ── Wire analyse ──────────────────────────────────────────────────────────
     analyse_btn.click(
