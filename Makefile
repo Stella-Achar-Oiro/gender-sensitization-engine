@@ -29,10 +29,10 @@ help:
 	@echo "  make collect          Show data collection sources"
 	@echo "  make verify-week2     Verify complete Week 2 workflow"
 	@echo ""
-	@echo "Quick Local Dev (open UI at http://localhost:3000):"
+	@echo "Quick Local Dev (open UI at http://localhost:3001):"
 	@echo "  make run              Start API + Next.js with one command; Ctrl+C stops both"
-	@echo "  make run-api          API only (:8000)"
-	@echo "  make run-web          Next.js only (:3000; run API in other terminal if needed)"
+	@echo "  make run-api          API only (:8080)"
+	@echo "  make run-web          Next.js only (:3001; run API in other terminal if needed)"
 	@echo "  make dev-test         Run tests locally (requires local setup)"
 	@echo "  make dev-eval         Run evaluation locally"
 	@echo "  make dev-ui           Launch Streamlit UI at http://localhost:8501"
@@ -139,23 +139,23 @@ verify-week2:
 # ============================================================================
 # QUICK LOCAL DEV (Optional - for fast iteration during development)
 # ============================================================================
-# One command: make run — starts API + Next.js, open http://localhost:3000. Ctrl+C stops both.
+# One command: make run — starts API (8080) + Next.js (3001). Open http://localhost:3001. Ctrl+C stops both.
 
 run:
 	@test -f apps/web/.env.local || cp apps/web/.env.local.example apps/web/.env.local; \
-	echo "Starting API + Next.js. Open http://localhost:3000 — Ctrl+C stops both."; \
-	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000 & API_PID=$$!; \
-	cd apps/web && npm run dev; kill $$API_PID 2>/dev/null; true
+	echo "Starting API + Next.js. Open http://localhost:3001 — Ctrl+C stops both."; \
+	uvicorn api.main:app --reload --host 0.0.0.0 --port 8080 & API_PID=$$!; \
+	cd apps/web && npm run dev -- -p 3001; kill $$API_PID 2>/dev/null; true
 
 dev: run
 
 run-api:
-	@echo "API only at http://localhost:8000"
-	uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+	@echo "API only at http://localhost:8080"
+	uvicorn api.main:app --reload --host 0.0.0.0 --port 8080
 
 run-web:
-	@echo "Next.js only at http://localhost:3000 (start API first: make run-api)"
-	cd apps/web && npm run dev
+	@echo "Next.js only at http://localhost:3001 (start API first: make run-api)"
+	cd apps/web && npm run dev -- -p 3001
 
 dev-test:
 	@echo "Running tests locally (requires local Python setup)..."

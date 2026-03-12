@@ -48,7 +48,7 @@ LANGS = {
 # From run_evaluation.py (post–lexicon fixes: EN slim, SW+FR+KI additions)
 METRICS = {
     "en": {"f1": 0.847, "precision": 1.000, "recall": 0.735, "tier": "Pre-Bronze",   "samples": 66},
-    "sw": {"f1": 0.771, "precision": 0.735, "recall": 0.810, "tier": "Gold (sample count)", "samples": 64_723},
+    "sw": {"f1": 0.772, "precision": 0.732, "recall": 0.817, "tier": "Gold (sample count)", "samples": 64_723},
     "fr": {"f1": 0.571, "precision": 1.000, "recall": 0.400, "tier": "Pre-Bronze",   "samples": 50},
     "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217, "tier": "Bronze (sample count)", "samples": 11_848},
 }

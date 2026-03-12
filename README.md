@@ -1,230 +1,160 @@
 # JuaKazi Gender Sensitization Engine
 
-Gender bias detection and correction system for African languages with comprehensive F1 evaluation framework.
+Multilingual gender bias detection and correction engine for East African languages. Targets Swahili, English, French, and Kikuyu. Rules-based detection with ML fallback, context-aware correction, and AIBRIDGE-compliant evaluation.
 
-## Supported Languages
+## Current Metrics (Mar 2026)
 
-### Production & Foundation
-- **English** (F1: 0.786, Precision: 1.000, Recall: 0.647) - Production-ready
-- **Swahili** (F1: 0.708, Precision: 1.000, Recall: 0.548) - Foundation
+| Language | F1    | Precision | Recall | Ground Truth | Status |
+|----------|-------|-----------|--------|--------------|--------|
+| English  | 0.786 | 1.000     | 0.647  | 66 samples   | Production |
+| Swahili  | 0.771 | 0.734     | 0.811  | 64,723 samples | Active development |
+| French   | 0.750 | 1.000     | 0.600  | 50 samples   | Beta |
+| Kikuyu   | 0.352 | 0.926     | 0.217  | 11,848 samples | Early stage |
 
-### Beta (Pending Native Speaker Validation)
-- **French** (F1: 0.571, Precision: 1.000, Recall: 0.400) - Initial validation complete
-- **Gikuyu** (F1: 0.643, Precision: 1.000, Recall: 0.473) - Expanded dataset (5,254 samples)
-
-**Perfect Precision**: All 4 languages achieve 1.000 precision (zero false positives)
-
-**Latest Update (Jan 2026):** Major Kikuyu expansion with 5,200+ lexicon entries and 5,254 ground truth samples. AI BRIDGE compliance features added.
+SW precision (0.734) reflects honest signal from the ann_sw_v3 ground truth pass. Main FP drivers are `Watoto wa Kike` and `mtoto wa kike` — genuinely ambiguous phrases that appear in both advocacy and prescriptive contexts. This is documented and accepted.
 
 ## Quick Start
 
-### Using Make Commands (Recommended)
 ```bash
-# Show all available commands
-make help
+# Evaluation
+make dev-eval                        # F1/Precision/Recall for all 4 languages
+python3 run_evaluation.py            # same, direct
 
-# Run evaluation (no dependencies required)
-make eval              # F1 evaluation across all languages
-make eval-correction   # Correction effectiveness analysis
-make demo              # Live interactive demo
+# Tests (must stay 5/5)
+python3 tests/test_system.py
 
-# Run tests
-make test              # System tests
-make test-demo         # Complete demo with all features
+# Live demo
+python3 demo_live.py
 
-# Start services (requires optional dependencies)
-make run-api           # API server on port 8000
-make run-ui            # Streamlit UI on port 8501
-make run               # Both API and UI together
+# API + web (local dev)
+make run                             # FastAPI :8080 + Next.js :3001
+make run-api                         # FastAPI only
+make run-web                         # Next.js only (requires API running)
+
+# Streamlit review UI
+make dev-ui                          # :8501
 ```
 
-### Direct Python Commands
-```bash
-# Evaluation (no dependencies required)
-python3 run_evaluation.py           # F1 evaluation
-python3 eval/correction_evaluator.py # Correction analysis
-python3 demo_live.py                # Live demo
+## Architecture
 
-# Testing
-python3 tests/test_system.py        # System tests
-python3 tests/test_api.py           # API endpoint tests (requires FastAPI)
-python3 tests/test_demo.py          # Complete demo
+Detection runs in three stages:
 
-# Services (requires optional dependencies)
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000  # API
-streamlit run ui/app.py --server.port 8501                # UI
+1. **Rules-based matching** — lexicons at `rules/lexicon_{lang}_v3.csv`, matched via `DetectorPatterns` (`eval/detector_patterns.py`).
+2. **Context gating** — `ContextChecker` (`core/context_checker.py`) suppresses matches in quotes, biographical references, historical context, statistics, medical text, counter-stereotype framing, and more. The `avoid_when` field in lexicon CSVs uses pipe-separated `ContextCondition` enum values.
+3. **ML fallback** — when rules find nothing, `ml_classifier.py` runs `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned on 51K Swahili rows). ML edits carry `severity=ml_fallback` and `needs_review=True`.
+
+Correction API (`api/`):
+
+```
+api/main.py        # HTTP routing (FastAPI)
+api/service.py     # Rewrite logic: rules -> semantic check -> ML fallback
+api/rules_engine.py  # apply_rules_on_spans(), build_reason()
+api/schemas.py     # RewriteRequest, RewriteResponse (Pydantic)
+api/audit.py       # JSONL audit log
 ```
 
-### Test Individual Language
-```bash
-python3 -c "
-from eval.bias_detector import BiasDetector
-from eval.models import Language
-detector = BiasDetector()
-result = detector.detect_bias('The chairman will lead', Language.ENGLISH)
-print('Has bias:', result.has_bias_detected)
-print('Edits:', result.detected_edits)
-"
+Frontends:
+
+| Frontend | Path | Port | Purpose |
+|----------|------|------|---------|
+| Next.js web app | `apps/web/` | 3001 local / 3000 Docker | Public demo |
+| Streamlit review UI | `ui/` | 8501 | Internal annotation review |
+
+Shared core (`core/`):
+
 ```
-
-## Performance Summary
-
-### Detection Performance (Jan 2026)
-| Language | F1 Score | Precision | Recall | Lexicon Size | Ground Truth | Status |
-|----------|----------|-----------|--------|--------------|--------------|--------|
-| English  | 0.786    | 1.000     | 0.647  | 515 entries (v3) | 67 samples | Production |
-| Swahili  | 0.708    | 1.000     | 0.548  | 151 entries (v3) | 64 samples | Foundation |
-| French   | 0.571    | 1.000     | 0.400  | 51 entries (v3) | 51 samples | Beta |
-| Gikuyu   | 0.643    | 1.000     | 0.473  | 1,209 entries (v3) | 5,254 samples (v4) | Beta |
-
-### Correction Effectiveness
-| Language | Detection Rate | Bias Removal Rate | Status |
-|----------|---------------|-------------------|---------|
-| English  | 64.7%         | **100.0%**        | Production-ready |
-| Swahili  | 54.8%         | Improving         | Expanding |
-| French   | 40.0%         | Pending           | Needs validation |
-| Gikuyu   | 47.3%         | In Progress       | Large-scale validation |
-
-**Key Achievements**:
-- **Perfect precision (1.000) across all 4 languages** - zero false positives
-- English: 100% bias removal rate (all detected biases successfully corrected)
-- Hybrid approach: Rules-based (70%) + ML (30%)
-- 4 languages with measurable F1 scores
+core/context_checker.py        # ContextChecker, ContextCondition
+core/rules_loader.py           # Lexicon CSV loading
+core/semantic_preservation.py  # Composite score for rewrite quality
+```
 
 ## Project Structure
 
 ```
-├── eval/                    # Evaluation framework
-│   ├── run_evaluation.py   # Main evaluation script
-│   ├── correction_evaluator.py # Pre→post correction analysis
-│   ├── ablation_study.py   # Component contribution analysis
-│   ├── baseline_simple.py  # Baseline comparison
-│   ├── ground_truth_*.csv  # Test datasets (50+ samples each)
-│   └── results/            # Evaluation outputs
-├── rules/                  # Bias detection lexicons
-│   ├── lexicon_en_v3.csv  # English (515 entries)
-│   ├── lexicon_sw_v3.csv  # Swahili (151 entries)
-│   ├── lexicon_fr_v3.csv  # French (51 entries)
-│   ├── lexicon_ki_v3.csv  # Gikuyu (1,209 entries)
-│   └── lexicon_ki_v2.csv  # Gikuyu baseline (111 entries)
-├── scripts/                  # Utilities and generation tools
-│   ├── generate_ki_lexicon_v3.py    # Kikuyu lexicon generator (data-driven)
-│   ├── generate_kikuyu_lexicon_ai.py # AI-based lexicon generation
-│   └── data_collection/      # Data collection tools
-│       ├── download_datasets.py  # WinoBias, WinoGender, CrowS-Pairs
-│       ├── extract_wikipedia.py  # Wikipedia corpus extraction
-│       └── common_utils.py       # Shared utilities
-├── data/                   # Training and evaluation datasets
-│   ├── Kikuyu/             # Kikuyu transcripts (33MB+)
-│   ├── raw/                # Original benchmark datasets
-│   ├── clean/              # Processed datasets for team access
-│   ├── swahili_corpus/     # Swahili training data
-│   └── analysis/           # Analysis outputs
-└── docs/                   # Documentation
-    ├── approach_card.md    # Technical methodology
-    ├── dataset_datasheet.md # Ground truth documentation
-    └── eval_protocol.md    # Evaluation procedures
+api/                     # Correction API (FastAPI)
+apps/web/                # Next.js frontend
+core/                    # Shared detection logic
+data/
+  raw/                   # Source datasets, staged annotation batches
+  analysis/              # Annotation samples and analysis outputs
+docs/
+  eval/                  # Model card, dataset card, eval protocol
+eval/                    # Evaluation framework (BiasDetector, ground truth CSVs)
+rules/                   # Lexicons (lexicon_{en,sw,fr,ki}_v3.csv)
+scripts/                 # Data collection, annotation pipeline, kappa calculation
+ui/                      # Streamlit review UI
+config.py                # Central config (versions, thresholds, dialects)
+run_evaluation.py        # Main eval runner
+train_ml_model.py        # ML classifier training
 ```
 
-**Data Pipeline:**
-- `data/raw/` - Original datasets (WinoBias, WinoGender, CrowS-Pairs, Wikipedia extracts)
-- `data/clean/` - Processed datasets ready for evaluation and model training
-- Use `scripts/data_collection/` tools to regenerate or update datasets
+## Lexicons
+
+| Language | File | Entries | Notes |
+|----------|------|---------|-------|
+| English  | `rules/lexicon_en_v3.csv` | 515 | Production |
+| Swahili  | `rules/lexicon_sw_v3.csv` | ~187 | Includes proverbs, Sheng, bride-price patterns |
+| French   | `rules/lexicon_fr_v3.csv` | ~69 | Expanded Mar 2026 |
+| Kikuyu   | `rules/lexicon_ki_v3.csv` | 1,209 | avoid_when enum fix pending |
+
+`avoid_when` must be pipe-separated `ContextCondition` enum values: `quote`, `historical`, `proper_noun`, `biographical`, `statistical`, `medical`, `counter_stereotype`, `legal`, `artistic`, `organization`.
+
+## ML Classifier
+
+Model: `juakazike/sw-bias-classifier-v1`
+- Base: afro-xlmr-base
+- Fine-tuned on 51K Swahili rows, 3 epochs, T4 x2
+- Val metrics: Precision=0.938, Recall=0.784, F1=0.854
+- Activated via `JUAKAZI_ML_MODEL` env var in HF Space
+- Stage 2 fallback only — never rewrites text, warn-only
 
 ## Requirements
 
-### Core System (No Dependencies)
-- Python 3.12+ (standard library only)
-- All evaluation and detection features work without external dependencies
+Core evaluation and detection run with no dependencies (Python 3.12+ stdlib only):
 
 ```bash
-python3 run_evaluation.py           # F1 evaluation
-python3 demo_live.py                # Live demo
-python3 eval/correction_evaluator.py # Correction analysis
+python3 run_evaluation.py
+python3 demo_live.py
+python3 tests/test_system.py
 ```
 
-### Optional Dependencies
-
-Install using Poetry for dependency management:
+Optional dependencies via `pyproject.toml`:
 
 ```bash
-# Full installation (API, UI, ML, dev tools) - auto-installs poetry if needed
-make setup
-
-# Alternatives
-make install-minimal  # API + UI only (no ML)
-make install-core     # Dev tools only
+pip install -e ".[api]"   # FastAPI + pandas
+pip install -e ".[ui]"    # Streamlit
+pip install -e ".[ml]"    # Transformers, PyTorch, scikit-learn
+pip install -e ".[dev]"   # pytest, black, ruff, mypy
 ```
 
-Dependencies managed via `pyproject.toml` with optional extras:
-- **api** - FastAPI, pandas
-- **ui** - Streamlit
-- **ml** - Transformers, PyTorch, scikit-learn
-- **dev** - pytest, black, ruff, mypy, pre-commit
+## Hard Rules
+
+1. `python3 tests/test_system.py` must stay 5/5 before any merge.
+2. Run `python3 run_evaluation.py` before and after any lexicon or detector change.
+3. `severity=replace` rules require Precision >= 1.000 for EN/FR. SW is 0.734 (documented exception).
+4. `avoid_when` must use pipe-separated `ContextCondition` enum values — never prose.
+5. Work in branches; squash-merge to main. Never commit directly to main.
+6. Never push unless explicitly asked.
+
+## Sprint Status (Mar 2026)
+
+- Sprint 0-1: merged to main
+- Sprint 2: IN PROGRESS — blocked on 2nd annotator recruitment (Cohen's Kappa required for AIBRIDGE Bronze)
+- Sprint 3-4: not started (Sprint 4 web app can run in parallel with Sprint 3)
+
+AIBRIDGE Bronze blockers:
+- F1 >= 0.75 per language: EN (0.786), SW (0.771), FR (0.750) all pass; KI (0.352) does not
+- Cohen's Kappa >= 0.70: unmeasured, requires 2nd Swahili native-speaker annotator
+- Recruit via Masakhane Slack (Project Lead task)
 
 ## Documentation
 
-### Required Deliverables
-- **[Approach Card](docs/eval/approach_card.md)** - Technical methodology + correction effectiveness
-- **[Dataset Datasheet](docs/eval/dataset_datasheet.md)** - Ground truth documentation and ethics
-- **[Evaluation Protocol](docs/eval/eval_protocol.md)** - Reproducible evaluation procedures
-- **[Failure Case Log](docs/eval/failure_case_log.md)** - Systematic improvement tracking
-- **[Weekly Metrics Log](docs/eval/weekly_metrics_log.md)** - Performance tracking by category
-- **[Literature Review](docs/eval/literature_review_notes.md)** - Key insights from research
-
-### Additional Analysis
-- **[Ablation Study](docs/eval/ablation_results.md)** - Component contribution analysis
-- **[Baseline Comparison](docs/eval/baseline_comparison.md)** - Baseline vs full approach
-
-## Key Features
-
-- **Zero False Positives**: Perfect precision across all languages
-- **AI BRIDGE Compliant**: Fairness metrics (DP, EO) for bias detection
-- **Large-Scale Kikuyu Dataset**: 5,254 annotated samples with 1,209 lexicon entries
-- **Context-Aware Correction**: Enhanced semantic preservation
-- **Culturally Adapted**: Language-specific lexicons with regional context
-- **Systematic Evaluation**: Comprehensive F1 framework with failure analysis
-
-## Usage Examples
-
-### Detection
-```python
-from eval.bias_detector import BiasDetector
-from eval.models import Language
-
-detector = BiasDetector()
-
-# English
-result = detector.detect_bias("The chairman will lead", Language.ENGLISH)
-print(result.has_bias_detected)  # True
-print(result.detected_edits)     # [{'from': 'chairman', 'to': 'chair', 'severity': 'replace'}]
-
-result = detector.detect_bias("The table is wooden", Language.ENGLISH)
-print(result.has_bias_detected)  # False
-```
-
-### Correction
-```python
-# English
-result = detector.correct_bias("The chairman will lead", Language.ENGLISH)
-print(result.get('corrected_text'))  # Returns corrected version if available
-
-# Note: Correction functionality depends on implementation
-```
-
-## Evaluation Results
-
-Latest evaluation run shows consistent performance:
-- **5,436 ground truth samples** (EN: 67, SW: 64, FR: 51, KI: 5,254)
-- **Perfect precision** maintained across all languages
-- **Major Kikuyu expansion**: 22 → 1,209 lexicon entries, 34 → 5,254 samples
-- **AI BRIDGE compliance**: Fairness metrics integrated
-- **Cross-language framework** proven scalable
-
-## Contributing
-
-See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for development guidelines.
+- [Model Card](docs/eval/model_card.md)
+- [Dataset Card](docs/eval/dataset_datasheet.md)
+- [Evaluation Protocol](docs/eval/eval_protocol.md)
+- [AIBRIDGE F1 Note](docs/SWAHILI_F1_NOTE.md)
+- [Data Prompts](docs/DATA_PROMPTS.md)
 
 ## License
 
-Open source - see project license for details.
+Open source. See project license for details.

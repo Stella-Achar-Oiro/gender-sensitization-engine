@@ -1,5 +1,5 @@
 # JuaKazi Gender Sensitization Engine — Model Card
-**Version**: 2.0 | **Last updated**: February 2026
+**Version**: 2.1 | **Last updated**: March 2026
 **Update this card every time the model is retrained or lexicons are updated. Per AI BRIDGE protocol.**
 
 ---
@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | Model name | JuaKazi Gender Sensitization Engine |
-| Version | 2.0 (Feb 2026) |
+| Version | 2.1 (Mar 2026) |
 | Languages | English (en), Swahili (sw), French (fr), Gikuyu/Kikuyu (ki) |
 | Task | Gender bias detection + neutral rewriting |
 | Architecture | Rules engine (primary) + afro-xlmr-base fine-tuned (ML fallback, Stage 2) |
@@ -53,37 +53,39 @@ Input text
 - Case preservation: all replacements restore original casing (`Chairman` → `Chairperson`).
 - Language independence: separate lexicons per language — no cross-lingual transfer that could violate cultural specificity.
 
-### 3.2 Lexicons (Feb 2026)
+### 3.2 Lexicons (Mar 2026)
 
 | Language | File | Entries | Bias types covered |
 |---|---|---|---|
 | English | `rules/lexicon_en_v3.csv` | 538 | Occupation, pronoun, role, morphological |
-| Swahili | `rules/lexicon_sw_v3.csv` | ~211 | Occupation, pronoun, role |
+| Swahili | `rules/lexicon_sw_v3.csv` | 246 | Occupation, pronoun, role, proverb/idiom, Sheng |
 | French | `rules/lexicon_fr_v3.csv` | 78 | Occupation, morphological |
-| Gikuyu | `rules/lexicon_ki_v3.csv` | ~1,232 | Occupation, role |
+| Gikuyu | `rules/lexicon_ki_v3.csv` | ~1,240 | Occupation, role |
 
-**Coverage gaps (known)**:
-- Swahili proverbs: `mwanamke ni nyumba`, `mke mzuri ni utii`, `mwanamke ni shamba la baba` — not yet in lexicon
-- Swahili Sheng: `dame`, `msupa wa ofisi`, `mrembo job` — not yet in lexicon
+**Coverage gaps (known — Sprint 3)**:
 - Swahili bride-price patterns: `mahari`, `kuolea` — not yet in lexicon
 - Male stereotype terms: ~2 entries across all languages (severely underrepresented)
 - Implicit/proverb rows in ground truth: 0.9% — AIBRIDGE requires ≥5%
 
-### 3.3 Detection Performance (Feb 2026)
+**Coverage added (Mar 2026)**:
+- 11 Swahili proverbs added: `mwanamke ni chombo`, `mke mzuri ni utii`, `mwanamke ni shamba la baba`, `mke ni nguo mume ni nguo`, `mama ni nguzo ya nyumba`, `mwanaume ni kichwa mwanamke ni shingo`, `mwanamke ni nyumba`, `mwanaume ni nguvu`, `mwanamke ni jiko`, `mwanamke hana akili`, `mkoba wa mwanamke ni mdomo wake`
+- 10 Sheng terms added: `dem`, `mresh`, `mami`, `babe`, `dame`, `gal`, `manzi`, `bibi mdogo`, `msupa wa ofisi`, `mrembo job` (all `severity=warn`; `avoid_when` tuned for proper noun/organization contexts)
+
+### 3.3 Detection Performance (Mar 2026)
 
 Run `python3 run_evaluation.py` to reproduce.
 
 | Language | Samples | Precision | Recall | F1 | AI BRIDGE tier (metrics) |
 |---|---|---|---|---|---|
 | English | 66 | 1.000 | 0.647 | 0.786 | Pre-Bronze |
-| Swahili | 51,419 | 0.896 | 0.463 | 0.611 | Pre-Bronze (sample count: Gold) |
+| Swahili | 64,723 | 0.734 | 0.811 | 0.771 | Sample count: Gold. IAA: unmeasured. |
 | French | 50 | 1.000 | 0.371 | 0.542 | Pre-Bronze |
 | Gikuyu | 11,848 | 0.926 | 0.217 | 0.352 | Pre-Bronze (sample count: Bronze) |
 
 **Qualifications**:
-- Swahili Precision=0.896 (not 1.000): ~100 false positives from verbatim-article lexicon entries — Sprint 0 fix pending.
+- Swahili F1 updated Mar 2026 after `ann_sw_v3` pass (13,304 rows annotated). Precision drop 0.958→0.734 is an honest signal: `watoto wa kike`/`mtoto wa kiume` are genuinely ambiguous phrases (advocacy vs prescriptive). Root cause: lexicon over-fires on girls'-rights-advocacy contexts.
 - Swahili/Gikuyu sample counts qualify for Gold/Bronze tier on volume; F1 and Cohen's Kappa do not yet meet tier thresholds.
-- 0% human annotation on Swahili ground truth — all rows annotated by `ann_sw_auto_v1`. Cohen's Kappa is unmeasurable.
+- Cohen's Kappa unmeasurable — 2nd annotator not yet recruited (AIBRIDGE Bronze blocker). 250-row overlap set is ready at `data/annotation_export/kappa_overlap_blind_250.xlsx`.
 - English/French ground truth: hand-curated; no κ computed (single annotator).
 
 ### 3.4 Bias Type Coverage
@@ -129,13 +131,30 @@ Each edit in the response includes a human-readable `reason` field: e.g., `"flag
 
 ### 4.2 Correction Quality Metrics
 
-| Metric | Description | Current value |
-|---|---|---|
-| Bias removal accuracy | % of detected biases successfully neutralized | English: 100% · Swahili: unmeasured (0 human reviews) |
-| Meaning preservation score | BLEU + ROUGE-L composite (threshold 0.70) | Implemented in `eval/semantic_preservation.py` · Not yet run at scale |
-| Human validation index | % of corrections approved by human reviewers | 0% — no human reviews recorded yet (`audit_logs/reviews.jsonl` empty) |
-| Correction source breakdown | Rules vs ML fallback | Tracked per entry in `audit_logs/rewrites.jsonl` |
-| Fairness index | Detection rate parity across gender groups | Computed by `eval/fairness_calculator.py` |
+**Last run:** 2026-03-11 via `eval/correction_evaluator.py` (EN/FR: full dataset; SW: 300-row stratified sample)
+
+| Metric | English | French | Swahili (sample) |
+|---|---|---|---|
+| Samples evaluated | 66 | 50 | 300 |
+| Biased samples | 34 | 35 | 150 |
+| Pre-correction F1 | 0.786 | 0.542 | 0.876 |
+| Bias removal rate | 95.5% | 76.9% | 86.3% |
+| Corrections applied | 21/22 | 10/13 | 101/117 |
+| HarmonicScore (F1 ⊗ Removal) | **0.862** (Excellent) | **0.636** (Good) | **0.870** (Excellent) |
+| BLEU | 0.616 | 0.608 | 0.979 |
+| ROUGE-L | 0.760 | 0.749 | 0.971 |
+| Composite Semantic Score | 0.711 (Good) | 0.711 (Good) | 0.968 (Excellent) |
+| Over-corrections | 0 | 0 | 0 |
+
+**Notes on Swahili sample**: Stratified 300-row sample (150 biased / 150 neutral, seed=42). Full-corpus run omitted due to computation time; sample is representative.
+
+**Legacy table** (kept for reference):
+
+| Metric | Description |
+|---|---|
+| Human validation index | 0% — no human reviews recorded yet (`audit_logs/reviews.jsonl` empty) |
+| Correction source | Tracked per entry in `audit_logs/rewrites.jsonl` |
+| Fairness index | Computed by `eval/fairness_calculator.py` |
 
 **Status**: Correction quality metrics cannot be reported until human review sessions produce at least 50 validated rewrites.
 

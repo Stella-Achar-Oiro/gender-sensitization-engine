@@ -56,6 +56,74 @@ python3 scripts/export_for_annotation.py --kappa-set > data/annotation_export/ba
 
 ---
 
+## 4a. [Engineer] Label Studio one-shot (optional path for κ)
+
+**If you use Label Studio** instead of CSV handoff:
+
+**1. Run setup (once):**
+```bash
+bash scripts/setup_label_studio.sh
+```
+- Fixes: script uses Python 3.11 if available (3.14 breaks Label Studio). CRLF in script was fixed; token is read from DB.
+- When it finishes, it prints **Project ID** (a UUID) and **Export when done** command.
+
+**2. If you don't see any project:** The API project create may have failed. Run:
+```bash
+LABEL_STUDIO_BASE_DATA_DIR=.label_studio_data DJANGO_DB=sqlite .ls_venv/bin/python scripts/create_label_studio_project.py
+```
+Then refresh http://localhost:8080 — you should see **JuaKazi — Swahili Kappa Overlap** with tasks.
+
+**3. If ann1/ann2 logins fail:** The API creates users but does not set passwords. Run:
+```bash
+LABEL_STUDIO_BASE_DATA_DIR=.label_studio_data DJANGO_DB=sqlite .ls_venv/bin/python scripts/set_label_studio_passwords.py
+```
+This creates or updates ann1 and ann2 with the correct passwords.
+
+**4. Annotate:** Open http://localhost:8080. Log in as **ann1@juakazi.ai** / **annotator1pass**, label all tasks. Then log in as **ann2@juakazi.ai** / **annotator2pass** and label the same tasks. (Or share the link + ann2 login with a Swahili speaker.)
+
+**4a. If the labeling screen is blank** after clicking Label: the full label config (conditional visibility / inline styles) can crash the UI. Switch the project to a minimal config:
+```bash
+LABEL_STUDIO_BASE_DATA_DIR=.label_studio_data DJANGO_DB=sqlite .ls_venv/bin/python scripts/fix_label_studio_blank_screen.py
+```
+Then refresh the page and click Label again. New projects created with `create_label_studio_project.py` use the minimal config by default.
+
+**4b. Optional — AI annotations (two models for κ):** You can fill both annotator slots with two different models, then export for Cohen's κ.
+
+**One-time: token files (no pasting each time)**  
+Create two files (one line each, the API token from Label Studio → Account & settings):
+- `.label_studio_data/admin_token.txt` — admin's token  
+- `.label_studio_data/ann2_token.txt` — ann2's token (log in as ann2@juakazi.ai to copy)
+
+Then run the full flow:
+```bash
+bash scripts/run_label_studio_ai_flow.sh
+```
+This runs: (1) rules annotator, (2) ML annotator, (3) export and κ. If `ann2_token.txt` is missing, step 2 is skipped.
+
+Or run steps manually; tokens are read from those files if `--token` is not set:
+```bash
+python3 scripts/run_ai_annotations_label_studio.py --url http://localhost:8080 --project-id 1
+python3 scripts/run_ai_annotations_label_studio.py --model ml --url http://localhost:8080 --project-id 1
+python3 scripts/export_label_studio_annotations.py --url http://localhost:8080 --project-id 1 --output eval/results/kappa_label_studio.json
+```
+(Requires ML model for step 2: set `JUAKAZI_ML_MODEL` if using the fine-tuned classifier.)
+
+**5. Export and get κ:** Get your admin token: Account & Settings in Label Studio UI, or from DB:
+```bash
+sqlite3 .label_studio_data/label_studio.sqlite3 "SELECT key FROM authtoken_token LIMIT 1;"
+```
+Then:
+```bash
+python3 scripts/export_label_studio_annotations.py \
+  --url http://localhost:8080 \
+  --token <paste-admin-token> \
+  --project-id <UUID-from-setup-output> \
+  --output eval/results/kappa_label_studio.json
+```
+Script prints Cohen's Kappa and saves CSVs per annotator. If κ ≥ 0.70, Sprint 2 closes.
+
+---
+
 ## 4. [Engineer] After both annotators return CSVs — compute Cohen's Kappa
 
 **When:** You have two files with the **same row IDs** (the kappa overlap set), each with a `has_bias` (or equivalent) column per annotator.

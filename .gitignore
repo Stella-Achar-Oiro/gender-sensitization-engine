@@ -28,8 +28,9 @@ htmlcov/
 *_backup.csv
 *.csv.bak
 
-# Ignore JSON results but allow package.json, etc.
+# Ignore generated results but track the model registry
 eval/results/*.json
+!eval/results/model_registry.json
 eval/results/*.txt
 eval/results/*.csv
 

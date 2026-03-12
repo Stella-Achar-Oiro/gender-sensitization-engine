@@ -1,0 +1,74 @@
+{
+  "versions": [
+    {
+      "tag": "v0.1-baseline",
+      "timestamp": "2025-11-27T19:47:05",
+      "git_commit": null,
+      "notes": "Initial baseline — EN+SW only, small ground truth",
+      "lexicon_sizes": {"en": 515, "sw": 64, "fr": 51, "ki": 22},
+      "ground_truth_sizes": {"en": 67, "sw": 64, "fr": 51, "ki": 34},
+      "metrics": {
+        "en": {"f1": 0.764, "precision": 1.000, "recall": 0.618},
+        "sw": {"f1": 0.681, "precision": 1.000, "recall": 0.516},
+        "fr": {"f1": 0.627, "precision": 1.000, "recall": 0.457},
+        "ki": {"f1": 0.714, "precision": 1.000, "recall": 0.556}
+      }
+    },
+    {
+      "tag": "v0.3-ki-expansion",
+      "timestamp": "2025-12-03T15:12:28",
+      "git_commit": null,
+      "notes": "Kikuyu lexicon expanded 22->1,209 entries, ground truth 34->5,254 samples",
+      "lexicon_sizes": {"en": 515, "sw": 151, "fr": 51, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64, "fr": 51, "ki": 5254},
+      "metrics": {
+        "en": {"f1": 0.786, "precision": 1.000, "recall": 0.647},
+        "sw": {"f1": 0.708, "precision": 1.000, "recall": 0.548},
+        "fr": {"f1": 0.571, "precision": 1.000, "recall": 0.400},
+        "ki": {"f1": 0.643, "precision": 1.000, "recall": 0.473}
+      }
+    },
+    {
+      "tag": "v0.5-sw-groundtruth-v3",
+      "timestamp": "2026-03-05T00:00:00",
+      "git_commit": "ae5138b",
+      "notes": "ann_sw_v3 pass (13,304 rows), SW ground truth 64->64,723. Honest precision drop from ambiguous Watoto wa Kike/mtoto wa kike FPs.",
+      "lexicon_sizes": {"en": 515, "sw": 151, "fr": 51, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64723, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.786, "precision": 1.000, "recall": 0.647},
+        "sw": {"f1": 0.708, "precision": 0.958, "recall": 0.548},
+        "fr": {"f1": 0.571, "precision": 1.000, "recall": 0.400},
+        "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217}
+      }
+    },
+    {
+      "tag": "v0.6-detector-recall-fix",
+      "timestamp": "2026-03-12T00:00:00",
+      "git_commit": "603b840",
+      "notes": "Detector recall fix: OCCUPATION_PREFIXES expanded, NON_OCC_WORDS added. EN F1 0.786->0.847.",
+      "lexicon_sizes": {"en": 515, "sw": 151, "fr": 51, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64723, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.847, "precision": 1.000, "recall": 0.735},
+        "sw": {"f1": 0.771, "precision": 0.734, "recall": 0.811},
+        "fr": {"f1": 0.571, "precision": 1.000, "recall": 0.400},
+        "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217}
+      }
+    },
+    {
+      "tag": "v0.7-fr-bronze",
+      "timestamp": "2026-03-12T20:29:34",
+      "git_commit": "945db9f",
+      "notes": "FR lexicon +18 terms -> FR F1 0.571->0.750 (AIBRIDGE Bronze). SW +36 terms: proverbs, Sheng, bride-price, religious framing.",
+      "lexicon_sizes": {"en": 515, "sw": 187, "fr": 69, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64723, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.847, "precision": 1.000, "recall": 0.735},
+        "sw": {"f1": 0.773, "precision": 0.733, "recall": 0.816},
+        "fr": {"f1": 0.750, "precision": 1.000, "recall": 0.600},
+        "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217}
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<View>
+  <Header value="JuaKazi — Swahili Gender Bias" />
+  <Header value="Does this sentence contain gender bias? If yes, add category and correction." />
+  <View>
+    <Text name="text" value="$text" />
+  </View>
+  <Choices name="has_bias" toName="text" choice="single" required="true">
+    <Choice value="true" />
+    <Choice value="false" />
+  </Choices>
+  <Choices name="stereotype_category" toName="text" choice="single" required="false">
+    <Choice value="occupational_stereotype" />
+    <Choice value="family_role" />
+    <Choice value="leadership" />
+    <Choice value="derogation" />
+    <Choice value="other" />
+  </Choices>
+  <Choices name="explicitness" toName="text" choice="single" required="false">
+    <Choice value="explicit" />
+    <Choice value="implicit" />
+  </Choices>
+  <TextArea name="expected_correction" toName="text" placeholder="Corrected sentence (if bias=true)" rows="3" />
+  <Choices name="annotator_confidence" toName="text" choice="single" required="true">
+    <Choice value="high" />
+    <Choice value="medium" />
+    <Choice value="low" />
+  </Choices>
+  <TextArea name="annotator_notes" toName="text" placeholder="Optional notes" rows="2" />
+</View>

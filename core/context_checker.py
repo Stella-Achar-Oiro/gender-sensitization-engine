@@ -99,6 +99,16 @@ class ContextChecker:
             r'\b(female|woman|she)\b.{0,30}\b(engineer|pilot|mechanic|CEO|surgeon)\b',
             r'\b(male|man|he)\b.{0,30}\b(nurse|secretary|nanny|caregiver)\b',
             r'\b(wa\s+kwanza|first)\b.{0,20}\b(wa\s+kike|wa\s+kiume|female|male)\b',
+            # Swahili rights/advocacy: narrow — only when phrase appears next to canonical advocacy wording
+            r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{0,40}{term}',
+            r'{term}.{0,40}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
+            # Advocacy/investment framing
+            r'\b(kuwekeza|uwekezaji)\b.{0,60}(wa\s+kike|watoto\s+wa)',
+            r'(watoto|mtoto)\s+wa\s+kike.{0,60}\b(kuwekeza|uwekezaji)\b',
+            # Factual biographical reference — "X alizaa naye mtoto wa kike" (had a daughter with someone)
+            r'\b(alizaa\s+naye|alimzaa|walizaa\s+naye)\b.{0,30}(mtoto\s+wa\s+kike|mtoto\s+wa\s+kiume)\b',
+            # Investment + girls framing (always advocacy)
+            r'\b(milioni|bilioni|fedha|bajeti|pesa).{0,40}(watoto\s+wa\s+kike|wasichana).{0,40}\b(shule|elimu)\b',
         ],
         ContextCondition.LEGAL: [
             r'\b(sheria|mahakama|kesi|mshtakiwa|mlalamikaji)\b.{{0,30}}{term}',

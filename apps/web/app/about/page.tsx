@@ -18,7 +18,7 @@ const TIER_BADGES = [
 
 const CURRENT_METRICS = [
   { lang: "English", f1: "0.847", precision: "1.000", recall: "0.735", samples: "66", tier: "Pre-Bronze" },
-  { lang: "Swahili", f1: "0.771", precision: "0.735", recall: "0.810", samples: "64,723", tier: "Gold (sample count)" },
+  { lang: "Swahili", f1: "0.772", precision: "0.732", recall: "0.817", samples: "64,723", tier: "Gold (sample count)" },
   { lang: "French", f1: "0.571", precision: "1.000", recall: "0.400", samples: "50", tier: "Pre-Bronze" },
   { lang: "Kikuyu", f1: "0.352", precision: "0.926", recall: "0.217", samples: "11,848", tier: "Bronze (sample count)" },
 ]

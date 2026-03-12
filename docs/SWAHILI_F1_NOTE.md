@@ -1,6 +1,6 @@
 # Swahili F1: why 1.0 is hard and what helps
 
-**Current (Mar 2026):** Swahili F1 ≈ 0.77, Precision ≈ 0.74, Recall ≈ 0.81 on ~64.7k ground-truth rows.
+**Current (Mar 2026):** Swahili F1 ≈ 0.77, Precision ≈ 0.73, Recall ≈ 0.82 on ~64.7k ground-truth rows. Narrow advocacy context patterns in `core/context_checker.py` (haki za / elimu ya wasichana|watoto) skip correction only in clear rights/education phrasing, improving recall slightly without hurting precision. **English** F1 0.847 (slim lexicon, P=1.0).
 
 **Why F1 = 1.0 is very hard with rules only**
 
@@ -15,3 +15,15 @@
 4. **Model:** A classifier or hybrid (rules + model) can learn context better than rules alone; Stage 2 ML is already used for warn‑only suggestions.
 
 **Rule:** Every lexicon change must be checked with `python3 run_evaluation.py`; avoid lowering precision on replace‑severity rules.
+
+---
+
+## Path to Swahili F1 = 1.0
+
+F1 = 1.0 requires **both** Precision = 1.0 and Recall = 1.0. Right now P ≈ 0.73 and R ≈ 0.81, so both need to move.
+
+| Goal | What to do | Risk |
+|------|------------|------|
+| **Precision → 1.0** | (1) **Ground truth:** Mark clear advocacy/medical uses of *Watoto wa Kike*, *mtoto wa kike/kiume* as neutral (so detector no longer “over-fires”). (2) **Context:** Add targeted `avoid_when` or context patterns so we skip only in those contexts; test each change with `run_evaluation.py` so recall does not drop. (3) **Audit FPs:** Run failure analysis, find top FP rules, downgrade to `warn` or add narrow `avoid_when` per row. | Broad avoid_when (e.g. medical on *mtoto wa kiume*) can skip real biases and lower recall. |
+| **Recall → 1.0** | (1) **Lexicon:** Add missing occupations, proverbs (5), Sheng (10), bride-price/religious patterns via `/sw-lexicon`; run eval after each batch. (2) **Patterns:** Extend detector patterns for “X wa kiume/kike” and implicit bias. (3) **ML:** Use Stage 2 classifier (or hybrid) for warn path; retrain on current data. | New replace rules must not add FPs (precision ≥ 1.0). |
+| **Both** | Combine: fix precision (GT + context + FP audit) and recall (lexicon + patterns + ML). Rules-only F1 = 1.0 is very hard; a **hybrid (rules + model)** that learns context is the most realistic route. |

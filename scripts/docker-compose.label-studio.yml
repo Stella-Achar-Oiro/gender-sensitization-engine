@@ -1,0 +1,32 @@
+version: "3.8"
+
+# JuaKazi Label Studio — Docker Compose
+#
+# Run:   docker compose -f scripts/docker-compose.label-studio.yml up -d
+# Stop:  docker compose -f scripts/docker-compose.label-studio.yml down
+# Open:  http://localhost:8080
+#
+# First-time login:
+#   Create account at http://localhost:8080 when prompted.
+#   Then run the project setup:
+#     python3 scripts/setup_label_studio_project.py
+
+services:
+  label-studio:
+    image: heartexlabs/label-studio:1.14.0
+    container_name: juakazi-label-studio
+    ports:
+      - "8080:8080"
+    environment:
+      - LABEL_STUDIO_USERNAME=admin@juakazi.ai
+      - LABEL_STUDIO_PASSWORD=juakazi2026
+      - DJANGO_DB=sqlite
+      - LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+      - LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT=/label-studio/files
+    volumes:
+      - label_studio_data:/label-studio/data
+      - ./data/annotation_export:/label-studio/files:ro
+    restart: unless-stopped
+
+volumes:
+  label_studio_data:
