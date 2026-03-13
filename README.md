@@ -1,3 +1,15 @@
+---
+title: JuaKazi Gender Sensitization Engine
+emoji: ⚖️
+colorFrom: indigo
+colorTo: blue
+sdk: gradio
+sdk_version: "4.36.0"
+python_version: "3.11"
+app_file: gradio_app.py
+pinned: false
+---
+
 # JuaKazi Gender Sensitization Engine
 
 Multilingual gender bias detection and correction engine targeting East African languages. Supports Swahili, English, French, and Kikuyu. Three-tier detection pipeline: rules-based lexicon matching → context gating → ML fallback. AIBRIDGE-compliant evaluation.
