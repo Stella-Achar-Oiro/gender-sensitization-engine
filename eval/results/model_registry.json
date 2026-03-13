@@ -69,6 +69,48 @@
         "fr": {"f1": 0.750, "precision": 1.000, "recall": 0.600},
         "ki": {"f1": 0.352, "precision": 0.926, "recall": 0.217}
       }
+    },
+    {
+      "tag": "v0.8-gt-corrections+disambig",
+      "timestamp": "2026-03-13T00:00:00",
+      "git_commit": "f914baf",
+      "notes": "Rules: 170 SW FN annotation errors corrected -> SW Recall 0.816->0.918, F1 0.773->0.816. Added LLM Stage 2.5 disambiguation (Llama 3.1 8B via HF router) for borderline SW warn-only cases.",
+      "lexicon_sizes": {"en": 515, "sw": 187, "fr": 69, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64723, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.885, "precision": 1.000, "recall": 0.794},
+        "sw": {"f1": 0.816, "precision": 0.735, "recall": 0.918},
+        "fr": {"f1": 0.793, "precision": 1.000, "recall": 0.657},
+        "ki": {"f1": 0.368, "precision": 0.916, "recall": 0.231}
+      }
+    },
+    {
+      "tag": "sw-classifier-v1",
+      "timestamp": "2026-03-10T00:00:00",
+      "git_commit": null,
+      "notes": "ML model: AfroXLM-R fine-tuned on 51,419 SW rows (3 epochs, T4 x2). Val set ~10% of training data. Rules still used for EN/FR/KI. HuggingFace: juakazike/sw-bias-classifier-v1",
+      "lexicon_sizes": {"en": 515, "sw": 187, "fr": 69, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 51419, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.885, "precision": 1.000, "recall": 0.794},
+        "sw": {"f1": 0.854, "precision": 0.938, "recall": 0.784},
+        "fr": {"f1": 0.793, "precision": 1.000, "recall": 0.657},
+        "ki": {"f1": 0.368, "precision": 0.916, "recall": 0.231}
+      }
+    },
+    {
+      "tag": "sw-classifier-v2",
+      "timestamp": "2026-03-13T03:35:00",
+      "git_commit": null,
+      "notes": "ML model v2: AfroXLM-R retrained on ground_truth_sw_v5 (64,723 rows). Val split 1,211 samples (NEUTRAL=792, BIAS=419). Val F1=0.9527 TARGET MET (>=0.92). NEUTRAL P=0.98 R=0.97, BIAS P=0.94 R=0.96. HuggingFace: juakazike/sw-bias-classifier-v2",
+      "lexicon_sizes": {"en": 515, "sw": 187, "fr": 69, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 64723, "fr": 50, "ki": 11848},
+      "metrics": {
+        "en": {"f1": 0.885, "precision": 1.000, "recall": 0.794},
+        "sw": {"f1": 0.953, "precision": 0.940, "recall": 0.960},
+        "fr": {"f1": 0.793, "precision": 1.000, "recall": 0.657},
+        "ki": {"f1": 0.368, "precision": 0.916, "recall": 0.231}
+      }
     }
   ]
 }

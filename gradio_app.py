@@ -29,12 +29,47 @@ LANGS = {
     "Gikuyu":   ("ki", Language.GIKUYU),
 }
 
-METRICS = {
-    "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze", samples=66),
-    "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold (sample count)", samples=64_723),
-    "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze", samples=50),
-    "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (sample count)", samples=11_848),
+# Per-model metrics: model_key -> lang_code -> metrics dict
+MODEL_METRICS = {
+    "rules": {
+        "label": "Rules-based (lexicon)",
+        "description": "Deterministic lexicon rules across all 4 languages. High precision, no GPU needed.",
+        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze", samples=66),
+        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold (sample count)", samples=64_723),
+        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze", samples=50),
+        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (sample count)", samples=11_848),
+    },
+    "ml_classifier": {
+        "label": "sw-bias-classifier-v2 (ML)",
+        "description": "AfroXLM-R fine-tuned on 51K Swahili rows. SW only — falls back to rules for EN/FR/KI.",
+        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules fallback)", samples=66),
+        "sw": dict(f1=0.854, precision=0.938, recall=0.784, tier="Gold (sample count)", samples=51_419),
+        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules fallback)", samples=50),
+        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules fallback)", samples=11_848),
+    },
+    "hf_llm": {
+        "label": "HF LLM (Llama 3.1 8B)",
+        "description": "Llama 3.1 8B via HF Inference Router. Disambiguates borderline Swahili cases. Requires HF token.",
+        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules base)", samples=66),
+        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold + LLM disambig", samples=64_723),
+        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules base)", samples=50),
+        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules base)", samples=11_848),
+    },
+    "ollama": {
+        "label": "Ollama (Llama 3.2 local)",
+        "description": "Local Llama 3.2 via Ollama. Runs fully offline — no API key needed. SW disambiguation only.",
+        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules base)", samples=66),
+        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold + local LLM", samples=64_723),
+        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules base)", samples=50),
+        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules base)", samples=11_848),
+    },
 }
+
+# Default (rules) for backwards compat
+METRICS = MODEL_METRICS["rules"]
+
+MODEL_CHOICES = [v["label"] for v in MODEL_METRICS.values()]
+MODEL_KEY_BY_LABEL = {v["label"]: k for k, v in MODEL_METRICS.items()}
 
 EXAMPLES = {
     "English": [
@@ -74,12 +109,54 @@ EXAMPLES = {
 }
 
 
-def analyse(text: str, lang_name: str) -> tuple[str, str, str]:
+def _run_ollama_disambiguate(sentence: str) -> str | None:
+    """Call local Ollama with llama3.2 for SW bias classification. Returns 'BIAS'/'NEUTRAL'/None."""
+    try:
+        import requests as _req
+        prompt = (
+            "You are a Swahili gender bias classifier. Decide if the sentence contains gender bias.\n"
+            "Gender bias means the sentence PRESCRIBES, RESTRICTS, or STEREOTYPES a person based on gender.\n"
+            f"Sentence: {sentence[:400]}\n"
+            "Reply with exactly one word: BIAS or NEUTRAL.\nAnswer:"
+        )
+        resp = _req.post(
+            "http://localhost:11434/api/generate",
+            json={"model": "llama3.2", "prompt": prompt, "stream": False},
+            timeout=8,
+        )
+        if resp.status_code == 200:
+            import re
+            text_out = resp.json().get("response", "").strip().upper()
+            first = re.split(r'\W+', text_out)[0] if text_out else ""
+            return first if first in ("BIAS", "NEUTRAL") else None
+    except Exception:
+        pass
+    return None
+
+
+def _run_hf_disambiguate(sentence: str) -> str | None:
+    """Call HF router Llama 3.1 8B for SW bias classification."""
+    try:
+        from api.disambiguator import disambiguate
+        result = disambiguate(sentence)
+        if result is True:
+            return "BIAS"
+        if result is False:
+            return "NEUTRAL"
+    except Exception:
+        pass
+    return None
+
+
+def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[str, str, str]:
     if not text.strip():
         return "⚠️ Please enter some text.", "", ""
 
+    model_key = MODEL_KEY_BY_LABEL.get(model_label or "", "rules")
+    model_info = MODEL_METRICS[model_key]
+
     lang_code, lang_enum = LANGS[lang_name]
-    m = METRICS[lang_code]
+    m = model_info[lang_code]
 
     # Detection
     try:
@@ -94,20 +171,41 @@ def analyse(text: str, lang_name: str) -> tuple[str, str, str]:
     except Exception as e:
         corrected, edits, n_replaced, skipped, reason = text, [], 0, [], str(e)
 
+    # LLM disambiguation for warn-only SW cases (hf_llm / ollama models)
+    llm_verdict_note = ""
+    warn_only = not result.has_bias_detected and len(result.warn_edits) > 0
+    if warn_only and lang_code == "sw" and model_key in ("hf_llm", "ollama"):
+        if model_key == "ollama":
+            llm_result = _run_ollama_disambiguate(text.strip())
+            llm_src = "Ollama/llama3.2"
+        else:
+            llm_result = _run_hf_disambiguate(text.strip())
+            llm_src = "HF/Llama-3.1-8B"
+
+        if llm_result == "BIAS":
+            result.has_bias_detected = True
+            llm_verdict_note = f" *(LLM confirmed by {llm_src})*"
+        elif llm_result == "NEUTRAL":
+            result.warn_edits = []
+            llm_verdict_note = f" *(LLM cleared by {llm_src})*"
+        else:
+            llm_verdict_note = f" *(LLM inconclusive — {llm_src} unavailable)*"
+
     # Verdict
     has_bias = result.has_bias_detected
     has_warn = len(result.warn_edits) > 0
     ml_edits = [e for e in result.warn_edits if e.get("severity") == "ml_fallback"]
     rules_warn = [e for e in result.warn_edits if e.get("severity") != "ml_fallback"]
 
+    model_badge = f" `[{model_info['label']}]`"
     if has_bias:
-        verdict = f"🔴 **Gender bias detected** — {len(result.detected_edits)} rule(s) matched"
+        verdict = f"🔴 **Gender bias detected** — {len(result.detected_edits)} rule(s) matched{llm_verdict_note}{model_badge}"
     elif ml_edits:
-        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by sw-bias-classifier-v2"
+        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by sw-bias-classifier-v2{model_badge}"
     elif has_warn:
-        verdict = f"🟡 **Advisory** — {len(rules_warn)} gendered term(s) noted (no correction applied)"
+        verdict = f"🟡 **Advisory** — {len(rules_warn)} gendered term(s) noted (no correction applied){llm_verdict_note}{model_badge}"
     else:
-        verdict = "🟢 **No bias detected** — text passes all rules and ML classifier"
+        verdict = f"🟢 **No bias detected** — text passes all rules and ML classifier{llm_verdict_note}{model_badge}"
 
     # Detection detail
     detail_lines = []
@@ -218,20 +316,23 @@ def load_registry_table() -> tuple[list[list], str]:
     return rows, f"Last snapshot: {ts}"
 
 
-def sidebar_metrics(lang_name: str) -> str:
+def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
     code = LANGS[lang_name][0]
-    m = METRICS[code]
-    bronze = 0.75
+    model_key = MODEL_KEY_BY_LABEL.get(model_label or "", "rules")
+    model_info = MODEL_METRICS[model_key]
+    m = model_info[code]
     f1_bar = min(int(m['f1'] / 1.0 * 10), 10)
     bar_filled = "█" * f1_bar + "░" * (10 - f1_bar)
-    status_color = "#4ade80"
+    status_color = "#4ade80" if m['f1'] >= 0.75 else "#fbbf24" if m['f1'] >= 0.5 else "#f87171"
+    desc = model_info["description"]
     return (
         f"<div style='"
         f"background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);"
         f"border:1px solid rgba(255,255,255,0.15);border-radius:12px;"
         f"padding:16px 18px;margin-top:8px;font-family:monospace;font-size:0.85rem;color:#e2e8f0'>"
         f"<div style='font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;"
-        f"color:#94a3b8;margin-bottom:10px'>Model · {lang_name}</div>"
+        f"color:#94a3b8;margin-bottom:6px'>Model · {lang_name}</div>"
+        f"<div style='font-size:0.72rem;color:#64748b;margin-bottom:10px;font-family:sans-serif'>{desc}</div>"
         f"<div style='display:flex;justify-content:space-between;margin:4px 0'>"
         f"<span style='color:#94a3b8'>F1</span>"
         f"<span style='color:{status_color};font-weight:700'>{m['f1']:.3f}</span></div>"
@@ -380,7 +481,13 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
                 value="English",
                 interactive=True,
             )
-            metrics_html = gr.HTML(sidebar_metrics("English"))
+            model_dd = gr.Dropdown(
+                label="Model",
+                choices=MODEL_CHOICES,
+                value=MODEL_CHOICES[0],
+                interactive=True,
+            )
+            metrics_html = gr.HTML(sidebar_metrics("English", MODEL_CHOICES[0]))
 
         # ── Main content ──────────────────────────────────────────────────────
         with gr.Column(scale=3):
@@ -455,14 +562,24 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
         return rows, ts, _trend_data(rows)
 
     # ── Wire language change: update metrics and example sentences ────────────
-    def on_lang_change(lang):
+    def on_lang_change(lang, model_label):
         new_exs = EXAMPLES.get(lang, [])
-        return sidebar_metrics(lang), gr.update(choices=new_exs, value=None)
+        return sidebar_metrics(lang, model_label), gr.update(choices=new_exs, value=None)
 
     lang_dd.change(
         fn=on_lang_change,
-        inputs=lang_dd,
+        inputs=[lang_dd, model_dd],
         outputs=[metrics_html, example_dd],
+    )
+
+    # ── Wire model change: update metrics panel ───────────────────────────────
+    def on_model_change(model_label, lang):
+        return sidebar_metrics(lang, model_label)
+
+    model_dd.change(
+        fn=on_model_change,
+        inputs=[model_dd, lang_dd],
+        outputs=metrics_html,
     )
 
     # ── Wire example dropdown → populate textbox ──────────────────────────────
@@ -475,12 +592,12 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
     # ── Wire Analyse button and Enter in textbox ──────────────────────────────
     analyse_btn.click(
         fn=analyse,
-        inputs=[text_in, lang_dd],
+        inputs=[text_in, lang_dd, model_dd],
         outputs=[verdict_out, detect_out, correct_out],
     )
     text_in.submit(
         fn=analyse,
-        inputs=[text_in, lang_dd],
+        inputs=[text_in, lang_dd, model_dd],
         outputs=[verdict_out, detect_out, correct_out],
     )
 
