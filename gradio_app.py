@@ -459,7 +459,7 @@ td { color: #e2e8f0 !important; font-size:0.82rem !important; border-bottom:1px 
 
 _theme = gr.themes.Soft(primary_hue=gr.themes.colors.indigo)
 
-with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
+with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) as demo:
 
     # ── Header ────────────────────────────────────────────────────────────────
     gr.HTML("""
@@ -611,4 +611,4 @@ app.post("/rewrite")(_rewrite_handler)
 
 if __name__ == "__main__":
     import uvicorn
-    demo.launch(server_name="0.0.0.0", server_port=7860, theme=_theme, css=CSS)
+    demo.launch(server_name="0.0.0.0", server_port=7860)
