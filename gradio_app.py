@@ -41,9 +41,9 @@ MODEL_METRICS = {
     },
     "ml_classifier": {
         "label": "sw-bias-classifier-v2 (ML)",
-        "description": "AfroXLM-R fine-tuned on 51K Swahili rows. SW only — falls back to rules for EN/FR/KI.",
+        "description": "AfroXLM-R fine-tuned on 64K Swahili rows (v2, Val F1=0.953). SW only — falls back to rules for EN/FR/KI.",
         "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules fallback)", samples=66),
-        "sw": dict(f1=0.854, precision=0.938, recall=0.784, tier="Gold (sample count)", samples=51_419),
+        "sw": dict(f1=0.953, precision=0.940, recall=0.960, tier="Gold (sample count)", samples=64_723),
         "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules fallback)", samples=50),
         "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules fallback)", samples=11_848),
     },
@@ -327,7 +327,7 @@ def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
     desc = model_info["description"]
     return (
         f"<div style='"
-        f"background:rgba(255,255,255,0.07);backdrop-filter:blur(12px);"
+        f"background:rgba(255,255,255,0.07);"
         f"border:1px solid rgba(255,255,255,0.15);border-radius:12px;"
         f"padding:16px 18px;margin-top:8px;font-family:monospace;font-size:0.85rem;color:#e2e8f0'>"
         f"<div style='font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;"
@@ -353,48 +353,25 @@ def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
     )
 
 
-CSS = """
-/* JuaKazi · brand palette */
-:root {
-    --jk-indigo: #6366f1;
-    --jk-indigo-lt: #818cf8;
-    --jk-text: #e2e8f0;
-    --jk-muted: #94a3b8;
-}
-
-/* Header */
-.jk-header {
-    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #1e3a5f 100%);
-    border: 1px solid rgba(99,102,241,0.3);
-    border-radius: 16px;
-    padding: 28px 32px 22px;
-    margin-bottom: 18px;
-}
-.jk-header h1 { font-size:1.9rem; color:#e2e8f0; margin:0 0 4px; font-weight:700; }
-.jk-header p  { font-size:0.88rem; color:#94a3b8; margin:0; }
-
-/* Section labels */
-.section-label {
-    font-size:0.72rem; text-transform:uppercase; letter-spacing:1px;
-    color:#94a3b8; margin-bottom:6px; font-weight:600;
-}
-"""
-
 _theme = gr.themes.Soft(primary_hue=gr.themes.colors.indigo)
 
-with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) as demo:
+with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme) as demo:
 
     # ── Header ────────────────────────────────────────────────────────────────
-    gr.HTML("""
-    <div class="jk-header">
-        <h1>JuaKazi · Gender Bias Detection &amp; Correction</h1>
-        <p>Rules-based · 4 East African languages · AIBRIDGE-compliant ·
-           <a href="https://github.com/Stella-Achar-Oiro/gender-sensitization-engine"
-              style="color:#818cf8">GitHub</a></p>
-    </div>
-    """)
+    gr.HTML(
+        '<div style="background:linear-gradient(135deg,#1e1b4b 0%,#0f172a 60%,#1e3a5f 100%);'
+        'border:1px solid rgba(99,102,241,0.3);border-radius:16px;'
+        'padding:28px 32px 22px;margin-bottom:18px;position:relative;z-index:0">'
+        '<h1 style="font-size:1.9rem;color:#e2e8f0;margin:0 0 4px;font-weight:700">'
+        'JuaKazi &middot; Gender Bias Detection &amp; Correction</h1>'
+        '<p style="font-size:0.88rem;color:#94a3b8;margin:0">'
+        'Rules-based &middot; 4 East African languages &middot; AIBRIDGE-compliant &middot; '
+        '<a href="https://github.com/Stella-Achar-Oiro/gender-sensitization-engine" '
+        'style="color:#818cf8">GitHub</a></p>'
+        '</div>'
+    )
 
-    with gr.Row(equal_height=False):
+    with gr.Row():
 
         # ── Sidebar ───────────────────────────────────────────────────────────
         with gr.Column(scale=1, min_width=220):
@@ -414,10 +391,10 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) 
 
         # ── Main content ──────────────────────────────────────────────────────
         with gr.Column(scale=3):
-            with gr.Tabs() as tabs:
+            with gr.Tabs():
 
                 # Tab 1 — Analyse (id for programmatic switch)
-                with gr.Tab("Analyse", id="analyse"):
+                with gr.Tab("Analyse"):
                     text_in = gr.Textbox(
                         lines=4,
                         placeholder="Type or paste a sentence to analyse…",
@@ -430,20 +407,20 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) 
                         label="Sample sentences (select to load)",
                         interactive=True,
                     )
-                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg", elem_classes=["analyse-btn"])
+                    analyse_btn = gr.Button("Analyse", variant="primary", size="lg")
 
                     verdict_out = gr.Markdown()
 
                     with gr.Row():
                         with gr.Column():
-                            gr.HTML('<div class="section-label">Detection detail</div>')
+                            gr.HTML('<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:6px;font-weight:600">Detection detail</div>')
                             detect_out = gr.Markdown()
                         with gr.Column():
-                            gr.HTML('<div class="section-label">Correction</div>')
+                            gr.HTML('<div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:6px;font-weight:600">Correction</div>')
                             correct_out = gr.Markdown()
 
                 # Tab 2 — Model Versions
-                with gr.Tab("Model Versions", id="versions"):
+                with gr.Tab("Model Versions"):
                     with gr.Row():
                         refresh_btn = gr.Button("Refresh", size="sm")
                         registry_ts = gr.Markdown()
@@ -456,32 +433,17 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) 
                         wrap=True,
                     )
 
-                    gr.HTML('<div class="section-label" style="margin-top:16px">F1 trend by version</div>')
-                    trend_plot = gr.LinePlot(
-                        value=None,
-                        x="Version",
-                        y="F1",
-                        color="Language",
-                        height=300,
-                        label="F1 by version",
-                    )
+                    trend_md = gr.Markdown()
 
-    # ── Helper: build trend dataframe ─────────────────────────────────────────
-    def _trend_data(rows):
-        import pandas as pd
-        records = []
-        for row in reversed(rows):  # rows are newest-first, reverse for chronological
-            tag = row[0]
-            for i, lang in enumerate(["EN", "SW", "FR", "KI"], start=3):
-                try:
-                    records.append({"Version": tag, "Language": lang, "F1": float(row[i])})
-                except (ValueError, IndexError):
-                    pass
-        return pd.DataFrame(records) if records else pd.DataFrame(columns=["Version", "Language", "F1"])
+    def _trend_md(rows):
+        lines = ["**F1 by version**\n", "| Version | EN | SW | FR | KI |", "|---|---|---|---|---|"]
+        for row in reversed(rows):
+            lines.append(f"| {row[0]} | {row[3]} | {row[4]} | {row[5]} | {row[6]} |")
+        return "\n".join(lines)
 
     def refresh_versions():
         rows, ts = load_registry_table()
-        return rows, ts, _trend_data(rows)
+        return rows, ts, _trend_md(rows)
 
     # ── Wire language change: update metrics and example sentences ────────────
     def on_lang_change(lang, model_label):
@@ -524,8 +486,8 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme, css=CSS) 
     )
 
     # ── Load versions on startup + refresh button ─────────────────────────────
-    demo.load(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_plot])
-    refresh_btn.click(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_plot])
+    demo.load(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
+    refresh_btn.click(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
 
 # Mount /rewrite onto Gradio's own FastAPI app — no path conflicts
 app = demo.app
