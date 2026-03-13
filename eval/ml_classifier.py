@@ -18,11 +18,11 @@ from .models import Language
 # Languages the model covers
 _SUPPORTED = {Language.SWAHILI, Language.ENGLISH, Language.FRENCH}
 
-# HuggingFace model — zero-shot until fine-tuned version published
-_MODEL_ID = os.environ.get("JUAKAZI_ML_MODEL", "Davlan/afro-xlmr-base")
+# HuggingFace model — sw-bias-classifier-v2 fine-tuned on 64K SW rows
+_MODEL_ID = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/sw-bias-classifier-v2")
 
 # Confidence threshold — above this we flag as possible bias
-_THRESHOLD = float(os.environ.get("JUAKAZI_ML_THRESHOLD", "0.75"))
+_THRESHOLD = float(os.environ.get("JUAKAZI_ML_THRESHOLD", "0.56"))
 
 # Lazy-loaded pipeline (None until first call)
 _pipe = None
@@ -71,8 +71,8 @@ def classify(text: str, language: Language) -> float:
         result = _pipe(text)[0]
         label = result["label"].upper()
         score = float(result["score"])
-        # afro-xlmr-base is a base model — before fine-tuning its labels
-        # are LABEL_0 / LABEL_1. After fine-tuning they'll be BIAS / NEUTRAL.
+        # sw-bias-classifier-v2 uses BIAS / NEUTRAL labels.
+        # Fall back to LABEL_0/LABEL_1 convention for compatibility.
         # Map either convention: higher score on LABEL_1 or BIAS → bias score
         if label in ("LABEL_1", "BIAS", "STEREOTYPE", "DEROGATION"):
             return score

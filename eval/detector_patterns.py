@@ -71,7 +71,7 @@ SW_GENDERED_SUFFIX_PATTERNS: List[tuple] = [
 
 # Allowlist for preceding noun in SW suffix — only fire on occupation-like words
 SW_OCCUPATION_PREFIXES = (
-    'dakt', 'muuguzi', 'mhand', 'dereva', 'rubani', 'mwali',
+    'dakt', 'muuguzi', 'mhand', 'dereva', 'rubani',
     'polisi', 'askari', 'waziri', 'rais', 'mgomba', 'msema',
     'mwanas', 'mkuru', 'mhudumu', 'mkulima', 'mvuvi', 'mwimb',
     'meneja', 'mhasi', 'mpishi', 'mfanya', 'wakili', 'profes',
@@ -113,6 +113,7 @@ SW_PROGRESS_CONTEXT = re.compile(
     r'\b(wa\s+kwanza|haki\s+za|usawa\s+wa\s+kijinsia|uwezeshaji|kuhamasisha)\b',
     re.IGNORECASE,
 )
+
 
 
 class DetectorPatterns:

@@ -31,18 +31,26 @@ class BiasEvaluationOrchestrator:
         self,
         data_dir: Path = Path("eval"),
         rules_dir: Path = Path("rules"),
-        results_dir: Path = Path("eval/results")
+        results_dir: Path = Path("eval/results"),
+        enable_ml: bool = False,
+        ml_threshold: float = 0.56,
     ):
         """
         Initialize the evaluation orchestrator.
-        
+
         Args:
             data_dir: Directory containing ground truth data
             rules_dir: Directory containing bias detection rules
             results_dir: Directory for writing results
+            enable_ml: Run ML fallback when rules find nothing (slow — downloads model)
+            ml_threshold: ML confidence threshold (default 0.56, tuned on v2)
         """
         self.ground_truth_loader = GroundTruthLoader(data_dir)
-        self.bias_detector = BiasDetector(rules_dir)
+        self.bias_detector = BiasDetector(
+            rules_dir,
+            enable_ml_fallback=enable_ml,
+            ml_threshold=ml_threshold,
+        )
         self.metrics_calculator = MetricsCalculator()
         self.metrics_formatter = MetricsFormatter()
         self.results_writer = ResultsWriter(results_dir)

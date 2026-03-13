@@ -20,7 +20,7 @@ from api.rules_engine import apply_rules_on_spans, build_reason
 REGISTRY_PATH = Path(__file__).resolve().parent / "eval" / "results" / "model_registry.json"
 
 RULES_DIR = Path(__file__).resolve().parent / "rules"
-detector = BiasDetector(rules_dir=RULES_DIR)
+detector = BiasDetector(rules_dir=RULES_DIR, enable_ml_fallback=True, ml_threshold=0.56)
 
 LANGS = {
     "English":  ("en", Language.ENGLISH),
@@ -30,10 +30,10 @@ LANGS = {
 }
 
 METRICS = {
-    "en": dict(f1=0.847, precision=1.000, recall=0.735, tier="Pre-Bronze", samples=66),
-    "sw": dict(f1=0.773, precision=0.733, recall=0.816, tier="Gold (sample count)", samples=64_723),
-    "fr": dict(f1=0.750, precision=1.000, recall=0.600, tier="Pre-Bronze", samples=50),
-    "ki": dict(f1=0.352, precision=0.926, recall=0.217, tier="Bronze (sample count)", samples=11_848),
+    "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze", samples=66),
+    "sw": dict(f1=0.773, precision=0.744, recall=0.804, tier="Gold (sample count)", samples=64_723),
+    "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze", samples=50),
+    "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (sample count)", samples=11_848),
 }
 
 EXAMPLES = {
@@ -97,15 +97,19 @@ def analyse(text: str, lang_name: str) -> tuple[str, str, str]:
     # Verdict
     has_bias = result.has_bias_detected
     has_warn = len(result.warn_edits) > 0
+    ml_edits = [e for e in result.warn_edits if e.get("severity") == "ml_fallback"]
+    rules_warn = [e for e in result.warn_edits if e.get("severity") != "ml_fallback"]
 
     if has_bias:
         verdict = f"🔴 **Gender bias detected** — {len(result.detected_edits)} rule(s) matched"
+    elif ml_edits:
+        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by sw-bias-classifier-v2"
     elif has_warn:
-        verdict = f"🟡 **Advisory** — {len(result.warn_edits)} gendered term(s) noted (no correction applied)"
+        verdict = f"🟡 **Advisory** — {len(rules_warn)} gendered term(s) noted (no correction applied)"
     else:
-        verdict = "🟢 **No bias detected** — text passes all rules in the current lexicon"
+        verdict = "🟢 **No bias detected** — text passes all rules and ML classifier"
 
-    # Detection detail (edits are dicts with from, to, severity, bias_type, stereotype_category)
+    # Detection detail
     detail_lines = []
     for edit in result.detected_edits:
         orig = edit.get("from", "?")
@@ -115,13 +119,17 @@ def analyse(text: str, lang_name: str) -> tuple[str, str, str]:
         sev = edit.get("severity", "replace")
         reason_short = f"Use gender-neutral «{repl}»"
         detail_lines.append(f'• **"{orig}"** → **"{repl}"**  |  label: `{label}`  category: `{cat}`  severity: `{sev}`  \n  *Reason: {reason_short}*')
-    for edit in result.warn_edits:
+    for edit in rules_warn:
         orig = edit.get("from", "?")
         cat = edit.get("stereotype_category", "—")
         reason_w = edit.get("reason", "Advisory — review recommended")
         detail_lines.append(f'• **"{orig}"** (advisory, no replacement)  |  category: `{cat}`  \n  *Reason: {reason_w}*')
+    for edit in ml_edits:
+        score = edit.get("confidence", "—")
+        reason_ml = edit.get("reason", "Implicit gender bias pattern detected by ML model")
+        detail_lines.append(f'• 🤖 **ML classifier flagged this sentence**  |  confidence: `{score}`  needs_review: `true`  \n  *{reason_ml}*')
     if not detail_lines:
-        detail_lines = ["No rules triggered."]
+        detail_lines = ["No rules or ML patterns triggered."]
 
     detail_md = "\n".join(detail_lines)
 

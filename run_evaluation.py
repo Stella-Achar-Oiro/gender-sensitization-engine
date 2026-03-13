@@ -2,7 +2,8 @@
 """
 Main entry point for bias detection evaluation.
 
-  python run_evaluation.py                  # F1, Precision, Recall per language
+  python run_evaluation.py                  # F1, Precision, Recall per language (rules only)
+  python run_evaluation.py --ml             # rules + ML fallback (slow, downloads model)
   python run_evaluation.py --fairness       # + AIBRIDGE fairness (DP, EO, MBE)
   python run_evaluation.py --tag v0.8-desc  # save snapshot to model_registry.json
 """
@@ -95,6 +96,8 @@ def main():
     )
     parser.add_argument("--fairness", action="store_true",
                         help="Include AIBRIDGE fairness metrics (DP, EO, MBE).")
+    parser.add_argument("--ml", action="store_true",
+                        help="Enable ML fallback (rules + sw-bias-classifier-v2). Slow — downloads model on first run.")
     parser.add_argument("--tag", metavar="TAG",
                         help="Save a named snapshot to eval/results/model_registry.json")
     args = parser.parse_args()
@@ -105,7 +108,9 @@ def main():
         return
 
     from eval.evaluator import BiasEvaluationOrchestrator
-    orchestrator = BiasEvaluationOrchestrator()
+    if args.ml:
+        print("ML fallback enabled (sw-bias-classifier-v2, threshold=0.56) — this will be slow on CPU")
+    orchestrator = BiasEvaluationOrchestrator(enable_ml=args.ml)
     results = orchestrator.run_evaluation()
 
     if args.tag:
