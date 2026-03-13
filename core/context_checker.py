@@ -10,6 +10,73 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
+# Swahili inanimate nouns whose possessives (yake/wake/zake/lake/chake) are
+# NOT human-referent and must not trigger gender-bias possessive rules.
+SW_INANIMATE_NOUNS: frozenset = frozenset({
+    # Places / infrastructure
+    'nyumba', 'ofisi', 'shule', 'duka', 'hospitali', 'kanisa', 'msikiti',
+    'barabara', 'daraja', 'mlango', 'dirisha', 'chumba', 'jiko', 'paa',
+    # Objects / documents
+    'kadi', 'kitabu', 'barua', 'mkoba', 'mfuko', 'gari', 'ndege', 'basi',
+    'simu', 'kompyuta', 'fedha', 'pesa', 'akaunti', 'hati', 'cheti',
+    'risiti', 'ankara', 'stakabadhi', 'pasipoti', 'leseni',
+    # Abstract / processes
+    'kazi', 'elimu', 'afya', 'matibabu', 'biashara', 'mradi', 'mpango',
+    'tatizo', 'suluhisho', 'maamuzi', 'hatua', 'matokeo', 'faida',
+    'hasara', 'thamani', 'bei', 'gharama', 'mishahara', 'mapato',
+    # Nature / food
+    'mto', 'mlima', 'bahari', 'bonde', 'msitu', 'chakula', 'maji',
+    'ardhi', 'shamba',
+    # Organisations (not human)
+    'shirika', 'kampuni', 'taasisi', 'chama', 'wizara', 'serikali',
+    'benki', 'chuo',
+    # Time
+    'mwaka', 'mwezi', 'wiki', 'siku', 'saa', 'dakika',
+})
+
+# Human occupation nouns: possessives on these CAN indicate gender assumption
+SW_HUMAN_OCCUPATION_NOUNS: frozenset = frozenset({
+    'daktari', 'muuguzi', 'mwalimu', 'rubani', 'dereva', 'mhandisi',
+    'wakili', 'mbunge', 'waziri', 'rais', 'mkurugenzi', 'meneja',
+    'kocha', 'mwanasiasa', 'fundi', 'mpishi', 'mkulima', 'mvuvi',
+    'mhasibu', 'mwandishi', 'mshauri', 'mchezaji', 'hakimu', 'jaji',
+    'askari', 'polisi', 'afisa', 'ofisa', 'profesa', 'msomi',
+})
+
+_SW_POSSESSIVE_RE = re.compile(
+    r'\b(\w+)\s+(?:yake|wake|zake|lake|chake)\b', re.IGNORECASE
+)
+
+
+def sw_possessive_has_human_referent(text: str) -> bool:
+    """
+    Return True only when a Swahili possessive (yake/wake/zake/lake/chake)
+    is preceded by a known human-occupation noun.
+    Used to suppress inanimate-noun false positives.
+    """
+    for m in _SW_POSSESSIVE_RE.finditer(text):
+        noun = m.group(1).lower()
+        if noun in SW_HUMAN_OCCUPATION_NOUNS:
+            return True
+    return False
+
+
+def sw_possessive_is_inanimate(text: str, possessive: str) -> bool:
+    """
+    Return True when the closest preceding noun before `possessive` is
+    a known inanimate noun — meaning the possessive is NOT a gender marker.
+    """
+    pattern = re.compile(
+        r'\b(\w+)\s+' + re.escape(possessive) + r'\b', re.IGNORECASE
+    )
+    for m in pattern.finditer(text):
+        noun = m.group(1).lower()
+        if noun in SW_INANIMATE_NOUNS:
+            return True
+        if noun in SW_HUMAN_OCCUPATION_NOUNS:
+            return False
+    return False
+
 
 class ContextCondition(Enum):
     """Context conditions that may prevent correction."""
@@ -99,16 +166,16 @@ class ContextChecker:
             r'\b(female|woman|she)\b.{0,30}\b(engineer|pilot|mechanic|CEO|surgeon)\b',
             r'\b(male|man|he)\b.{0,30}\b(nurse|secretary|nanny|caregiver)\b',
             r'\b(wa\s+kwanza|first)\b.{0,20}\b(wa\s+kike|wa\s+kiume|female|male)\b',
-            # Swahili rights/advocacy: narrow — only when phrase appears next to canonical advocacy wording
-            r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{0,40}{term}',
-            r'{term}.{0,40}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
-            # Advocacy/investment framing
-            r'\b(kuwekeza|uwekezaji)\b.{0,60}(wa\s+kike|watoto\s+wa)',
-            r'(watoto|mtoto)\s+wa\s+kike.{0,60}\b(kuwekeza|uwekezaji)\b',
-            # Factual biographical reference — "X alizaa naye mtoto wa kike" (had a daughter with someone)
-            r'\b(alizaa\s+naye|alimzaa|walizaa\s+naye)\b.{0,30}(mtoto\s+wa\s+kike|mtoto\s+wa\s+kiume)\b',
+            # Advocacy / rights framing — narrow: only when canonical advocacy wording surrounds the term
+            r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{{0,40}}{term}',
+            r'{term}.{{0,40}}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
+            r'\b(uwezeshaji|kuhamasisha|ulinzi\s+wa|kampeni\s+ya)\b.{{0,40}}{term}',
+            r'{term}.{{0,40}}\b(uwezeshaji|kuhamasisha|ulinzi\s+wa)\b',
+            r'\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b.{{0,50}}{term}',
+            r'{term}.{{0,50}}\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b',
             # Investment + girls framing (always advocacy)
-            r'\b(milioni|bilioni|fedha|bajeti|pesa).{0,40}(watoto\s+wa\s+kike|wasichana).{0,40}\b(shule|elimu)\b',
+            r'\b(milioni|bilioni|fedha|bajeti|pesa).{{0,40}}(watoto\s+wa\s+kike|wasichana).{{0,40}}\b(shule|elimu)\b',
+            r'\b(shule|elimu).{{0,40}}(watoto\s+wa\s+kike|wasichana).{{0,40}}\b(milioni|bilioni|fedha|bajeti)\b',
         ],
         ContextCondition.LEGAL: [
             r'\b(sheria|mahakama|kesi|mshtakiwa|mlalamikaji)\b.{{0,30}}{term}',
@@ -162,8 +229,29 @@ class ContextChecker:
         text: str,
         biased_term: str,
         avoid_when: str = "",
-        constraints: str = ""
+        constraints: str = "",
     ) -> ContextCheckResult:
+        # Gate: possessive pronouns (yake/wake/zake/lake/chake) on inanimate nouns
+        # are not gender markers — suppress to avoid false positives.
+        _possessives = {'yake', 'wake', 'zake', 'lake', 'chake'}
+        if biased_term.lower() in _possessives:
+            if sw_possessive_is_inanimate(text, biased_term):
+                return ContextCheckResult(
+                    should_correct=False,
+                    blocked_by=ContextCondition.STATISTICAL,
+                    reason=f"Possessive '{biased_term}' on inanimate noun — not a gender marker",
+                    confidence=0.95,
+                    matched_pattern="inanimate_noun_gate",
+                )
+            if not sw_possessive_has_human_referent(text):
+                return ContextCheckResult(
+                    should_correct=False,
+                    blocked_by=ContextCondition.STATISTICAL,
+                    reason=f"Possessive '{biased_term}': no human occupation referent in context",
+                    confidence=0.85,
+                    matched_pattern="human_referent_gate",
+                )
+
         conditions_to_check = self._parse_avoid_when(avoid_when)
         if not conditions_to_check:
             conditions_to_check = [

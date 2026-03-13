@@ -29,6 +29,11 @@ COPY . .
 # Set Python path
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
+ENV JUAKAZI_ML_MODEL=juakazike/sw-bias-classifier-v2
+ENV JUAKAZI_ML_THRESHOLD=0.56
+# Cache model at build time so first request is fast
+ENV HF_HOME=/app/.hf_cache
+RUN python3 -c "from transformers import pipeline; pipeline('text-classification', model='juakazike/sw-bias-classifier-v2', device=-1)"
 
 # Create necessary directories
 RUN mkdir -p audit_logs data/raw data/cache models/bias_detector reports

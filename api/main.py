@@ -14,10 +14,32 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="JuaKazi Correction Engine (hybrid)", version="0.3")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:8080",
+        "https://*.hf.space",
+        "https://huggingface.co",
+    ],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
 )
+
+
+@app.get("/health")
+def health():
+    """Health check — returns system status and loaded lexicon counts."""
+    import csv
+    from pathlib import Path
+    lexicon_counts = {}
+    for lang in ("en", "sw", "fr", "ki"):
+        p = Path(f"rules/lexicon_{lang}_v3.csv")
+        if p.exists():
+            with open(p, newline="", encoding="utf-8") as f:
+                lexicon_counts[lang] = sum(1 for _ in csv.DictReader(f))
+        else:
+            lexicon_counts[lang] = 0
+    return {"status": "ok", "version": "0.3", "lexicon_entries": lexicon_counts}
 
 
 @app.post("/rewrite", response_model=RewriteResponse)

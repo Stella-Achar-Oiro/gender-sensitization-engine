@@ -3,7 +3,7 @@
 
 .PHONY: build build-fresh up up-web down logs shell clean-docker \
 	test eval train compare collect verify-week2 \
-	run run-api run-web dev dev-test dev-eval dev-ui format lint clean help
+	run run-api run-web dev dev-test dev-eval dev-ui run-gradio docker-gradio format lint clean help
 
 # Default target - show help
 .DEFAULT_GOAL := help
@@ -30,6 +30,8 @@ help:
 	@echo "  make verify-week2     Verify complete Week 2 workflow"
 	@echo ""
 	@echo "Quick Local Dev (open UI at http://localhost:3001):"
+	@echo "  make run-gradio       Gradio UI locally (:7860) — no Docker needed"
+	@echo "  make docker-gradio    Build Docker image (caches ML model) + run Gradio UI"
 	@echo "  make run              Start API + Next.js with one command; Ctrl+C stops both"
 	@echo "  make run-api          API only (:8080)"
 	@echo "  make run-web          Next.js only (:3001; run API in other terminal if needed)"
@@ -159,16 +161,27 @@ run-web:
 
 dev-test:
 	@echo "Running tests locally (requires local Python setup)..."
-	python3 -m pytest tests/ -v -k "not slow"
+	./venv/bin/python3 -m pytest tests/ -v -k "not slow"
 
 dev-eval:
 	@echo "Running evaluation locally..."
-	python3 run_evaluation.py
+	./venv/bin/python3 run_evaluation.py
 
 dev-ui:
 	@echo "Launching JuaKazi Testing UI..."
 	@echo "Opening browser at http://localhost:8501"
 	./venv/bin/streamlit run ui/app.py
+
+run-gradio:
+	@echo "Gradio UI at http://localhost:7860 (ML model loads on first request)"
+	JUAKAZI_ML_MODEL=juakazike/sw-bias-classifier-v2 JUAKAZI_ML_THRESHOLD=0.56 \
+	./venv/bin/python3 gradio_app.py
+
+docker-gradio:
+	@echo "Building Docker image with cached ML model (~10 min first time)..."
+	docker build -t juakazi .
+	@echo "Starting Gradio UI at http://localhost:7860"
+	docker run --rm -p 7860:7860 juakazi python3 gradio_app.py
 
 # ============================================================================
 # CODE QUALITY & CLEANUP

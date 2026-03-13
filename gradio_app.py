@@ -31,7 +31,7 @@ LANGS = {
 
 METRICS = {
     "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze", samples=66),
-    "sw": dict(f1=0.773, precision=0.744, recall=0.804, tier="Gold (sample count)", samples=64_723),
+    "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold (sample count)", samples=64_723),
     "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze", samples=50),
     "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (sample count)", samples=11_848),
 }

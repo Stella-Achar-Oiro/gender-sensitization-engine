@@ -6,6 +6,7 @@ from typing import Optional
 from config import get_semantic_threshold, REWRITE_CONFIDENCE_BY_SOURCE, DEFAULT_REWRITE_CONFIDENCE
 from core.semantic_preservation import SemanticPreservationMetrics
 
+from .disambiguator import disambiguate
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import RewriteResponse
@@ -38,6 +39,26 @@ def rewrite_text(
         semantic_score = score["composite_score"]
         if semantic_score < threshold:
             rewritten, edits, source, semantic_score = text, [], "preserved", 1.0
+
+    # Stage 2.5: LLM disambiguation for borderline warn-only matches (SW).
+    # Only fires when rules found warn-severity terms but no replace-severity terms.
+    warn_only = matched_rules > 0 and not any(
+        e.get("severity") == "replace" for e in edits
+    )
+    if warn_only and lang == "sw":
+        llm_result = disambiguate(text)
+        if llm_result is True:
+            # LLM confirmed bias — promote the warn edits to replace
+            for e in edits:
+                if e.get("severity") == "warn":
+                    e["severity"] = "replace"
+                    e["reason"] = (e.get("reason") or "") + " [LLM confirmed]"
+            source = "disambiguated"
+        elif llm_result is False:
+            # LLM says not bias — suppress the warn edits
+            edits = []
+            rewritten = text
+            source = "preserved"
 
     if matched_rules == 0 and source != "preserved":
         ml_out = ml_rewrite(text, lang=lang, num_return_sequences=3)

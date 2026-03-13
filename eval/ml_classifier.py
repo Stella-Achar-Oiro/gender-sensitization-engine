@@ -18,7 +18,7 @@ from .models import Language
 # Languages the model covers
 _SUPPORTED = {Language.SWAHILI, Language.ENGLISH, Language.FRENCH}
 
-# HuggingFace model — sw-bias-classifier-v2 fine-tuned on 64K SW rows
+# HuggingFace model — sw-bias-classifier-v2 fine-tuned on 64K SW rows (afro-xlmr-base, 3 epochs)
 _MODEL_ID = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/sw-bias-classifier-v2")
 
 # Confidence threshold — above this we flag as possible bias
