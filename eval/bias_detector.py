@@ -93,7 +93,22 @@ class BiasDetector:
             BiasDetectionError: If detection fails
         """
         try:
-            # First check for derogation (highest priority - most harmful)
+            # Check for counter-stereotype first — if present, this text challenges bias
+            # rather than containing it; derogation patterns must not override counter-stereotype.
+            counter_pre = self._pattern_config.detect_counter_stereotype(text, language)
+            if counter_pre:
+                return BiasDetectionResult(
+                    text=text,
+                    has_bias_detected=False,
+                    detected_edits=[],
+                    bias_label=BiasLabel.COUNTER_STEREOTYPE,
+                    stereotype_category=counter_pre['stereotype_category'],
+                    target_gender=counter_pre['target_gender'],
+                    explicitness=Explicitness.EXPLICIT,
+                    confidence=0.85
+                )
+
+            # Check for derogation (high priority - most harmful)
             derogation_result = self._pattern_config.detect_derogation(text, language)
             if derogation_result:
                 return BiasDetectionResult(
@@ -138,20 +153,6 @@ class BiasDetector:
                         confidence=0.95,
                     )
 
-            # Check for counter-stereotype (should be preserved, not corrected)
-            counter_result = self._pattern_config.detect_counter_stereotype(text, language)
-            if counter_result:
-                return BiasDetectionResult(
-                    text=text,
-                    has_bias_detected=False,  # Counter-stereotypes are not "bias" to correct
-                    detected_edits=[],  # No edits needed - preserve the text
-                    bias_label=BiasLabel.COUNTER_STEREOTYPE,
-                    stereotype_category=counter_result['stereotype_category'],
-                    target_gender=counter_result['target_gender'],
-                    explicitness=Explicitness.EXPLICIT,
-                    confidence=0.85
-                )
-
             # Standard stereotype detection via lexicon rules
             rules = self._get_rules(language)
             patterns = self._get_compiled_patterns(language)
@@ -174,6 +175,11 @@ class BiasDetector:
                     severity = rule.get('severity', 'replace')
                     avoid_when = rule.get('avoid_when', '')
                     constraints = rule.get('constraints', '')
+
+                    # Suppress child-gender biographical possessives (e.g. "mtoto wake wa kike")
+                    if language == Language.SWAHILI and self._pattern_config.should_suppress_child_gender_term(text, biased_term):
+                        continue
+
 
                     # Context-aware check: should we apply this correction?
                     if self.context_checker and (avoid_when or constraints):
