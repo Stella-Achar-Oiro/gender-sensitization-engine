@@ -356,29 +356,10 @@ def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
 CSS = """
 /* JuaKazi · brand palette */
 :root {
-    --jk-bg:        #0d1117;
-    --jk-surface:   rgba(255,255,255,0.06);
-    --jk-border:    rgba(255,255,255,0.12);
-    --jk-indigo:    #6366f1;
+    --jk-indigo: #6366f1;
     --jk-indigo-lt: #818cf8;
-    --jk-green:     #4ade80;
-    --jk-red:       #f87171;
-    --jk-amber:     #fbbf24;
-    --jk-text:      #e2e8f0;
-    --jk-muted:     #94a3b8;
-}
-
-/* Page background — let Gradio theme handle bg, only tint slightly */
-.gradio-container { background: #0f1117 !important; color: #e2e8f0 !important; }
-
-/* Glass card helper */
-.glass {
-    background: var(--jk-surface);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid var(--jk-border);
-    border-radius: 14px;
-    padding: 20px 22px;
+    --jk-text: #e2e8f0;
+    --jk-muted: #94a3b8;
 }
 
 /* Header */
@@ -391,64 +372,6 @@ CSS = """
 }
 .jk-header h1 { font-size:1.9rem; color:#e2e8f0; margin:0 0 4px; font-weight:700; }
 .jk-header p  { font-size:0.88rem; color:#94a3b8; margin:0; }
-
-/* Verdict banners */
-.verdict-bias    { border-left:4px solid #f87171; background:rgba(248,113,113,0.1);
-                   border-radius:10px; padding:14px 18px; }
-.verdict-clean   { border-left:4px solid #4ade80; background:rgba(74,222,128,0.08);
-                   border-radius:10px; padding:14px 18px; }
-.verdict-warn    { border-left:4px solid #fbbf24; background:rgba(251,191,36,0.08);
-                   border-radius:10px; padding:14px 18px; }
-.verdict-counter { border-left:4px solid #818cf8; background:rgba(129,140,248,0.1);
-                   border-radius:10px; padding:14px 18px; }
-
-/* Textbox */
-textarea, input[type=text] {
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.13) !important;
-    border-radius: 10px !important;
-    color: #e2e8f0 !important;
-    font-size: 0.95rem !important;
-}
-textarea:focus, input[type=text]:focus {
-    border-color: rgba(99,102,241,0.6) !important;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.15) !important;
-}
-
-/* Primary / Analyse button */
-button.primary, .analyse-btn button {
-    background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
-    border: none !important;
-    border-radius: 10px !important;
-    color: #fff !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.3px !important;
-    transition: opacity 0.15s !important;
-}
-button.primary:hover, .analyse-btn button:hover { opacity: 0.88 !important; }
-
-/* Example buttons */
-.example-btn button {
-    background: rgba(99,102,241,0.12) !important;
-    border: 1px solid rgba(99,102,241,0.25) !important;
-    border-radius: 8px !important;
-    color: #c7d2fe !important;
-    font-size: 0.8rem !important;
-    text-align: left !important;
-    padding: 6px 10px !important;
-    margin: 3px 0 !important;
-    transition: background 0.12s !important;
-}
-.example-btn button:hover {
-    background: rgba(99,102,241,0.25) !important;
-}
-
-/* Tabs: avoid overriding .tab-nav so Gradio’s tab clicks work; style via theme only */
-
-/* Dataframe */
-table { background: transparent !important; }
-th { background: rgba(99,102,241,0.18) !important; color: #c7d2fe !important; font-size:0.8rem !important; }
-td { color: #e2e8f0 !important; font-size:0.82rem !important; border-bottom:1px solid rgba(255,255,255,0.06) !important; }
 
 /* Section labels */
 .section-label {
