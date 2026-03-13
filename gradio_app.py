@@ -528,7 +528,6 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection") as demo:
                     versions_table = gr.Dataframe(
                         headers=["Tag", "Date", "Commit", "EN F1", "SW F1", "FR F1", "KI F1", "Notes"],
                         datatype=["str", "str", "str", "str", "str", "str", "str", "str"],
-                        column_count=(8, "fixed"),
                         interactive=False,
                         label="",
                         wrap=True,
