@@ -14,11 +14,6 @@ venv/
 # Data files (large — tracked in HF Datasets, not git)
 eval/ground_truth_*.csv
 eval/ground_truth_sw_v5_submission_20260305.csv
-data/
-submission_for_review/
-annotation/
-audit_logs/
-models/
 
 # Generated eval results — keep only model_registry.json
 eval/results/f1_report_*.csv
@@ -28,6 +23,14 @@ eval/results/kappa_*.json
 eval/results/ls_annotations_*.csv
 eval/results/splits/
 eval/results/reporting/
+data/
+submission_for_review/
+annotation/
+audit_logs/
+models/
+
+# Claude AI instructions — not source code
+CLAUDE.md
 
 # Local tooling
 .label_studio_data/
