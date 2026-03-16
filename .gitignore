@@ -1,106 +1,48 @@
-.thelogicvault/
+# macOS
+.DS_Store
+
+# Python
 __pycache__/
-*.pyc
-venv/
-.venv/
-.ls_venv/
-.label_studio_data/
-*.env
-logs/
-audit_logs/
-
-# Poetry
-poetry.lock
-dist/
-build/
-*.egg-info
-
-# Testing
-.pytest_cache/
+*.py[cod]
+*.pyo
+*.egg-info/
 .coverage
-htmlcov/
+.venv/
+venv/
+*.so
 
-# Linting
-.mypy_cache/
-.ruff_cache/
+# Data files (large — tracked in HF Datasets, not git)
+eval/ground_truth_*.csv
+eval/ground_truth_sw_v5_submission_20260305.csv
+data/
+submission_for_review/
+annotation/
+audit_logs/
+models/
 
-# Ignore generated results but track essential data files
-*_backup.csv
-*.csv.bak
+# Generated eval results — keep only model_registry.json
+eval/results/f1_report_*.csv
+eval/results/correction_eval*.json
+eval/results/correction_report*.txt
+eval/results/kappa_*.json
+eval/results/ls_annotations_*.csv
+eval/results/splits/
+eval/results/reporting/
 
-# Ignore generated results but track the model registry
-eval/results/*.json
-!eval/results/model_registry.json
-eval/results/*.txt
-eval/results/*.csv
-
-# Data collection - ignore large datasets and external repos
-data/external/
-data/raw/swahili-news.zip
-data/raw/swahili-news/
-data/raw/kwici-corpus/
-data/raw/kikuyu_bible/
-data/analysis/swahili_news_occupations.csv
-data/analysis/kwici_occupations.csv
-
-# Large raw data files - not needed in repo (can be regenerated)
-data/raw/swahili_news_train.csv
-data/raw/swahili_news_mined.csv
-data/raw/swahili_zenodo_mined.csv
-
-# Generated HTML artefacts — never commit these
-*.html
-presentation.html
-# Exception: live bias tester for external review
-!public/index.html
-
-# Claude Code internal files — not source code
-.claude/
-
-# Git backup directories
+# Local tooling
+.label_studio_data/
+.ls_venv/
+.thelogicvault/
 .git.backup/
 .git.bak.orig/
 
-# CLAUDE.md — project-level AI instructions, not committed
-CLAUDE.md
-
-# Temporary session files
-scripts/data_collection/SESSION_SUMMARY.md
-scripts/data_collection/collect_real_data.sh
-
-# Throwaway MD notes (session-specific, not docs)
-team_messages_*.md
-data/analysis/swahili_corpus_analysis.md
-scripts/data_collection/download_anv_kenya_auth.md
-scripts/annotation_prompt.md
-
-# Generated annotation artifacts
-data/analysis/kappa_overlap_ids.txt
-
-# Ground truth data — tracked in GitLab only (too large for GitHub/Streamlit Cloud)
-eval/ground_truth_*.csv
-
-# Annotation exports — share via Google Drive, not git (contains sentence text + PII risk)
-data/annotation_export/
-
-# Eval reports and splits — generated, not source
-eval/results/reporting/
-eval/results/splits/
-
-# Exception: requirements.txt needed for Streamlit Cloud deploy
-!requirements.txt
-
-.pre-commit-config.yaml
-
-data/MCAAI-MSU-KI-DATA
-.DS_Store
-
-models/bias_detector/*
-apps/web/.next/
-apps/web/node_modules/
-apps/web/.env.local
-CURSOR_PROMPT.md
-
-# Plan/review docs — ignore for now (session-specific)
-docs/CODE_REVIEW_BERRIJAM.md
-docs/MASTER_PLAN.md
+# Claude / editor
+.claude/
+apps/
+ml/
+demos/
+docs/
+tests/
+ui/
+scripts/
+poetry.lock

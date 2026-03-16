@@ -20,7 +20,14 @@ from api.rules_engine import apply_rules_on_spans, build_reason
 REGISTRY_PATH = Path(__file__).resolve().parent / "eval" / "results" / "model_registry.json"
 
 RULES_DIR = Path(__file__).resolve().parent / "rules"
-detector = BiasDetector(rules_dir=RULES_DIR, enable_ml_fallback=True, ml_threshold=0.56)
+detector_rules = BiasDetector(rules_dir=RULES_DIR, enable_ml_fallback=False)
+_detector_ml = None  # lazy-loaded on first ML request
+
+def _get_ml_detector():
+    global _detector_ml
+    if _detector_ml is None:
+        _detector_ml = BiasDetector(rules_dir=RULES_DIR, enable_ml_fallback=True, ml_threshold=0.56)
+    return _detector_ml
 
 LANGS = {
     "English":  ("en", Language.ENGLISH),
@@ -41,27 +48,11 @@ MODEL_METRICS = {
     },
     "ml_classifier": {
         "label": "sw-bias-classifier-v2 (ML)",
-        "description": "AfroXLM-R fine-tuned on 64K Swahili rows (v2, Val F1=0.953). SW only — falls back to rules for EN/FR/KI.",
-        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules fallback)", samples=66),
+        "description": "AfroXLM-R fine-tuned on 64K Swahili rows (v2, Val F1=0.953). Swahili only — not trained on EN/FR/KI.",
+        "en": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
         "sw": dict(f1=0.953, precision=0.940, recall=0.960, tier="Gold (sample count)", samples=64_723),
-        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules fallback)", samples=50),
-        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules fallback)", samples=11_848),
-    },
-    "hf_llm": {
-        "label": "HF LLM (Llama 3.1 8B)",
-        "description": "Llama 3.1 8B via HF Inference Router. Disambiguates borderline Swahili cases. Requires HF token.",
-        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules base)", samples=66),
-        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold + LLM disambig", samples=64_723),
-        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules base)", samples=50),
-        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules base)", samples=11_848),
-    },
-    "ollama": {
-        "label": "Ollama (Llama 3.2 local)",
-        "description": "Local Llama 3.2 via Ollama. Runs fully offline — no API key needed. SW disambiguation only.",
-        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze (rules base)", samples=66),
-        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold + local LLM", samples=64_723),
-        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze (rules base)", samples=50),
-        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (rules base)", samples=11_848),
+        "fr": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
+        "ki": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
     },
 }
 
@@ -158,9 +149,18 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     lang_code, lang_enum = LANGS[lang_name]
     m = model_info[lang_code]
 
+    # ML is Swahili-only — fall back to rules for EN/FR/KI
+    ml_fallback_note = ""
+    if model_key == "ml_classifier" and lang_code != "sw":
+        ml_fallback_note = f"\n> ⚠️ **ML classifier is Swahili-only** — using rules-based detection for {lang_name}."
+        model_key = "rules"
+        model_info = MODEL_METRICS["rules"]
+        m = model_info[lang_code]
+
     # Detection
     try:
-        result = detector.detect_bias(text.strip(), lang_enum)
+        det = _get_ml_detector() if model_key == "ml_classifier" else detector_rules
+        result = det.detect_bias(text.strip(), lang_enum)
     except Exception as e:
         return f"❌ Detection error: {e}", "", ""
 
@@ -207,6 +207,8 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     else:
         verdict = f"🟢 **No bias detected** — text passes all rules and ML classifier{llm_verdict_note}{model_badge}"
 
+    verdict += ml_fallback_note
+
     # Detection detail
     detail_lines = []
     for edit in result.detected_edits:
@@ -250,11 +252,11 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
         if reason and (skipped or not has_bias):
             correction_md += f"\n\n*Reason: {reason}*"
 
-    # Metrics footer
+    # Metrics footer (N/A when ML model and non-SW language)
     metrics_md = (
         f"**Model metrics ({lang_name}):** "
-        f"F1 `{m['f1']:.3f}` · Precision `{m['precision']:.3f}` · Recall `{m['recall']:.3f}` · "
-        f"Samples `{m['samples']:,}` · Tier: **{m['tier']}**"
+        f"F1 `{_fmt_metric(m['f1'])}` · Precision `{_fmt_metric(m['precision'])}` · Recall `{_fmt_metric(m['recall'])}` · "
+        f"Samples `{_fmt_metric(m['samples'])}` · Tier: **{m['tier']}**"
     )
 
     return f"{verdict}\n\n{metrics_md}", detail_md, correction_md
@@ -316,14 +318,23 @@ def load_registry_table() -> tuple[list[list], str]:
     return rows, f"Last snapshot: {ts}"
 
 
+def _fmt_metric(v, fmt_num="{:.3f}", fmt_int="{:,}"):
+    """Format a metric value for display; None -> 'N/A'."""
+    if v is None:
+        return "N/A"
+    return (fmt_int if isinstance(v, int) else fmt_num).format(v)
+
+
 def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
     code = LANGS[lang_name][0]
     model_key = MODEL_KEY_BY_LABEL.get(model_label or "", "rules")
     model_info = MODEL_METRICS[model_key]
     m = model_info[code]
-    f1_bar = min(int(m['f1'] / 1.0 * 10), 10)
+    f1_val = m["f1"]
+    has_na = f1_val is None
+    f1_bar = 0 if has_na else min(int(f1_val / 1.0 * 10), 10)
     bar_filled = "█" * f1_bar + "░" * (10 - f1_bar)
-    status_color = "#4ade80" if m['f1'] >= 0.75 else "#fbbf24" if m['f1'] >= 0.5 else "#f87171"
+    status_color = "#94a3b8" if has_na else "#4ade80" if f1_val >= 0.75 else "#fbbf24" if f1_val >= 0.5 else "#f87171"
     desc = model_info["description"]
     return (
         f"<div style='"
@@ -335,17 +346,17 @@ def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
         f"<div style='font-size:0.72rem;color:#64748b;margin-bottom:10px;font-family:sans-serif'>{desc}</div>"
         f"<div style='display:flex;justify-content:space-between;margin:4px 0'>"
         f"<span style='color:#94a3b8'>F1</span>"
-        f"<span style='color:{status_color};font-weight:700'>{m['f1']:.3f}</span></div>"
+        f"<span style='color:{status_color};font-weight:700'>{_fmt_metric(f1_val)}</span></div>"
         f"<div style='font-size:0.75rem;color:#64748b;margin:2px 0'>{bar_filled}</div>"
         f"<div style='display:flex;justify-content:space-between;margin:4px 0'>"
         f"<span style='color:#94a3b8'>Precision</span>"
-        f"<span style='color:#e2e8f0'>{m['precision']:.3f}</span></div>"
+        f"<span style='color:#e2e8f0'>{_fmt_metric(m['precision'])}</span></div>"
         f"<div style='display:flex;justify-content:space-between;margin:4px 0'>"
         f"<span style='color:#94a3b8'>Recall</span>"
-        f"<span style='color:#e2e8f0'>{m['recall']:.3f}</span></div>"
+        f"<span style='color:#e2e8f0'>{_fmt_metric(m['recall'])}</span></div>"
         f"<div style='display:flex;justify-content:space-between;margin:6px 0 2px'>"
         f"<span style='color:#94a3b8'>Samples</span>"
-        f"<span style='color:#e2e8f0'>{m['samples']:,}</span></div>"
+        f"<span style='color:#e2e8f0'>{_fmt_metric(m['samples'])}</span></div>"
         f"<div style='margin-top:8px;padding:4px 8px;border-radius:6px;"
         f"background:rgba(99,102,241,0.25);text-align:center;"
         f"font-size:0.75rem;color:#a5b4fc'>{m['tier']}</div>"
@@ -489,11 +500,10 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme) as demo:
     demo.load(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
     refresh_btn.click(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
 
-# Mount /rewrite onto Gradio's own FastAPI app — no path conflicts
+# Expose app at module level — required by HF Spaces Gradio SDK runner
 app = demo.app
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.post("/rewrite")(_rewrite_handler)
 
 if __name__ == "__main__":
-    import uvicorn
     demo.launch(server_name="0.0.0.0", server_port=7860)
