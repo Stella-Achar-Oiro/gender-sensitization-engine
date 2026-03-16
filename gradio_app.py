@@ -308,10 +308,10 @@ def load_registry_table() -> tuple[list[list], str]:
             v.get("tag", ""),
             v.get("timestamp", "")[:10],
             v.get("git_commit") or "—",
-            f"{m.get('en', {}).get('f1', 0):.3f}",
-            f"{m.get('sw', {}).get('f1', 0):.3f}",
-            f"{m.get('fr', {}).get('f1', 0):.3f}",
-            f"{m.get('ki', {}).get('f1', 0):.3f}",
+            _fmt_metric(m.get('en', {}).get('f1')),
+            _fmt_metric(m.get('sw', {}).get('f1')),
+            _fmt_metric(m.get('fr', {}).get('f1')),
+            _fmt_metric(m.get('ki', {}).get('f1')),
             v.get("notes", ""),
         ])
     ts = reg["versions"][-1]["timestamp"][:16].replace("T", " ") if reg.get("versions") else "—"
@@ -500,10 +500,4 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme) as demo:
     demo.load(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
     refresh_btn.click(fn=refresh_versions, outputs=[versions_table, registry_ts, trend_md])
 
-# Expose app at module level — required by HF Spaces Gradio SDK runner
-app = demo.app
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-app.post("/rewrite")(_rewrite_handler)
-
-if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+demo.launch(server_name="0.0.0.0", server_port=7860)
