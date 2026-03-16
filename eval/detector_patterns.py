@@ -107,6 +107,23 @@ DEROGATION_PATTERNS: Dict[Language, List[tuple]] = {
         # Intersectional: rural women framed as uneducated
         (r'\bwanawake\s+wa\s+vijijini\b.{0,50}\b(hawana|hawajui|hawajasomea|hawana\s+elimu|hawajapata)\b',
          StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
+        # Female student blame/restriction patterns — zero FP across 64K rows
+        (r'\bwanafunzi\s+wa\s+kike\b.{0,150}\b(kuwatongoza\s+wavulana|wanawatongoza\s+wavulana)\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        (r'\bwanafunzi\s+wa\s+kike\b.{0,150}\b(kujilengesha|viherehere)\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        (r'\bwanafunzi\s+wa\s+kike\b.{0,150}\bmatendo\s+yasiyokuwa\s+ya\s+kimasomo\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        (r'\bwanafunzi\s+wa\s+kike\b.{0,150}\bdawa\s+za\s+kuzuia\s+mimba\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        (r'\bwanafunzi\s+wa\s+kike\b.{0,150}\bkujiweka\s+mbali\s+na\s+(ngono|uhusiano\s+wa\s+kimapenzi|mapenzi)\b',
+         StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
+        # Virginity testing of students — explicit derogation
+        (r'\bkuwapima\s+(wanafunzi|watoto)\b.{0,60}\bbikira\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        # kujilengesha — blame-framing girls for their own pregnancy
+        (r'\bkujilengesha\b',
+         StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
     ],
 }
 
@@ -181,6 +198,9 @@ SW_DEROGATION_COUNTER_SUPPRESSOR = re.compile(
     r'|ni\s+udhalimu'                       # "this is injustice"
     r'|ni\s+ubaguzi'                        # "this is discrimination"
     r'|lazima\s+(tubadilishe|tuzuie|tuondoe)'  # "we must change/stop/remove this"
+    r'|dhana\s+potofu\s+kuwa'              # "false notion that" — explicit debunking framing
+    r'|kufuta\s+(usemi|dhana|imani)\s+wa'  # "cancel the saying/notion/belief that"
+    r'|wanawake\s+na\s+wanaume\s+wote\s+ni\s+sawa'  # equality statement suppresses "hata mwanamke anaweza" FP
     r')',
     re.IGNORECASE,
 )
@@ -199,6 +219,11 @@ SW_PROGRESS_CONTEXT = re.compile(
     # Celebration/media reporting context
     r'|siku\s+ya\s+wanawake|maadhimisho|sherehe|tamasha|tuzo|zawadi'
     r'|ushindi|mafanikio|mchango|jitihada|nguvu\s+za'
+    # Death/memorial/disaster context — factual occupation mentions in victim reports
+    r'|amefariki\s+dunia|alifariki\s+dunia|amepoteza\s+maisha|alipoteza\s+maisha'
+    r'|aliumia|alikufa|kifo\s+cha|tetemeko\s+la\s+ardhi|ajali\s+ya'
+    # Medical research statistical context — "N madaktari wa kiume takribani"
+    r'|takribani\s+\d|zaidi\s+ya\s+\d|idadi\s+ya\s+\d'
     r')',
     re.IGNORECASE,
 )

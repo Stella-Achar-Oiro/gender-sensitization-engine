@@ -166,6 +166,11 @@ class ContextChecker:
             r'\b(female|woman|she)\b.{0,30}\b(engineer|pilot|mechanic|CEO|surgeon)\b',
             r'\b(male|man|he)\b.{0,30}\b(nurse|secretary|nanny|caregiver)\b',
             r'\b(wa\s+kwanza|first)\b.{0,20}\b(wa\s+kike|wa\s+kiume|female|male)\b',
+            # Explicit counter-stereotype debunking framing
+            r'\bhaileti\s+maana\s+kufikiri\s+kuwa\b',
+            r'\bdhana\s+potofu\s+kuwa\b',
+            r'\bkufuta\s+(usemi|dhana|imani)\s+wa\b',
+            r'\bwanawake\s+na\s+wanaume\s+wote\s+ni\s+sawa\b',
             # Advocacy / rights framing — narrow: only when canonical advocacy wording surrounds the term
             r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{{0,40}}{term}',
             r'{term}.{{0,40}}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
