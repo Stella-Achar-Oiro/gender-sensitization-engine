@@ -1,5 +1,5 @@
 # JuaKazi Gender Bias Dataset Card
-**Version**: 3.0 | **Last updated**: February 2026 | **Schema**: AIBRIDGE v1 (24-column CSVW)
+**Version**: 3.1 | **Last updated**: March 2026 | **Schema**: AIBRIDGE v1 (24-column CSVW)
 
 Update this card every time a new dataset version is created. Per AI BRIDGE protocol.
 
@@ -24,7 +24,7 @@ Update this card every time a new dataset version is created. Per AI BRIDGE prot
 
 | Language | File | Version | Total rows | Biased | Neutral | AI BRIDGE tier |
 |---|---|---|---|---|---|---|
-| Swahili | `eval/ground_truth_sw_v5.csv` | v5 | 51,419 | 1,956 (3.8%) | 49,300 (95.9%) | **Gold** (44,612 req. met) |
+| Swahili | `eval/ground_truth_sw_v5.csv` | v5 | 64,723 | 1,122 (1.7%) | 63,601 (98.3%) | **Gold** (sample count met) |
 | Gikuyu | `eval/ground_truth_ki_v8.csv` | v8 | 11,848 | — | — | **Bronze** (987% of 1,200 req.) |
 | English | `eval/ground_truth_en_v5.csv` | v5 | 66 | 25 | 41 | Pre-Bronze (needs 1,134 more) |
 | French | `eval/ground_truth_fr_v5.csv` | v5 | 50 | 20 | 30 | Pre-Bronze (needs 1,150 more) |
@@ -124,7 +124,7 @@ Update this card every time a new dataset version is created. Per AI BRIDGE prot
 
 ### 4.2 Annotator Gender Breakdown
 
-**Current status**: Auto-annotation only — no human annotators recruited yet.
+**Current status**: 1 human annotator (AO-001, native Swahili speaker, batch_024 — 274 rows reviewed). 2nd annotator engaged for Kappa measurement.
 
 | Annotator type | Count | Female | Male | Not specified |
 |---|---|---|---|---|
@@ -137,9 +137,9 @@ Update this card every time a new dataset version is created. Per AI BRIDGE prot
 
 | Metric | Target | Current |
 |---|---|---|
-| Cohen's Kappa (κ) | ≥ 0.70 | Not yet computed — no human double annotation |
-| Krippendorff's α | ≥ 0.80 | Not yet computed |
-| Multi-annotator coverage | ≥ 10% of biased rows | 0% (pending native speaker recruitment) |
+| Cohen's Kappa (κ) | ≥ 0.70 | **In progress** — 2nd annotator engaged, annotation underway |
+| Krippendorff's α | ≥ 0.80 | Pending κ results |
+| Multi-annotator coverage | ≥ 10% of biased rows | In progress |
 
 ---
 
@@ -182,12 +182,12 @@ No gold standard set defined yet. **Action required**: Define 200-row gold set p
 
 | Language | Precision | Recall | F1 | DP | EO | AI BRIDGE tier |
 |---|---|---|---|---|---|---|
-| English | 1.000 | 0.647 | 0.786 | 0.038 | 0.019 | Pre-Bronze |
-| Swahili | 1.000 | 0.457 | 0.627 | 0.000 | 0.000 | Gold (sample size) |
-| French | 1.000 | 0.371 | 0.542 | 0.060 | 0.030 | Pre-Bronze |
+| English | 1.000 | 0.794 | 0.885 | — | — | Pre-Bronze |
+| Swahili | 0.733 | 0.920 | 0.816 | 0.000 | 0.000 | Gold (sample size) |
+| French | 1.000 | 0.657 | 0.793 | — | — | Pre-Bronze |
 | Gikuyu | 0.926 | 0.217 | 0.352 | 0.000 | 0.000 | Bronze (sample size) |
 
-**Precision 1.000 = zero false positives across all languages (hard constraint).**
+**Last evaluated**: 2026-03-17. Run `python3 -m eval.evaluator` to reproduce.
 
 ---
 

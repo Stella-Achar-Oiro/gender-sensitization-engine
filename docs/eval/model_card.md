@@ -1,5 +1,5 @@
 # JuaKazi Gender Sensitization Engine — Model Card
-**Version**: 2.1 | **Last updated**: March 2026
+**Version**: 2.2 | **Last updated**: March 2026
 **Update this card every time the model is retrained or lexicons are updated. Per AI BRIDGE protocol.**
 
 ---
@@ -57,9 +57,9 @@ Input text
 
 | Language | File | Entries | Bias types covered |
 |---|---|---|---|
-| English | `rules/lexicon_en_v3.csv` | 538 | Occupation, pronoun, role, morphological |
-| Swahili | `rules/lexicon_sw_v3.csv` | 246 | Occupation, pronoun, role, proverb/idiom, Sheng |
-| French | `rules/lexicon_fr_v3.csv` | 78 | Occupation, morphological |
+| English | `rules/lexicon_en_v3.csv` | 68 | Occupation, pronoun, role, morphological |
+| Swahili | `rules/lexicon_sw_v3.csv` | 267 | Occupation, pronoun, role, proverb/idiom, derogation |
+| French | `rules/lexicon_fr_v3.csv` | 101 | Occupation, morphological |
 | Gikuyu | `rules/lexicon_ki_v3.csv` | ~1,240 | Occupation, role |
 
 **Coverage gaps (known — Sprint 3)**:
@@ -77,15 +77,15 @@ Run `python3 run_evaluation.py` to reproduce.
 
 | Language | Samples | Precision | Recall | F1 | AI BRIDGE tier (metrics) |
 |---|---|---|---|---|---|
-| English | 66 | 1.000 | 0.647 | 0.786 | Pre-Bronze |
-| Swahili | 64,723 | 0.734 | 0.811 | 0.771 | Sample count: Gold. IAA: unmeasured. |
-| French | 50 | 1.000 | 0.371 | 0.542 | Pre-Bronze |
+| English | 66 | 1.000 | 0.794 | 0.885 | Pre-Bronze |
+| Swahili | 64,723 | 0.733 | 0.920 | 0.816 | Sample count: Gold. IAA: in progress. |
+| French | 50 | 1.000 | 0.657 | 0.793 | Pre-Bronze |
 | Gikuyu | 11,848 | 0.926 | 0.217 | 0.352 | Pre-Bronze (sample count: Bronze) |
 
 **Qualifications**:
 - Swahili F1 updated Mar 2026 after `ann_sw_v3` pass (13,304 rows annotated). Precision drop 0.958→0.734 is an honest signal: `watoto wa kike`/`mtoto wa kiume` are genuinely ambiguous phrases (advocacy vs prescriptive). Root cause: lexicon over-fires on girls'-rights-advocacy contexts.
 - Swahili/Gikuyu sample counts qualify for Gold/Bronze tier on volume; F1 and Cohen's Kappa do not yet meet tier thresholds.
-- Cohen's Kappa unmeasurable — 2nd annotator not yet recruited (AIBRIDGE Bronze blocker). 250-row overlap set is ready at `data/annotation_export/kappa_overlap_blind_250.xlsx`.
+- Cohen's Kappa: **in progress** — 2nd annotator engaged. 250-row overlap set ready at `data/annotation_export/kappa_overlap_blind_250.xlsx`. Results expected shortly.
 - English/French ground truth: hand-curated; no κ computed (single annotator).
 
 ### 3.4 Bias Type Coverage
@@ -199,7 +199,7 @@ Each edit in the response includes a human-readable `reason` field: e.g., `"flag
 
 1. **Low recall** — Swahili F1=0.611, Recall=0.463. ~537 biased rows not detected. Primary cause: lexicon coverage gaps, not model errors.
 2. **Zero implicit bias detection** — Proverbs and indirect bias not captured by word-level rules. 0.9% of biased rows are implicit; AIBRIDGE requires ≥5%.
-3. **No κ measurement** — All Swahili labels are auto-generated. Cohen's Kappa cannot be reported. Required for AI BRIDGE tier certification.
+3. **Cohen's Kappa in progress** — 2nd annotator engaged; results pending. Required for AI BRIDGE tier certification.
 4. **Correction quality unvalidated** — No human review sessions completed. Bias removal accuracy for Swahili is unknown.
 5. **Sheng/dialect gap** — System has no training signal from Sheng or Tanzanian coastal Swahili.
 6. **ML Stage 2 fallback** — `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned on 51K SW rows). Val metrics: P=0.938, R=0.784, F1=0.854. Produces warn-only edits — never modifies text directly.
@@ -260,6 +260,8 @@ Results written to `eval/results/f1_report_YYYYMMDD_HHMMSS.csv`.
 |---|---|---|---|---|
 | 1.0 | Oct 2024 | Initial (approach_card.md) | 0.681 | — |
 | 2.0 | Feb 2026 | Full rewrite: modular API, reason field, region_dialect, annotation pipeline, HITL UI, correct metrics | 0.611 | See feat/annotation-export |
+| 2.1 | Mar 2026 | ann_sw_v3 pass (13,304 rows), tester feedback fixes (malaya, proverb partial, wake/yake), lexicon expansion | 0.816 | c9e40e0 |
+| 2.2 | Mar 2026 | Metrics updated post lexicon fix, submission data prepared, Kappa in progress | 0.816 | b735e54 |
 
 ---
 
