@@ -12,9 +12,9 @@
     "samples": 64723
   },
   "fr": {
-    "f1": 0.542,
+    "f1": 0.793,
     "precision": 1.0,
-    "recall": 0.371,
+    "recall": 0.657,
     "samples": 50
   },
   "ki": {
