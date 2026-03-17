@@ -29,6 +29,10 @@ annotation/
 audit_logs/
 models/
 
+# AI BRIDGE submission templates (large Excel files)
+*.xlsx
+*.xls
+
 # Claude AI instructions — not source code
 CLAUDE.md
 
