@@ -124,6 +124,12 @@ DEROGATION_PATTERNS: Dict[Language, List[tuple]] = {
         # kujilengesha — blame-framing girls for their own pregnancy
         (r'\bkujilengesha\b',
          StereotypeCategory.DAILY_LIFE, TargetGender.FEMALE),
+        # malaya — explicit gendered slur in direct assertion contexts only
+        # Scoped to avoid FPs in news articles, quoted speech, compound nouns (umalaya)
+        (r'\b(ni|kuwa|kwamba)\s+malaya\b',
+         StereotypeCategory.APPEARANCE, TargetGender.FEMALE),
+        (r'\bmalaya\s+(wewe|sana|mkubwa|mno)\b',
+         StereotypeCategory.APPEARANCE, TargetGender.FEMALE),
     ],
 }
 

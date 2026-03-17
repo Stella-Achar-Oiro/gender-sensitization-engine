@@ -142,6 +142,9 @@ class ContextChecker:
             r'\balikuwa\b.{{0,20}}{term}',
             r'\b(she|he)\s+(is|was|became|served\s+as).{{0,30}}{term}',
             r'\bthe\s+first\s+(female|male|woman|man)\s+{term}',
+            # Family possession — possessives on family/relational nouns are biographical
+            r'\b(bibi|babu|mama|baba|ndugu|kaka|dada|mtoto|mdogo|mkubwa|shangazi|mjomba|mke|mume)\s+{term}',
+            r'{term}\s+(wa\s+miaka|mwenye\s+umri)',
         ],
         ContextCondition.STATISTICAL: [
             r'\d+(\.\d+)?%\s*.{{0,30}}{term}',
