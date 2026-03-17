@@ -4,6 +4,7 @@ Main evaluation orchestrator for bias detection framework.
 This module coordinates the evaluation process and provides the main interface
 for running evaluations.
 """
+import json
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
@@ -139,7 +140,26 @@ class BiasEvaluationOrchestrator:
             csv_filename = f"f1_report_{timestamp}.csv"
             csv_path = self.results_writer.write_csv_report(csv_data, csv_filename)
             print(f"Report saved to: {csv_path}")
-            
+
+            # Write metrics.json for gradio_app.py to load at startup
+            lang_map = {
+                Language.ENGLISH: "en", Language.SWAHILI: "sw",
+                Language.FRENCH: "fr", Language.GIKUYU: "ki",
+            }
+            metrics_out = {}
+            for r in results:
+                code = lang_map.get(r.language, r.language.value)
+                m = r.overall_metrics
+                metrics_out[code] = {
+                    "f1": round(m.f1_score, 3),
+                    "precision": round(m.precision, 3),
+                    "recall": round(m.recall, 3),
+                    "samples": m.true_positives + m.false_positives + m.false_negatives + m.true_negatives,
+                }
+            metrics_path = Path(__file__).resolve().parent / "metrics.json"
+            metrics_path.write_text(json.dumps(metrics_out, indent=2))
+            print(f"Metrics saved to: {metrics_path}")
+
         except Exception as e:
             print(f"Warning: Failed to save results: {e}")
 

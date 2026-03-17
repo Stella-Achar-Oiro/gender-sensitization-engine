@@ -36,15 +36,26 @@ LANGS = {
     "Gikuyu":   ("ki", Language.GIKUYU),
 }
 
+# Load live metrics from eval/metrics.json if available (written by eval/evaluator.py)
+_METRICS_PATH = Path(__file__).parent / "eval" / "metrics.json"
+_LIVE_METRICS: dict = {}
+try:
+    _LIVE_METRICS = json.loads(_METRICS_PATH.read_text())
+except Exception:
+    pass
+
+def _m(code: str, field: str, fallback):
+    return _LIVE_METRICS.get(code, {}).get(field, fallback)
+
 # Per-model metrics: model_key -> lang_code -> metrics dict
 MODEL_METRICS = {
     "rules": {
         "label": "Rules-based (lexicon)",
         "description": "Deterministic lexicon rules across all 4 languages. High precision, no GPU needed.",
-        "en": dict(f1=0.885, precision=1.000, recall=0.794, tier="Pre-Bronze", samples=66),
-        "sw": dict(f1=0.816, precision=0.735, recall=0.918, tier="Gold (sample count)", samples=64_723),
-        "fr": dict(f1=0.793, precision=1.000, recall=0.657, tier="Pre-Bronze", samples=50),
-        "ki": dict(f1=0.368, precision=0.916, recall=0.231, tier="Bronze (sample count)", samples=11_848),
+        "en": dict(f1=_m("en","f1",0.885), precision=_m("en","precision",1.000), recall=_m("en","recall",0.794), tier="Pre-Bronze", samples=_m("en","samples",66)),
+        "sw": dict(f1=_m("sw","f1",0.821), precision=_m("sw","precision",0.741), recall=_m("sw","recall",0.919), tier="Gold (sample count)", samples=_m("sw","samples",64_723)),
+        "fr": dict(f1=_m("fr","f1",0.793), precision=_m("fr","precision",1.000), recall=_m("fr","recall",0.657), tier="Pre-Bronze", samples=_m("fr","samples",50)),
+        "ki": dict(f1=_m("ki","f1",0.368), precision=_m("ki","precision",0.916), recall=_m("ki","recall",0.231), tier="Bronze (sample count)", samples=_m("ki","samples",11_848)),
     },
     "ml_classifier": {
         "label": "sw-bias-classifier-v2 (ML)",
