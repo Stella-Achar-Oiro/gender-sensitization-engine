@@ -1,5 +1,5 @@
 # JuaKazi Gender Sensitization Engine — Model Card
-**Version**: 2.2 | **Last updated**: March 2026
+**Version**: 2.3 | **Last updated**: March 2026
 **Update this card every time the model is retrained or lexicons are updated. Per AI BRIDGE protocol.**
 
 ---
@@ -9,7 +9,7 @@
 | Field | Value |
 |---|---|
 | Model name | JuaKazi Gender Sensitization Engine |
-| Version | 2.1 (Mar 2026) |
+| Version | 2.3 (Mar 2026) |
 | Languages | English (en), Swahili (sw), French (fr), Gikuyu/Kikuyu (ki) |
 | Task | Gender bias detection + neutral rewriting |
 | Architecture | Rules engine (primary) + afro-xlmr-base fine-tuned (ML fallback, Stage 2) |
@@ -202,7 +202,7 @@ Each edit in the response includes a human-readable `reason` field: e.g., `"flag
 3. **Cohen's Kappa in progress** — 2nd annotator engaged; results pending. Required for AI BRIDGE tier certification.
 4. **Correction quality unvalidated** — No human review sessions completed. Bias removal accuracy for Swahili is unknown.
 5. **Sheng/dialect gap** — System has no training signal from Sheng or Tanzanian coastal Swahili.
-6. **ML Stage 2 fallback** — `juakazike/sw-bias-classifier-v1` (afro-xlmr-base fine-tuned on 51K SW rows). Val metrics: P=0.938, R=0.784, F1=0.854. Produces warn-only edits — never modifies text directly.
+6. **ML Stage 2 fallback** — `juakazike/sw-bias-classifier-v3` (afro-xlmr-base fine-tuned on 64,723 SW rows). Val metrics: P=0.898, R=0.910, F1=0.904. Threshold=0.50. Produces warn-only edits — never modifies text directly. (v2 had P=0.330, 333 FPs on external eval — retrained Mar 2026.)
 
 ---
 
@@ -262,6 +262,7 @@ Results written to `eval/results/f1_report_YYYYMMDD_HHMMSS.csv`.
 | 2.0 | Feb 2026 | Full rewrite: modular API, reason field, region_dialect, annotation pipeline, HITL UI, correct metrics | 0.611 | See feat/annotation-export |
 | 2.1 | Mar 2026 | ann_sw_v3 pass (13,304 rows), tester feedback fixes (malaya, proverb partial, wake/yake), lexicon expansion | 0.816 | c9e40e0 |
 | 2.2 | Mar 2026 | Metrics updated post lexicon fix, submission data prepared, Kappa in progress | 0.816 | b735e54 |
+| 2.3 | Mar 2026 | ML fallback upgraded v1→v3: P=0.898, R=0.910, F1=0.904 (was P=0.330, 333 FPs). Ground truth 64,723 rows, neutral_ratio=40, pos_weight=10 | 0.819 | — |
 
 ---
 
