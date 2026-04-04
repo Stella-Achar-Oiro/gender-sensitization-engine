@@ -78,7 +78,10 @@ DEROGATION_PATTERNS: Dict[Language, List[tuple]] = {
         # Appearance / body stereotypes
         (r'\b(mwanamke|msichana|mke)\b.{0,50}\b(mzuri|mrembo|mrefu|mfupi|nzuri|mvuto|mwili).{0,30}\b(lazima|anapaswa|sharti|inahitajika)\b',
          StereotypeCategory.APPEARANCE, TargetGender.FEMALE),
-        (r'\b(mwanamke|msichana)\b.{0,30}\b(si mzuri|si mrembo|hana mvuto|mbaya|hana kitu)\b',
+        # Appearance demeaning — mbaya split out: "msichana mbaya katika mapenzi" is usually attributed gossip in news (FP)
+        (r'\b(mwanamke|msichana)\b.{0,30}\b(si mzuri|si mrembo|hana mvuto|hana kitu)\b',
+         StereotypeCategory.APPEARANCE, TargetGender.FEMALE),
+        (r'\b(mwanamke|msichana)\b.{0,25}\bmbaya\b(?!\s+katika\s+mapenzi)',
          StereotypeCategory.APPEARANCE, TargetGender.FEMALE),
         # Personality / emotion stereotypes
         (r'\bwanawake\b.{0,40}\b(wanaelewa|wanafikiri|wanajua|wanaweza).{0,20}\b(kidogo|tu|chini|zaidi ya)\b',
@@ -90,8 +93,8 @@ DEROGATION_PATTERNS: Dict[Language, List[tuple]] = {
          StereotypeCategory.FAMILY_ROLE, TargetGender.FEMALE),
         (r'\bsisi\s+wanaume\b.{0,60}\b(tunaongoza|tunalazimisha|tunaamua|tunapaswa)\b',
          StereotypeCategory.LEADERSHIP, TargetGender.MALE),
-        # Implicit surprise bias — 'hata' (even) before women encodes exceptionalism
-        (r'\bhata\s+(wanawake|mwanamke|msichana)\b.{0,40}\b(wanaweza|anaweza|wanajeshi|kiongozi|daktari|mhandisi|rubani)\b',
+        # Implicit surprise — 'hata' + exceptional role (exclude bare anaweza/wanaweza: common in factual/empowerment news)
+        (r'\bhata\s+(wanawake|mwanamke|msichana)\b.{0,40}\b(wanajeshi|kiongozi|daktari|mhandisi|rubani|nahodha|spika|mbunge|rais|mkurugenzi)\b',
          StereotypeCategory.CAPABILITY, TargetGender.FEMALE),
         # Comparative derogation — gender-qualifying achievement sets lower baseline
         (r'\balifanya\s+kazi\s+nzuri\s+kwa\s+(mwanamke|msichana)\b',
