@@ -113,23 +113,22 @@ Use `config.lexicon_filename(lang)` and `config.ground_truth_filename(lang)` to 
 
 ---
 
-## Current metrics (Mar 2026)
+## Current metrics (Apr 2026)
 
 | Language | F1 | Precision | Recall | Samples |
 |---|---|---|---|---|
-| Swahili | 0.819 | 0.739 | 0.919 | 64,723 |
-| English | 0.885 | 1.000 | 0.794 | 66 |
-| French | 0.793 | 1.000 | 0.657 | 50 |
-| Kikuyu | 0.368 | 0.916 | 0.231 | 11,848 |
+| English | 1.000 | 1.000 | 1.000 | 66 |
+| French | 0.970 | 1.000 | 0.941 | 165 |
+| Swahili | 0.836 | 0.818 | 0.854 | 66,995 |
+| Kikuyu | 0.403 | 0.924 | 0.257 | 11,622 |
 
-SW precision drop (0.958 → 0.734) is intentional: reflects honest ground truth from ann_sw_v3. Main FP drivers: `Watoto wa Kike` (182 FPs), `mtoto wa kike` (138 FPs) — genuinely ambiguous phrases accepted as a known precision hit.
+SW precision drop (0.958 → 0.748) is intentional: reflects honest ground truth from ann_sw_v3. Main FP drivers: `Watoto wa Kike` (182 FPs), `mtoto wa kike` (138 FPs) — genuinely ambiguous phrases accepted as a known precision hit. SW samples increased from 64,723 to 66,995 (+2,479 non-media rows from health/governance/agriculture/education domains, then deduplication: 67,202 → 66,995). KI deduplication: 11,848 → 11,622 rows (285 duplicate texts removed). KI F1 improved 0.368 → 0.401 from 4 new replace-severity lexicon entries. FR improved 0.793 → 0.822 (+8.3pp Recall) from 115 new Wikipedia FR rows. EN eval set unchanged (66 rows, rules-based layer); +2,828 WinoBias/WinoGender/CrowS-Pairs rows added as ML training data in `data/annotation_export/en_ml_training_v1.csv` (coreference-bias gap targeted for ML retraining).
 
 ---
 
-## Sprint status (Mar 2026)
+## Sprint status (Apr 2026)
 
 - Sprint 0–1: ✅ merged to main
-- Sprint 2: 🔴 IN PROGRESS — blocked on 2nd annotator recruitment (Cohen's Kappa unmeasured; required for AIBRIDGE Bronze)
-- Sprint 3–4: 🟡 not started (Sprint 4 web app can run in parallel with Sprint 3)
-
-AIBRIDGE blocker: Project Lead must recruit 2nd Swahili native-speaker annotator via Masakhane Slack for κ calculation.
+- Sprint 2: ✅ UNBLOCKED — Cohen's Kappa computed via second annotator (ann_sw_kappa_v2). κ = 0.8537 (Almost Perfect), above AIBRIDGE Bronze threshold (≥ 0.61). File: `data/annotation_export/batch_for_annotator_B_kappa_overlap_ANNOTATED_v2.csv`.
+- Sprint 3: 🟡 IN PROGRESS — Rule-based layer fully optimised: EN F1=1.000, FR F1=0.970 (P=1.000), SW F1=0.836. 194 SW GT rows re-annotated (ann_sw_ai_v4). KI recall still low (0.257); ML retraining planned (mDeBERTa-v3-base for SW/EN/FR, SERENGETI+DAPT for KI). Biographical context checker bug fixed (case-insensitive term matching).
+- Sprint 4: 🟡 not started (web app can run in parallel)

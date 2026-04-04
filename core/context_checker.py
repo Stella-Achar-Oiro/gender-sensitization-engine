@@ -326,30 +326,37 @@ class ContextChecker:
                             matched_pattern=cp.pattern
                         )
         if condition == ContextCondition.BIOGRAPHICAL:
-            name_pattern = re.compile(
-                r'[A-Z][a-z]+\s+[A-Z][a-z]+.{0,30}' + re.escape(term),
-                re.UNICODE
-            )
-            if name_pattern.search(text):
-                return ContextCheckResult(
-                    should_correct=False,
-                    blocked_by=condition,
-                    reason=f"Detected {condition.value} context (name reference)",
-                    confidence=0.85,
-                    matched_pattern="[Name] + term"
+            # [Name Name] before term — two titlecase words preceding the term
+            # Search lowercased text with lowercased term to handle case variants,
+            # but keep the name-detection part case-sensitive via the original text.
+            name_suffix = re.escape(term.lower())
+            for search_text in (text, text.lower()):
+                name_pattern = re.compile(
+                    r'[A-Z][a-z]+\s+[A-Z][a-z]+.{0,30}' + name_suffix,
+                    re.UNICODE
                 )
-            term_name_pattern = re.compile(
-                re.escape(term) + r'\s+(wa\s+)?[A-Z][a-z]+(\s+[A-Z][a-z]+)?',
-                re.UNICODE
-            )
-            if term_name_pattern.search(text):
-                return ContextCheckResult(
-                    should_correct=False,
-                    blocked_by=condition,
-                    reason=f"Detected {condition.value} context (name reference)",
-                    confidence=0.85,
-                    matched_pattern="term + [Name]"
+                if name_pattern.search(search_text):
+                    return ContextCheckResult(
+                        should_correct=False,
+                        blocked_by=condition,
+                        reason=f"Detected {condition.value} context (name reference)",
+                        confidence=0.85,
+                        matched_pattern="[Name] + term"
+                    )
+            # term followed by a titlecase name — try both term case variants
+            for t in (term, term.lower(), term.capitalize()):
+                term_name_pattern = re.compile(
+                    re.escape(t) + r'\s+(wa\s+)?[A-Z][a-z]+(\s+[A-Z][a-z]+)?',
+                    re.UNICODE
                 )
+                if term_name_pattern.search(text):
+                    return ContextCheckResult(
+                        should_correct=False,
+                        blocked_by=condition,
+                        reason=f"Detected {condition.value} context (name reference)",
+                        confidence=0.85,
+                        matched_pattern="term + [Name]"
+                    )
         return ContextCheckResult(
             should_correct=True,
             reason=f"No {condition.value} context detected",
