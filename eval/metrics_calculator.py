@@ -52,15 +52,19 @@ class MetricsCalculator:
         
         # Calculate overall metrics
         overall_metrics = self._calculate_overall_metrics(ground_truth, predictions)
-        
+
         # Calculate per-category metrics
         category_metrics = self._calculate_category_metrics(ground_truth, predictions)
-        
+
+        # Calculate gender-disaggregated metrics (AIBRIDGE fairness requirement)
+        gender_metrics = self._calculate_gender_metrics(ground_truth, predictions)
+
         return LanguageEvaluationResult(
             language=language,
             overall_metrics=overall_metrics,
             category_metrics=category_metrics,
-            total_samples=len(ground_truth)
+            total_samples=len(ground_truth),
+            gender_metrics=gender_metrics if gender_metrics else None,
         )
     
     def _calculate_overall_metrics(
@@ -115,9 +119,41 @@ class MetricsCalculator:
                     tn += 1
             
             category_metrics[category] = self._calculate_metrics_from_counts(tp, fp, fn, tn)
-        
+
         return category_metrics
-    
+
+    def _calculate_gender_metrics(
+        self,
+        ground_truth: List[GroundTruthSample],
+        predictions: List[BiasDetectionResult]
+    ) -> Dict[str, EvaluationMetrics]:
+        """
+        Calculate F1/Precision/Recall broken down by target_gender.
+
+        Only includes rows where target_gender is female, male, or neutral.
+        Returns empty dict if no rows have gender annotations.
+        Required for AIBRIDGE fairness reporting.
+        """
+        gender_data = defaultdict(list)
+        for gt, pred in zip(ground_truth, predictions):
+            if gt.target_gender and gt.target_gender.value in ("female", "male", "neutral"):
+                gender_data[gt.target_gender.value].append((gt, pred))
+
+        result = {}
+        for gender, samples in gender_data.items():
+            tp = fp = fn = tn = 0
+            for gt, pred in samples:
+                if pred.has_bias_detected and gt.has_bias:
+                    tp += 1
+                elif pred.has_bias_detected and not gt.has_bias:
+                    fp += 1
+                elif not pred.has_bias_detected and gt.has_bias:
+                    fn += 1
+                else:
+                    tn += 1
+            result[gender] = self._calculate_metrics_from_counts(tp, fp, fn, tn)
+        return result
+
     def _calculate_metrics_from_counts(self, tp: int, fp: int, fn: int, tn: int) -> EvaluationMetrics:
         """Calculate metrics from confusion matrix counts."""
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0

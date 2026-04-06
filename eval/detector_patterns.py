@@ -22,7 +22,8 @@ COUNTER_STEREOTYPE_PATTERNS: Dict[Language, List[tuple]] = {
          StereotypeCategory.PROFESSION, TargetGender.FEMALE),
         (r'\b(male|man|he)\b.*(nurse|secretary|receptionist|kindergarten|nanny)',
          StereotypeCategory.PROFESSION, TargetGender.MALE),
-        (r'\b(she|her|woman|female)\b.*(lead|command|chief|director|president|boss)',
+        # Require affirmative context — exclude negations like "can't lead"
+        (r'\b(she|her|woman|female)\b(?!.*\b(can\'t|cannot|couldn\'t|unable|never|not)\b).*(lead|command|chief|director|president|boss)',
          StereotypeCategory.LEADERSHIP, TargetGender.FEMALE),
     ],
     Language.SWAHILI: [
@@ -162,6 +163,8 @@ SW_OCCUPATION_PREFIXES = (
     'mwanachama', 'wanachama', 'maskauti',
     'mwamuzi', 'wamuzi', 'mwangalizi',
     'muigizaji', 'waigizaji', 'mwanasanaa',
+    # Sports / performance (occupation-like, lower FP risk)
+    'wachezaji', 'mchezaji',
     'mfanyakazi', 'wafanyakazi', 'mtaalamu', 'wataalamu',
     'naibu', 'manaibu', 'kamanda', 'makomanda',
     'jenerali', 'majenerali', 'kanali', 'brigadie',
@@ -236,7 +239,6 @@ SW_PROGRESS_CONTEXT = re.compile(
     r')',
     re.IGNORECASE,
 )
-
 
 
 # Prescriptive-verb gate for mtoto/watoto wa kike/kiume.

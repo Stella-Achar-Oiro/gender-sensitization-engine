@@ -98,6 +98,20 @@ class BiasEvaluationOrchestrator:
                 print(f"  Overall F1: {result.overall_metrics.f1_score:.3f}")
                 print(f"  Precision: {result.overall_metrics.precision:.3f}")
                 print(f"  Recall: {result.overall_metrics.recall:.3f}")
+
+                # AIBRIDGE fairness: gender-disaggregated breakdown
+                if result.gender_metrics:
+                    print("  Gender breakdown:")
+                    for gender in ("female", "male", "neutral"):
+                        m = result.gender_metrics.get(gender)
+                        if m is None:
+                            continue
+                        n_bias = m.true_positives + m.false_negatives
+                        print(
+                            f"    {gender:<8} — F1: {m.f1_score:.3f}  "
+                            f"P: {m.precision:.3f}  R: {m.recall:.3f}  "
+                            f"(biased rows: {n_bias})"
+                        )
                 print()
             
             if save_results:

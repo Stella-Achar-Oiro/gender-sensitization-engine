@@ -207,6 +207,7 @@ class LanguageEvaluationResult:
     overall_metrics: EvaluationMetrics
     category_metrics: Dict[BiasCategory, EvaluationMetrics]
     total_samples: int
+    gender_metrics: Optional[Dict[str, "EvaluationMetrics"]] = None  # keyed by "female"/"male"/"neutral"
 
 
 @dataclass

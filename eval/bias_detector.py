@@ -128,10 +128,21 @@ class BiasDetector:
                 )
 
             # Swahili gendered-suffix pattern: "[occupation] wa kiume/wa kike"
-            # Fires on any occupation — covers the 1,847-sentence recall gap
+            # Fires on any occupation — covers the 1,847-sentence recall gap.
+            # Context guard: suppress in quote, biographical, and statistical contexts
+            # (e.g. "Mama yake ni daktari wa kike", "alisema 'daktari wa kiume'", "70% ya daktari wa kiume").
             if language == Language.SWAHILI:
                 sw_suffix = self._pattern_config.detect_sw_gendered_suffix(text)
-                if sw_suffix:
+                _suffix_suppressed = False
+                if sw_suffix and self.context_checker:
+                    _suppress_contexts = "biographical|statistical"
+                    _ctx = self.context_checker.check_context(
+                        text=text,
+                        biased_term=sw_suffix['from'],
+                        avoid_when=_suppress_contexts,
+                    )
+                    _suffix_suppressed = not _ctx.should_correct
+                if sw_suffix and not _suffix_suppressed:
                     return BiasDetectionResult(
                         text=text,
                         has_bias_detected=True,

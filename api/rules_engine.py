@@ -54,12 +54,7 @@ def _apply_rule(text: str, rule: dict) -> tuple[str, dict | None]:
     replacement = _preserve_case(orig, neutral)
 
     if severity == "warn":
-        new_text = re.sub(
-            pattern,
-            lambda m: m.group(0) + f" [consider {replacement}]",
-            text,
-            flags=re.IGNORECASE,
-        )
+        new_text = text  # warn = informational only; never mutate the rewritten text
     else:
         new_text = re.sub(
             pattern,

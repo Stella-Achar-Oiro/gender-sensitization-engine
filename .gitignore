@@ -53,3 +53,5 @@ tests/
 ui/
 scripts/
 poetry.lock
+.env
+*.env

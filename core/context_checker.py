@@ -43,6 +43,12 @@ SW_HUMAN_OCCUPATION_NOUNS: frozenset = frozenset({
     'askari', 'polisi', 'afisa', 'ofisa', 'profesa', 'msomi',
 })
 
+# Title nouns: "Rais Magufuli" at sentence start is biographical; "kauli ya Rais John …"
+# embeds the title after an attributive particle — bias may be in the quote, not the name line.
+_SW_TITLE_AFTER_PARTICLE: frozenset = frozenset({
+    'rais', 'waziri', 'mbunge', 'spika', 'balozi', 'jaji', 'hakimu',
+})
+
 _SW_POSSESSIVE_RE = re.compile(
     r'\b(\w+)\s+(?:yake|wake|zake|lake|chake)\b', re.IGNORECASE
 )
@@ -59,6 +65,16 @@ def sw_possessive_has_human_referent(text: str) -> bool:
         if noun in SW_HUMAN_OCCUPATION_NOUNS:
             return True
     return False
+
+
+def _sw_title_noun_embedded_after_particle(text: str, term_start: int) -> bool:
+    """True when a title noun (e.g. rais) is immediately preceded by ya/wa/kwa/…."""
+    if term_start <= 0:
+        return False
+    before = text[:term_start].rstrip()
+    return bool(
+        re.search(r"\b(ya|wa|kwa|cha|la|pa|na|za)\s+$", before, re.IGNORECASE)
+    )
 
 
 def sw_possessive_is_inanimate(text: str, possessive: str) -> bool:
@@ -136,14 +152,16 @@ class ContextChecker:
             r'\b(Mheshimiwa|Dkt\.|Dr\.|Prof\.|Mr\.|Mrs\.|Ms\.)\s+.{{0,20}}{term}',
         ],
         ContextCondition.BIOGRAPHICAL: [
-            r'\b(yeye|huyu|yule)\s+(ni|alikuwa|amekuwa).{{0,30}}{term}',
+            r'\b(yeye|huyu|yule)\s+(ni|amekuwa).{{0,30}}{term}',
             r'{term}\s+wa\s+kwanza',
             r'\baliyekuwa\b.{{0,20}}{term}',
-            r'\balikuwa\b.{{0,20}}{term}',
             r'\b(she|he)\s+(is|was|became|served\s+as).{{0,30}}{term}',
             r'\bthe\s+first\s+(female|male|woman|man)\s+{term}',
             # Family possession — possessives on family/relational nouns are biographical
-            r'\b(bibi|babu|mama|baba|ndugu|kaka|dada|mtoto|mdogo|mkubwa|shangazi|mjomba|mke|mume)\s+{term}',
+            # Note: mke/mume excluded here — handled by their own lexicon avoid_when rules
+            r'\b(bibi|babu|mama|baba|ndugu|kaka|dada|mtoto|mdogo|mkubwa|shangazi|mjomba)\s+{term}',
+            # Family member + possessive + to-be verb + term (e.g. "Mama yake ni daktari wa kike")
+            r'\b(mama|baba|bibi|babu|shangazi|mjomba|ndugu|kaka|dada)\s+(yake|wake|wao|wangu|wenu)\s+(ni|amekuwa)\b.{{0,40}}{term}',
             r'{term}\s+(wa\s+miaka|mwenye\s+umri)',
         ],
         ContextCondition.STATISTICAL: [
@@ -164,26 +182,52 @@ class ContextChecker:
             r'\b(hospitali|clinic|daktari|nurse|doctor|hospital)\b.{{0,30}}{term}',
         ],
         ContextCondition.COUNTER_STEREOTYPE: [
-            r'\b(mwanamke|mama)\b.{0,30}\b(mhandisi|rubani|fundi|mkurugenzi|daktari)\b',
-            r'\b(mwanamume|baba)\b.{0,30}\b(muuguzi|mkunga|mlezi|mpishi)\b',
+            # Swahili role-reversal lines live in DetectorPatterns.COUNTER_STEREOTYPE_PATTERNS — they
+            # trigger stage-1 counter_stereotype before lexicon; duplicating them here caused
+            # document-wide matches to suppress mtoto/Watoto wa kike in unrelated sentences.
             r'\b(female|woman|she)\b.{0,30}\b(engineer|pilot|mechanic|CEO|surgeon)\b',
             r'\b(male|man|he)\b.{0,30}\b(nurse|secretary|nanny|caregiver)\b',
             r'\b(wa\s+kwanza|first)\b.{0,20}\b(wa\s+kike|wa\s+kiume|female|male)\b',
-            # Explicit counter-stereotype debunking framing
-            r'\bhaileti\s+maana\s+kufikiri\s+kuwa\b',
-            r'\bdhana\s+potofu\s+kuwa\b',
-            r'\bkufuta\s+(usemi|dhana|imani)\s+wa\b',
-            r'\bwanawake\s+na\s+wanaume\s+wote\s+ni\s+sawa\b',
-            # Advocacy / rights framing — narrow: only when canonical advocacy wording surrounds the term
-            r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{{0,40}}{term}',
-            r'{term}.{{0,40}}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
-            r'\b(uwezeshaji|kuhamasisha|ulinzi\s+wa|kampeni\s+ya)\b.{{0,40}}{term}',
-            r'{term}.{{0,40}}\b(uwezeshaji|kuhamasisha|ulinzi\s+wa)\b',
-            r'\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b.{{0,50}}{term}',
-            r'{term}.{{0,50}}\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b',
+            # Debunking framing — term-anchored only (globals caused FNs when the same article
+            # quoted biased policy and challenged bias in another clause).
+            r'{term}.{{0,55}}\b(haileti\s+maana\s+kufikiri\s+kuwa|siamini\s+(kuwa|kwamba)|si\s+kweli\s+(kuwa|kwamba)|si\s+sahihi\s+(kuwa|kwamba)|kupinga\s+dhana|tunapinga|hatukubaliani|hii\s+ni\s+dhuluma|ni\s+udhalimu|ni\s+ubaguzi|lazima\s+(tubadilishe|tuzuie|tuondoe)|dhana\s+potofu\s+kuwa|kufuta\s+(usemi|dhana|imani)\s+wa)\b',
+            r'\b(haileti\s+maana\s+kufikiri\s+kuwa|siamini\s+(kuwa|kwamba)|si\s+kweli\s+(kuwa|kwamba)|si\s+sahihi\s+(kuwa|kwamba)|kupinga\s+dhana|tunapinga|hatukubaliani|hii\s+ni\s+dhuluma|ni\s+udhalimu|ni\s+ubaguzi|lazima\s+(tubadilishe|tuzuie|tuondoe)|dhana\s+potofu\s+kuwa|kufuta\s+(usemi|dhana|imani)\s+wa)\b.{{0,55}}{term}',
+            r'{term}.{{0,40}}\bwanawake\s+na\s+wanaume\s+wote\s+ni\s+sawa\b',
+            r'\bwanawake\s+na\s+wanaume\s+wote\s+ni\s+sawa\b.{{0,40}}{term}',
+            # Advocacy / rights framing — tight proximity patterns only
+            # The keyword must be DIRECTLY adjacent to the gendered term (≤15 chars gap)
+            # to avoid suppressing legitimate bias reports that mention rights/education elsewhere.
+            # e.g. "haki za watoto wa kike" = advocacy (suppress)
+            # vs "utumikishwaji wa watoto wa kike ... elimu ya" = bias report (do NOT suppress)
+            r'\bhaki\s+za\s+(watoto|wasichana|wanawake)\s+wa\s+(kike|kiume)\b',
+            # NOTE: Do not add a bare "haki za watoto" pattern — it matches anywhere in the
+            # article and suppresses legitimate bias mentions of mtoto/Watoto wa kike elsewhere.
+            r'\belimu\s+ya\s+(watoto|wasichana)\s+wa\s+kike\b',
+            r'\belimu\s+ya\s+(watoto|wasichana)\b.{0,15}\bwa\s+kike\b',
+            r'\b(uwezeshaji|ulinzi\s+wa)\s+(watoto|wasichana|wanawake)\s+wa\s+(kike|kiume)\b',
+            r'\bkampeni\s+ya\s+(uwezeshaji|haki|ulinzi|elimu).{0,15}\b(wa\s+(kike|kiume)|wasichana)\b',
+            r'\b(usawa\s+wa\s+kijinsia|haki\s+sawa).{0,12}\bwa\s+(kike|kiume)\b',
+            r'\bwa\s+(kike|kiume).{0,12}\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b',
+            # Keep {term}-anchored forms — tight windows so advocacy in one clause does not
+            # suppress a gendered phrase in another.
+            r'\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b.{{0,14}}{term}',
+            r'{term}.{{0,14}}\b(haki\s+za\s+(wasichana|wanawake|watoto)|elimu\s+ya\s+(wasichana|watoto))\b',
+            r'\b(uwezeshaji|kuhamasisha|ulinzi\s+wa|kampeni\s+ya)\b.{{0,18}}{term}',
+            r'{term}.{{0,18}}\b(uwezeshaji|kuhamasisha|ulinzi\s+wa)\b',
+            r'\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b.{{0,20}}{term}',
+            r'{term}.{{0,20}}\b(usawa\s+wa\s+kijinsia|haki\s+sawa)\b',
             # Investment + girls framing (always advocacy)
-            r'\b(milioni|bilioni|fedha|bajeti|pesa).{{0,40}}(watoto\s+wa\s+kike|wasichana).{{0,40}}\b(shule|elimu)\b',
-            r'\b(shule|elimu).{{0,40}}(watoto\s+wa\s+kike|wasichana).{{0,40}}\b(milioni|bilioni|fedha|bajeti)\b',
+            r'\b(milioni|bilioni|fedha|bajeti|pesa).{{0,28}}(watoto\s+wa\s+kike|wasichana).{{0,28}}\b(shule|elimu)\b',
+            r'\b(shule|elimu).{{0,28}}(watoto\s+wa\s+kike|wasichana).{{0,28}}\b(milioni|bilioni|fedha|bajeti)\b',
+            # Achievement / celebration framing — counter-stereotype (suppress)
+            # "wasanii wa kike wanaofanya vizuri", "wachezaji wa kike walishinda", etc.
+            r'{term}.{{0,22}}\b(wanaofanya\s+vizuri|wanafanya\s+vizuri|walishinda|wanapambana|wanajitahidi|wanatoa\s+huduma)\b',
+            r'\b(wanaofanya\s+vizuri|wanafanya\s+vizuri|walishinda|wanapambana|wanajitahidi)\b.{{0,22}}{term}',
+            r'{term}.{{0,22}}\b(wamefanikiwa|wameshinda|wamepata\s+mafanikio|wanaendelea\s+kufanya\s+kazi\s+nzuri)\b',
+            r'\b(maadhimisho|sherehe|tuzo|zawadi|ushindi|mafanikio).{{0,22}}{term}',
+            r'{term}.{{0,22}}\b(maadhimisho|sherehe|tuzo|zawadi|ushindi|mafanikio)\b',
+            # News celebrating/profiling female/male in a role (listi ya, orodha ya = list of)
+            r'\b(listi|orodha)\s+ya\s+{term}',
         ],
         ContextCondition.LEGAL: [
             r'\b(sheria|mahakama|kesi|mshtakiwa|mlalamikaji)\b.{{0,30}}{term}',
@@ -326,30 +370,19 @@ class ContextChecker:
                             matched_pattern=cp.pattern
                         )
         if condition == ContextCondition.BIOGRAPHICAL:
-            # [Name Name] before term — two titlecase words preceding the term
-            # Search lowercased text with lowercased term to handle case variants,
-            # but keep the name-detection part case-sensitive via the original text.
-            name_suffix = re.escape(term.lower())
-            for search_text in (text, text.lower()):
-                name_pattern = re.compile(
-                    r'[A-Z][a-z]+\s+[A-Z][a-z]+.{0,30}' + name_suffix,
-                    re.UNICODE
-                )
-                if name_pattern.search(search_text):
-                    return ContextCheckResult(
-                        should_correct=False,
-                        blocked_by=condition,
-                        reason=f"Detected {condition.value} context (name reference)",
-                        confidence=0.85,
-                        matched_pattern="[Name] + term"
-                    )
-            # term followed by a titlecase name — try both term case variants
+            # term followed directly by a personal name — e.g. "Rais Magufuli" (title + name)
+            # Gap must be ≤5 chars (whitespace only) to avoid firing on "Rais alikuwa..."
             for t in (term, term.lower(), term.capitalize()):
                 term_name_pattern = re.compile(
-                    re.escape(t) + r'\s+(wa\s+)?[A-Z][a-z]+(\s+[A-Z][a-z]+)?',
+                    re.escape(t) + r'\s{1,5}[A-Z][a-z]{2,}(\s+[A-Z][a-z]{2,})?',
                     re.UNICODE
                 )
-                if term_name_pattern.search(text):
+                match = term_name_pattern.search(text)
+                if match:
+                    if term.lower() in _SW_TITLE_AFTER_PARTICLE and _sw_title_noun_embedded_after_particle(
+                        text, match.start()
+                    ):
+                        continue
                     return ContextCheckResult(
                         should_correct=False,
                         blocked_by=condition,
@@ -357,6 +390,23 @@ class ContextChecker:
                         confidence=0.85,
                         matched_pattern="term + [Name]"
                     )
+            # Two proper names (mixed-case only) in close proximity to the term (≤15 chars)
+            # e.g. "Ken Kesey s'est inspiré de l'infirmière" — author referenced the role
+            # Case-sensitive: ALL-CAPS bylines (e.g. "PENDO FUNDISHA") are excluded.
+            # Tight gap prevents firing on general news articles with names far from the term.
+            name_suffix = re.escape(term.lower())
+            name_pattern = re.compile(
+                r'[A-Z][a-z]{2,}\s+[A-Z][a-z]{2,}.{0,25}' + name_suffix,
+                re.UNICODE  # No IGNORECASE — must be proper mixed-case name
+            )
+            if name_pattern.search(text):
+                return ContextCheckResult(
+                    should_correct=False,
+                    blocked_by=condition,
+                    reason=f"Detected {condition.value} context (name reference)",
+                    confidence=0.85,
+                    matched_pattern="[Name Name] + term (tight)"
+                )
         return ContextCheckResult(
             should_correct=True,
             reason=f"No {condition.value} context detected",

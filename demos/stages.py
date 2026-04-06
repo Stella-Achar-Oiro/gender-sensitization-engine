@@ -1,4 +1,5 @@
 """Pipeline stages for end-to-end demo."""
+import random
 from typing import List, Tuple
 from dataclasses import dataclass, field
 from eval.models import Language, BiasDetectionResult, GroundTruthSample
@@ -39,8 +40,16 @@ class DataCollectionStage:
             loader = GroundTruthLoader()
             samples = loader.load_ground_truth(language)
 
-            # Limit to requested count
-            samples = samples[:count]
+            # Stratified sample so demos include biased rows (first N rows are often all neutral).
+            random.seed(42)
+            biased = [s for s in samples if s.has_bias]
+            non_biased = [s for s in samples if not s.has_bias]
+            n_biased = max(1, count // 5)
+            n_non = count - n_biased
+            sample_biased = random.sample(biased, min(n_biased, len(biased)))
+            sample_non = random.sample(non_biased, min(n_non, len(non_biased)))
+            samples = sample_biased + sample_non
+            random.shuffle(samples)
 
             return (
                 StageResult(
