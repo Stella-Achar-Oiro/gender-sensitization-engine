@@ -55,6 +55,21 @@ except Exception:
 def _m(code: str, field: str, fallback):
     return _LIVE_METRICS.get(code, {}).get(field, fallback)
 
+# Pull ML model metrics from model_registry.json for the active model version
+_ML_REGISTRY_METRICS: dict = {}
+try:
+    _reg = json.loads((Path(__file__).parent / "eval" / "results" / "model_registry.json").read_text())
+    # Find the registry entry whose tag matches the active model short name
+    for _v in reversed(_reg.get("versions", [])):
+        if _ML_MODEL_SHORT in _v.get("tag", "") or _v.get("tag", "") in _ML_MODEL_SHORT:
+            _ML_REGISTRY_METRICS = _v.get("metrics", {}).get("sw", {})
+            break
+except Exception:
+    pass
+
+def _ml_m(field: str, fallback):
+    return _ML_REGISTRY_METRICS.get(field, fallback)
+
 # Per-model metrics: model_key -> lang_code -> metrics dict
 MODEL_METRICS = {
     "rules": {
@@ -69,7 +84,11 @@ MODEL_METRICS = {
         "label": f"{_ML_MODEL_SHORT} (ML)",
         "description": f"AfroXLM-R fine-tuned on 66K Swahili rows ({_ML_MODEL_SHORT}). Swahili only — not trained on EN/FR/KI.",
         "en": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
-        "sw": dict(f1=0.953, precision=0.940, recall=0.960, tier="Gold (sample count)", samples=64_723),
+        "sw": dict(
+            f1=_ml_m("f1", 0.953), precision=_ml_m("precision", 0.940),
+            recall=_ml_m("recall", 0.960), tier="Gold (sample count)",
+            samples=_ml_m("samples", 66_995),
+        ),
         "fr": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
         "ki": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
     },
