@@ -55,20 +55,16 @@ except Exception:
 def _m(code: str, field: str, fallback):
     return _LIVE_METRICS.get(code, {}).get(field, fallback)
 
-# Pull ML model metrics from model_registry.json for the active model version
-_ML_REGISTRY_METRICS: dict = {}
-try:
-    _reg = json.loads((Path(__file__).parent / "eval" / "results" / "model_registry.json").read_text())
-    # Find the registry entry whose tag matches the active model short name
-    for _v in reversed(_reg.get("versions", [])):
-        if _ML_MODEL_SHORT in _v.get("tag", "") or _v.get("tag", "") in _ML_MODEL_SHORT:
-            _ML_REGISTRY_METRICS = _v.get("metrics", {}).get("sw", {})
-            break
-except Exception:
-    pass
+# Known ML model metrics keyed by short model name.
+# Add a new entry here whenever a new model version is pushed to HF.
+_ML_KNOWN_METRICS = {
+    "sw-bias-classifier-v1": {"f1": 0.854, "precision": 0.938, "recall": 0.784, "samples": 66_995},
+    "sw-bias-classifier-v2": {"f1": 0.953, "precision": 0.940, "recall": 0.960, "samples": 66_995},
+    "sw-bias-classifier-v3": {"f1": 0.871, "precision": 0.810, "recall": 0.942, "samples": 66_995},
+}
 
 def _ml_m(field: str, fallback):
-    return _ML_REGISTRY_METRICS.get(field, fallback)
+    return _ML_KNOWN_METRICS.get(_ML_MODEL_SHORT, {}).get(field, fallback)
 
 # Per-model metrics: model_key -> lang_code -> metrics dict
 MODEL_METRICS = {
