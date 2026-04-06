@@ -171,7 +171,7 @@ class ContextChecker:
             r'\b(takwimu|idadi|asilimia|wastani)\b.{{0,30}}{term}',
             r'\b(statistics|data|survey|study|research|percent|majority|minority)\b.{{0,30}}{term}',
             r'\b\d+\s+(kati\s+ya|out\s+of|of\s+the)\s+\d+\b.{{0,30}}{term}',
-            # Bare count adjacent to term: "polisi wanawake 150" or "150 polisi wanawake"
+            # Bare count: "polisi wanawake 150" or "150 polisi wanawake"
             r'{term}\s+\d{{2,}}',
             r'\b\d{{2,}}\s+{term}',
         ],

@@ -4,8 +4,12 @@ Deploy to HuggingFace Spaces (Gradio SDK).
 """
 
 import json
+import os
 import sys
 from pathlib import Path
+
+_ML_MODEL_ID = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/sw-bias-classifier-v2")
+_ML_MODEL_SHORT = _ML_MODEL_ID.split("/")[-1]  # e.g. "sw-bias-classifier-v3"
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -58,8 +62,8 @@ MODEL_METRICS = {
         "ki": dict(f1=_m("ki","f1",0.368), precision=_m("ki","precision",0.916), recall=_m("ki","recall",0.231), tier="Bronze (sample count)", samples=_m("ki","samples",11_848)),
     },
     "ml_classifier": {
-        "label": "sw-bias-classifier-v2 (ML)",
-        "description": "AfroXLM-R fine-tuned on 64K Swahili rows (v2, Val F1=0.953). Swahili only — not trained on EN/FR/KI.",
+        "label": f"{_ML_MODEL_SHORT} (ML)",
+        "description": f"AfroXLM-R fine-tuned on 66K Swahili rows ({_ML_MODEL_SHORT}). Swahili only — not trained on EN/FR/KI.",
         "en": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
         "sw": dict(f1=0.953, precision=0.940, recall=0.960, tier="Gold (sample count)", samples=64_723),
         "fr": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
@@ -212,7 +216,7 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     if has_bias:
         verdict = f"🔴 **Gender bias detected** — {len(result.detected_edits)} rule(s) matched{llm_verdict_note}{model_badge}"
     elif ml_edits:
-        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by sw-bias-classifier-v2{model_badge}"
+        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by {_ML_MODEL_SHORT}{model_badge}"
     elif has_warn:
         verdict = f"🟡 **Advisory** — {len(rules_warn)} gendered term(s) noted (no correction applied){llm_verdict_note}{model_badge}"
     else:
