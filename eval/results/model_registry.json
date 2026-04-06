@@ -111,6 +111,20 @@
         "fr": {"f1": null, "precision": null, "recall": null},
         "ki": {"f1": null, "precision": null, "recall": null}
       }
+    },
+    {
+      "tag": "sw-classifier-v3",
+      "timestamp": "2026-03-18T21:16:00",
+      "git_commit": null,
+      "notes": "ML model v3: Full retraining after v2 precision issue (333 FPs at threshold 0.5). Evaluated on same 9,709-sample test set. BIAS P: 0.330→0.810, Recall: 0.976→0.942, F1: 0.493→0.871. FPs: 333→38. HuggingFace: juakazike/sw-bias-classifier-v3",
+      "lexicon_sizes": {"en": 515, "sw": 187, "fr": 69, "ki": 1209},
+      "ground_truth_sizes": {"en": 66, "sw": 66995, "fr": 165, "ki": 11622},
+      "metrics": {
+        "en": {"f1": null, "precision": null, "recall": null},
+        "sw": {"f1": 0.871, "precision": 0.810, "recall": 0.942, "samples": 9709},
+        "fr": {"f1": null, "precision": null, "recall": null},
+        "ki": {"f1": null, "precision": null, "recall": null}
+      }
     }
   ]
 }
