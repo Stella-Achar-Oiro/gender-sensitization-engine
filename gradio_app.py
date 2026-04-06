@@ -398,7 +398,7 @@ def sidebar_metrics(lang_name: str, model_label: str | None = None) -> str:
     )
 
 
-_theme = gr.themes.Soft(primary_hue=gr.themes.colors.indigo)
+_theme = gr.themes.Soft(primary_hue="indigo")
 
 with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme) as demo:
 
