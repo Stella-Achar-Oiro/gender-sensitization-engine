@@ -17,6 +17,8 @@ RULES: dict[str, list[dict]] = {
 
 
 def _preserve_case(orig: str, replacement: str) -> str:
+    if not orig:
+        return replacement
     if orig.isupper():
         return replacement.upper()
     if orig[0].isupper():
