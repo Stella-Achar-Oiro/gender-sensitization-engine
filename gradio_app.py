@@ -8,10 +8,14 @@ import os
 import sys
 from pathlib import Path
 
+# Ensure repo root is on sys.path so 'core', 'api', 'eval' resolve on HF Space.
+_app_dir = Path(__file__).resolve().parent
+if str(_app_dir) not in sys.path:
+    sys.path.insert(0, str(_app_dir))
+os.chdir(str(_app_dir))  # ensure cwd = /app so relative file lookups work
+
 _ML_MODEL_ID = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/sw-bias-classifier-v2")
 _ML_MODEL_SHORT = _ML_MODEL_ID.split("/")[-1]  # e.g. "sw-bias-classifier-v3"
-
-sys.path.insert(0, str(Path(__file__).parent))
 
 import gradio as gr
 from fastapi import FastAPI
