@@ -1,0 +1,2 @@
+kind,text,has_bias_gt,has_bias_pred,matched_from,bias_category
+FN,She is a great nurse,True,False,,pronoun_assumption

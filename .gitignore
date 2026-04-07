@@ -33,6 +33,25 @@ models/
 *.xlsx
 *.xls
 
+# Lock files
+.~lock.*#
+
+# Scratch/temp files
+metrics.txt
+predictions.csv
+train_sw_bias_v4.ipynb
+
+# Word docs / methodology briefs
+*.docx
+
+# Duplicate model/dataset cards (maintained in docs/)
+HF_MODEL_CARD.md
+dataset_card.md
+
+# Older training notebooks
+train_multilingual_bias_v1.ipynb
+train_sw_bias_v3.ipynb
+
 # Claude AI instructions — not source code
 CLAUDE.md
 
