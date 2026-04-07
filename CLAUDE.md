@@ -119,8 +119,8 @@ Use `config.lexicon_filename(lang)` and `config.ground_truth_filename(lang)` to 
 |---|---|---|---|---|
 | English | 1.000 | 1.000 | 1.000 | 66 |
 | French | 0.970 | 1.000 | 0.941 | 165 |
-| Swahili | 0.837 | 0.818 | 0.857 | 66,995 |
-| Kikuyu | 0.422 | 0.782 | 0.289 | 11,622 |
+| Swahili | 0.840 | 0.807 | 0.876 | 66,995 |
+| Kikuyu | 0.667 | 0.967 | 0.510 | 11,622 |
 
 SW precision drop (0.958 → 0.748) is intentional: reflects honest ground truth from ann_sw_v3. Main FP drivers: `Watoto wa Kike` (182 FPs), `mtoto wa kike` (138 FPs) — genuinely ambiguous phrases accepted as a known precision hit. SW samples increased from 64,723 to 66,995 (+2,479 non-media rows from health/governance/agriculture/education domains, then deduplication: 67,202 → 66,995). KI deduplication: 11,848 → 11,622 rows (285 duplicate texts removed). KI F1 improved 0.368 → 0.401 from 4 new replace-severity lexicon entries. FR improved 0.793 → 0.822 (+8.3pp Recall) from 115 new Wikipedia FR rows. EN eval set unchanged (66 rows, rules-based layer); +2,828 WinoBias/WinoGender/CrowS-Pairs rows added as ML training data in `data/annotation_export/en_ml_training_v1.csv` (coreference-bias gap targeted for ML retraining).
 
@@ -130,5 +130,5 @@ SW precision drop (0.958 → 0.748) is intentional: reflects honest ground truth
 
 - Sprint 0–1: ✅ merged to main
 - Sprint 2: ✅ UNBLOCKED — Cohen's Kappa computed via second annotator (ann_sw_kappa_v2). κ = 0.8537 (Almost Perfect), above AIBRIDGE Bronze threshold (≥ 0.61). File: `data/annotation_export/batch_for_annotator_B_kappa_overlap_ANNOTATED_v2.csv`.
-- Sprint 3: 🟡 IN PROGRESS — Rule-based layer optimised: EN F1=1.000, FR F1=0.970 (P=1.000), SW F1=0.837, KI F1=0.422 (↑ from 0.403). AI lexicon expansion: +48 SW entries, +42 KI entries via Claude Haiku. KI FNs driven by mũthĩnjĩri-Ngai (Bible text) — requires GT annotation review + ML retraining for full fix. Gemini free tier quota exhausted; Claude used as fallback.
-- Sprint 4: 🟡 not started (web app can run in parallel)
+- Sprint 3: COMPLETE — Rule-based layer optimised: EN F1=1.000, FR F1=0.970 (P=1.000), SW F1=0.840, KI F1=0.667 (up from 0.422). AI lexicon expansion: +48 SW entries, +42 KI entries via Claude Haiku. ML retraining (v4) attempted and dropped — v3 (F1=0.871 on external benchmark) remains the deployed model.
+- Sprint 4: COMPLETE — Gradio demo live at https://huggingface.co/spaces/juakazike/gender-sensitization-engine

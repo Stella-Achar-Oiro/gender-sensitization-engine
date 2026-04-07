@@ -16,14 +16,28 @@ A multilingual gender bias detection and correction system for African language 
 
 Detects and rewrites gender-biased language in **Swahili, English, French, and Gikuyu**. Supports single-sentence and batch API input.
 
-## Current metrics (Mar 2026)
+## Current metrics (Apr 2026)
 
 | Language | F1 | Precision | Recall | Samples |
 |---|---|---|---|---|
-| English | 0.885 | 1.000 | 0.794 | 66 |
-| Swahili | 0.816 | 0.733 | 0.920 | 64,723 |
-| French | 0.793 | 1.000 | 0.657 | 50 |
-| Gikuyu | 0.352 | 0.926 | 0.217 | 11,848 |
+| English | 1.000 | 1.000 | 1.000 | 66 |
+| Swahili | 0.840 | 0.807 | 0.876 | 66,995 |
+| French | 0.970 | 1.000 | 0.941 | 165 |
+| Gikuyu | 0.667 | 0.967 | 0.510 | 11,622 |
+
+## Live demo
+
+[https://huggingface.co/spaces/juakazike/gender-sensitization-engine](https://huggingface.co/spaces/juakazike/gender-sensitization-engine)
+
+## ML models
+
+| Model | Base | Val F1 | Val Precision | Val Recall | Notes |
+|---|---|---|---|---|---|
+| [sw-bias-classifier-v1](https://huggingface.co/juakazike/sw-bias-classifier-v1) | afro-xlmr-base | 0.854 | 0.938 | 0.784 | Full fine-tune, 51K rows |
+| [sw-bias-classifier-v2](https://huggingface.co/juakazike/sw-bias-classifier-v2) | afro-xlmr-base | 0.953 | 0.940 | 0.960 | Overfit on val — invalid |
+| [sw-bias-classifier-v3](https://huggingface.co/juakazike/sw-bias-classifier-v3) | afro-xlmr-base | 0.871 | 0.810 | 0.942 | Current deployed model |
+
+SW ML classifier is Stage 2 fallback only — runs when rules find nothing.
 
 ## Architecture
 
@@ -45,10 +59,10 @@ Batch endpoint: `POST /batch_rewrite` (up to 50 sentences)
 
 ## Dataset
 
-- SW ground truth: 64,723 rows — Gold tier (sample count)
-- KI ground truth: 11,848 rows — Bronze tier (sample count)
+- SW ground truth: 66,995 rows — Gold tier (sample count)
+- KI ground truth: 11,622 rows — Bronze tier (sample count)
 - All real text, no synthetic data. Sources: Helsinki Corpus, BBC Swahili, Wikipedia SW, AfriSenti, MasakhaNER
-- Inter-annotator agreement (Cohen's κ): in progress
+- Inter-annotator agreement (Cohen's κ): 0.8537 (Almost Perfect — AIBRIDGE Bronze threshold ≥ 0.61)
 
 ## Run locally
 
@@ -61,4 +75,4 @@ python3 -m eval.evaluator                    # Run evaluation
 
 ## AI BRIDGE submission
 
-Team: JuaKazi | Submission: Mar 2026 | Schema: AIBRIDGE v1 (24-column CSVW)
+Team: JuaKazi | Updated: Apr 2026 | Schema: AIBRIDGE v1 (24-column CSVW)
