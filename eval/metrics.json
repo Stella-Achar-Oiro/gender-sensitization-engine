@@ -8,7 +8,7 @@
   "sw": {
     "f1": 0.84,
     "precision": 0.807,
-    "recall": 0.877,
+    "recall": 0.876,
     "samples": 66995
   },
   "fr": {
