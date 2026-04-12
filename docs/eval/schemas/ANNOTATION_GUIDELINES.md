@@ -203,10 +203,84 @@ Flag samples if:
 **Definition**: Gender encoded in word structure (less common in English, rare in Swahili).
 
 **English Examples**:
-- ✅ `actor/actress` → `actor` (neutral)
-- ✅ `waiter/waitress` → `server`
+- `actor/actress` → `actor` (neutral)
+- `waiter/waitress` → `server`
 
 **Swahili**: Not applicable (Swahili lacks gendered morphology).
+
+### 6. Capability Stereotype
+
+**Definition**: Attributing inferior intellectual, physical, or professional capability to a gender group. One of the most common gap categories in East African Swahili data — often missed by occupation-focused rules.
+
+**Signal terms (Swahili)**: `wajinga`, `mjinga`, `dhaifu`, `hana akili`, `hawana akili`, `hawawezi`, `wanyonge`, `mnyonge`, `hana uwezo`, `hawana uwezo`
+
+**Signal terms (Sheng)**: `hawana kichwa`, `ni zero`, `hawezi fanya kitu`, `si smart`
+
+**Swahili Examples**:
+- `Wasichana ni wajinga kuliko wavulana` → `Wasichana na wavulana wana uwezo sawa`
+- `Wanawake hawana akili za biashara` → `Watu wote wanaweza kufanya biashara`
+- `Wasichana ni wanyonge hivyo hawafai kuongoza` → `Watu wote wana uwezo wa kuongoza`
+- NOT bias: `Timu yetu ni dhaifu` (no gender target)
+
+**Key rule**: Capability derogation is only bias when it targets a gender group. Check for a gender marker (`wasichana`, `wanawake`, `wanaume`, `wavulana`) within 120 characters of the capability term.
+
+**stereotype_category**: `capability` | **bias_label**: `derogation` | **severity**: `replace`
+
+### 7. Leadership Exclusion
+
+**Definition**: Explicit or implicit claim that a gender group is unfit to lead, govern, or make decisions.
+
+**Signal phrases (Swahili)**: `hawafai kuongoza`, `hawafai kusimamia`, `hawastahili kuongoza`, `hawawezi kusimamia`, `hawafai kupiga kura`, `hawafai kufanya maamuzi`
+
+**Signal phrases (Sheng)**: `hawezi lead`, `si yeye wa ku-decide`, `wanawake hawezi run hii kitu`
+
+**Swahili Examples**:
+- `Wanawake hawafai kusimamia serikali` → `Watu wote wanaweza kusimamia serikali`
+- `Msichana hawezi kuwa kiongozi wa kweli` → `Mtu yeyote anaweza kuwa kiongozi`
+- NOT bias: `Timu yetu hawafai kushiriki` (no gender target)
+
+**stereotype_category**: `leadership` | **bias_label**: `derogation` | **severity**: `replace`
+
+### 8. Appearance Derogation
+
+**Definition**: Reducing a person's value or role to their physical appearance, targeting one gender.
+
+**Signal phrases (Swahili)**: `sura yake ndiyo utajiri wake`, `anathaminiwa kwa sura`, `mwanamke mzuri tu`, `uzuri wake ndiyo nguvu yake`
+
+**Signal phrases (Sheng)**: `ako na uso tu`, `si kitu zaidi ya sura`, `dame mzuri tu`
+
+**Swahili Examples**:
+- `Sura yake ndiyo utajiri wake kama mwanamke` → `Talanta yake ndiyo utajiri wake`
+- `Mwanamke huyu anathaminiwa kwa sura yake tu` → `Mtu huyu anathaminiwa kwa kazi yake`
+- NOT bias: `Sura ya mji wetu ni nzuri` (no gender reference)
+
+**stereotype_category**: `appearance` | **bias_label**: `derogation` | **severity**: `replace`
+
+---
+
+## Approved Data Sources
+
+All rows added to the ground truth must have a verifiable `source_ref`. Use only sources from this list unless approved by the project lead.
+
+| Source | source_type | source_ref | Language | Notes |
+|---|---|---|---|---|
+| Helsinki Tanzanian Corpus | media | https://zenodo.org/record/4300294 | sw (tanzania) | News, formal |
+| Swahili News (HuggingFace) | media | https://huggingface.co/datasets/swahili_news | sw (kenya) | BBC Swahili |
+| AfriSenti Twitter SW | community | https://huggingface.co/datasets/HausaNLP/AfriSenti-Twitter | sw (kenya) | Social media, informal |
+| MasakhaNER | web_public | https://huggingface.co/datasets/masakhane/masakhaner | sw | NER corpus |
+| MasakhaNEWS | media | https://huggingface.co/datasets/masakhane/masakhanews | sw | News |
+| Wikipedia Swahili | web_public | https://sw.wikipedia.org | sw | Encyclopedic |
+| CC-100 Swahili | web_public | https://huggingface.co/datasets/statmt/cc100 | sw | Web crawl, blogs, forums |
+| CiviVox Swahili | web_public | https://huggingface.co/datasets/Adeptschneider/CiviVox-Swahili-text-corpus-v2.0 | sw | Civic/governance |
+| JamiiForums | community | https://www.jamiiforums.com | sw + sheng | Forums, informal, Sheng-rich |
+| NairobiTalk / Sheng sources | community | https://nairobinow.wordpress.com | sheng | Sheng terms and usage |
+
+**Sheng-specific rules**:
+- Tag `region_dialect=kenya` on all Sheng rows
+- Add `annotator_notes=Sheng` so reviewers know to assign a Sheng-competent annotator
+- Sheng rows require a native Kenyan Swahili speaker — do not auto-annotate
+- Source must be a real URL — JamiiForums thread URLs are acceptable if the specific thread is recorded
+- Never leave `source_ref` blank
 
 ---
 
