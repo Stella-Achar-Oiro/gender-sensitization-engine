@@ -71,10 +71,10 @@ MODEL_METRICS = {
     "rules": {
         "label": "Rules-based (lexicon)",
         "description": "Deterministic lexicon rules across all 4 languages. High precision, no GPU needed.",
-        "en": dict(f1=_m("en","f1",0.885), precision=_m("en","precision",1.000), recall=_m("en","recall",0.794), tier="Pre-Bronze", samples=_m("en","samples",66)),
-        "sw": dict(f1=_m("sw","f1",0.821), precision=_m("sw","precision",0.741), recall=_m("sw","recall",0.919), tier="Gold (sample count)", samples=_m("sw","samples",64_723)),
-        "fr": dict(f1=_m("fr","f1",0.793), precision=_m("fr","precision",1.000), recall=_m("fr","recall",0.657), tier="Pre-Bronze", samples=_m("fr","samples",50)),
-        "ki": dict(f1=_m("ki","f1",0.368), precision=_m("ki","precision",0.916), recall=_m("ki","recall",0.231), tier="Bronze (sample count)", samples=_m("ki","samples",11_848)),
+        "en": dict(f1=_m("en","f1",1.000), precision=_m("en","precision",1.000), recall=_m("en","recall",1.000), tier="Pre-Bronze", samples=_m("en","samples",66)),
+        "sw": dict(f1=_m("sw","f1",0.840), precision=_m("sw","precision",0.807), recall=_m("sw","recall",0.876), tier="Gold (sample count)", samples=_m("sw","samples",66_995)),
+        "fr": dict(f1=_m("fr","f1",0.970), precision=_m("fr","precision",1.000), recall=_m("fr","recall",0.941), tier="Pre-Bronze", samples=_m("fr","samples",165)),
+        "ki": dict(f1=_m("ki","f1",0.667), precision=_m("ki","precision",0.967), recall=_m("ki","recall",0.510), tier="Bronze (sample count)", samples=_m("ki","samples",11_622)),
     },
     "ml_classifier": {
         "label": f"{_ML_MODEL_SHORT} (ML)",
