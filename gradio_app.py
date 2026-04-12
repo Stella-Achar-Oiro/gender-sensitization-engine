@@ -283,7 +283,7 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
             correction_md += f"\n\n*Reason: {reason}*"
     else:
         correction_md = "No correction needed."
-        if reason and (skipped or not has_bias):
+        if reason and skipped:
             correction_md += f"\n\n*Reason: {reason}*"
 
     # Metrics footer (N/A when ML model and non-SW language)
