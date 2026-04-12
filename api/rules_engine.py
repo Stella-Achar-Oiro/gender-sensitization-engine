@@ -143,8 +143,10 @@ def build_reason(source: str, edits: list, skipped: list) -> str:
     if source == "ml":
         return "No lexicon rules matched; ML fallback applied. Human review required."
     if edits:
-        terms = ", ".join(f"'{e['from']}'" for e in edits)
-        return f"{len(edits)} biased term(s) corrected: {terms}."
+        named = [e for e in edits if e.get('from', '').strip()]
+        terms = ", ".join(f"'{e['from']}'" for e in named)
+        count = len(named) if named else len(edits)
+        return f"{count} biased term(s) corrected: {terms}." if terms else f"{count} biased term(s) corrected."
     if skipped:
         terms = ", ".join(f"'{s['term']}'" for s in skipped)
         return f"Bias terms detected ({terms}) but skipped — biographical, quote, or statistical context."
