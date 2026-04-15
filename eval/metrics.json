@@ -6,10 +6,10 @@
     "samples": 66
   },
   "sw": {
-    "f1": 0.84,
-    "precision": 0.807,
-    "recall": 0.876,
-    "samples": 66995
+    "f1": 0.851,
+    "precision": 0.822,
+    "recall": 0.881,
+    "samples": 67290
   },
   "fr": {
     "f1": 0.97,

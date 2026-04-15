@@ -166,29 +166,166 @@ def test_api_validation():
 
 
 def test_detector():
-    """Test BiasDetector directly — the core rules engine."""
+    """
+    Test BiasDetector directly — rules engine, all languages, all major pattern categories.
+
+    Each case: (text, language, expect_bias_detected, label)
+    Covers: EN/SW/FR bias detection, counter-stereotype preservation,
+    neutral pass-through, all SW pattern categories added in Sprint 3.
+    Failure here means a regression in the core detection layer.
+    """
     try:
         from eval.bias_detector import BiasDetector
         from eval.models import Language
+        from pathlib import Path
 
-        detector = BiasDetector()
+        detector = BiasDetector(rules_dir=Path("rules"))
+        failures = []
 
         cases = [
-            ("The chairman will lead the meeting.", Language.ENGLISH, True),
-            ("The engineer arrived on time.", Language.ENGLISH, False),
+            # ── English ─────────────────────────────────────────────────────────
+            ("The chairman will lead the meeting.", Language.ENGLISH, True,
+             "EN: gendered occupation term 'chairman'"),
+            ("The engineer arrived on time.", Language.ENGLISH, False,
+             "EN: neutral occupation, no bias"),
+            ("Women can't drive.", Language.ENGLISH, True,
+             "EN: capability derogation"),
+            ("The nurse did an excellent job.", Language.ENGLISH, False,
+             "EN: neutral sentence"),
+
+            # ── Swahili — occupation suffix (wa kiume / wa kike) ────────────────
+            ("Daktari wa kiume alifika hospitalini.", Language.SWAHILI, True,
+             "SW: gendered profession suffix 'wa kiume'"),
+            ("Mhandisi wa kike alishinda tuzo.", Language.SWAHILI, True,
+             "SW: gendered profession suffix 'wa kike'"),
+
+            # ── Swahili — capability derogation ─────────────────────────────────
+            ("Wanawake hawawezi kuongoza kwa sababu wana hisia nyingi.",
+             Language.SWAHILI, True,
+             "SW: capability — women can't lead"),
+            ("Mwanamke hawezi kuwa rubani mzuri kwa sababu anaogopa hali ya hewa.",
+             Language.SWAHILI, True,
+             "SW: capability — woman can't be pilot (counter-stereotype fix)"),
+            ("Mwanamke ni dhaifu, hawezi kufanya kazi ngumu.",
+             Language.SWAHILI, True,
+             "SW: capability — dhaifu assertion"),
+            ("Msichana anadhani hawezi kubalika, anamkimbilia.",
+             Language.SWAHILI, True,
+             "SW: capability — self-doubt pattern"),
+
+            # ── Swahili — appearance ─────────────────────────────────────────────
+            ("Katika jamii ya kitanzania, binti wa kike kukaa utupu hadharani ni matusi kwake.",
+             Language.SWAHILI, True,
+             "SW: appearance — body shame"),
+            ("Wasanii wa kike nchini kutumia makalio feki ili kuonekana warembo.",
+             Language.SWAHILI, True,
+             "SW: appearance — fake body parts stereotype"),
+            ("Mavazi ya nusu utupu ambayo huwa yanavaliwa na baadhi ya wasanii wa kike.",
+             Language.SWAHILI, True,
+             "SW: appearance — appearance policing"),
+
+            # ── Swahili — family role / domestic ────────────────────────────────
+            ("Mwanamke hapaswi kubishana na mume wake kamwe.",
+             Language.SWAHILI, True,
+             "SW: family_role — wife must not argue"),
+            ("Wanawake ni mama wa nyumbani, wana shughuli nyingi za kufua na kupika.",
+             Language.SWAHILI, True,
+             "SW: family_role — women as homemakers"),
+            ("Mwanamke umekuja tu kuolewa, huna haki ya kurithi.",
+             Language.SWAHILI, True,
+             "SW: family_role — inheritance denial"),
+            ("Usimwamini mke anayependa kununua chakula cha tayari badala ya kupika.",
+             Language.SWAHILI, True,
+             "SW: family_role — cooking duty stereotype"),
+            ("Tuliomba mtoto wetu angekuwa wa kiume, tukimtabiria makubwa.",
+             Language.SWAHILI, True,
+             "SW: family_role — son preference"),
+
+            # ── Swahili — violence / IPV normalisation ───────────────────────────
+            ("Mke mkaidi anahitaji kupigwa kidogo ili arudi kwenye mstari.",
+             Language.SWAHILI, True,
+             "SW: violence — IPV normalisation"),
+            ("Kibao kimoja si ukatili, ni njia ya kumrudisha mwanamke kwenye adabu.",
+             Language.SWAHILI, True,
+             "SW: violence — beating framed as discipline"),
+
+            # ── Swahili — daily life / school / grooming ─────────────────────────
+            ("Wanafunzi watakaopata ujauzito wakiwa shuleni hawataruhusiwa tena kurudi.",
+             Language.SWAHILI, True,
+             "SW: daily_life — pregnancy expulsion policy"),
+            ("Shule ilianzisha mpango wa kuwapima bikira wanafunzi wa kike.",
+             Language.SWAHILI, True,
+             "SW: daily_life — virginity testing"),
+            ("Ni rahisi kuwarubuni wanafunzi wa kike kwa zawadi ndogo.",
+             Language.SWAHILI, True,
+             "SW: daily_life — grooming female students"),
+            ("Wanaume ndio tunaoongoza kulazimisha mtu asivae kinga.",
+             Language.SWAHILI, True,
+             "SW: daily_life — forced unprotected sex"),
+            ("Rushwa ya ngono vyuoni hutokea walimu wanapotumia nafasi zao.",
+             Language.SWAHILI, True,
+             "SW: daily_life — sexual bribery"),
+
+            # ── Swahili — male emotional suppression ────────────────────────────
+            ("Mwanaume hapaswi kuonyesha udhaifu wala kulia mbele ya watu.",
+             Language.SWAHILI, True,
+             "SW: daily_life — male emotional suppression"),
+            ("Kulia ni kazi ya wanawake; mwanaume ana moyo wa chuma.",
+             Language.SWAHILI, True,
+             "SW: daily_life — crying is for women"),
+
+            # ── Swahili — counter-stereotype (must NOT fire as bias) ─────────────
+            ("Mwanamke huyu ni rubani mzuri sana, ana uzoefu wa miaka kumi.",
+             Language.SWAHILI, False,
+             "SW counter-stereotype: woman IS a good pilot"),
+            ("Baba huyu analela watoto wake peke yake na kupika kila siku.",
+             Language.SWAHILI, False,
+             "SW counter-stereotype: father does domestic work"),
+            ("Msichana huyo ni mkurugenzi mkuu wa kampuni kubwa.",
+             Language.SWAHILI, False,
+             "SW counter-stereotype: girl in leadership"),
+
+            # ── Swahili — neutral (must NOT fire) ───────────────────────────────
+            ("Serikali imewapa wasichana nafasi za masomo ya nje ya nchi.",
+             Language.SWAHILI, False,
+             "SW neutral: government helping girls — no bias"),
+            ("Wanafunzi wa kike wanaendelea vizuri katika masomo ya sayansi.",
+             Language.SWAHILI, False,
+             "SW neutral: female students doing well"),
+            ("Daktari alifika hospitalini na kufanya kazi nzuri.",
+             Language.SWAHILI, False,
+             "SW neutral: doctor (no gender marker)"),
+
+            # ── French ───────────────────────────────────────────────────────────
+            ("Le président a ouvert la réunion.", Language.FRENCH, True,
+             "FR: gendered occupation 'président'"),
+            ("La réunion a bien commencé.", Language.FRENCH, False,
+             "FR: neutral sentence"),
         ]
 
-        for text, lang, expect_bias in cases:
+        for text, lang, expect_bias, label in cases:
             result = detector.detect_bias(text, lang)
-            status = "OK" if result.has_bias_detected == expect_bias else "FAIL"
-            print(f"  [{status}] '{text[:50]}' → bias={result.has_bias_detected} (expected {expect_bias})")
-            if result.has_bias_detected != expect_bias:
-                return False
+            ok = result.has_bias_detected == expect_bias
+            status = "OK" if ok else "FAIL"
+            print(f"  [{status}] {label}")
+            if not ok:
+                direction = "expected BIAS but got neutral" if expect_bias else "expected NEUTRAL but got bias"
+                print(f"         → {direction}: {repr(text[:80])}")
+                failures.append(label)
 
-        print(f"FastAPI app title: {__import__('api.main', fromlist=['app']).app.title}")
+        if failures:
+            print(f"\n  {len(failures)} failure(s):")
+            for f in failures:
+                print(f"    - {f}")
+            return False
+
+        print(f"\n  All {len(cases)} detector cases passed.")
+        print(f"  FastAPI app title: {__import__('api.main', fromlist=['app']).app.title}")
         return True
     except Exception as e:
+        import traceback
         print(f"Detector test failed: {e}")
+        traceback.print_exc()
         return False
 
 

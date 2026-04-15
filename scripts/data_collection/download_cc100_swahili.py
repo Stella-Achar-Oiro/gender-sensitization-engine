@@ -1,230 +1,167 @@
 #!/usr/bin/env python3
 """
-Download and mine CC100 Swahili corpus for occupation terms.
+Mine CC100 Swahili corpus for gender bias candidates.
 
-Dataset: CC100 Swahili (CommonCrawl monolingual corpus)
-Source: https://data.statmt.org/cc-100/
-HuggingFace: https://huggingface.co/datasets/statmt/cc100
-Size: Large monolingual Swahili corpus from web crawl
-Quality: Web text, mixed quality (news, blogs, forums)
+Targets three gap categories identified from live testing:
+  1. Capability stereotypes  — wajinga, dhaifu, hana akili, hawezi near gender markers
+  2. Leadership exclusion    — hawafai kuongoza/kusimamia/kufanya near gender markers
+  3. Appearance derogation   — sura, mwili, uzuri as qualifiers for women
 
-This script:
-1. Downloads CC100 Swahili corpus from HuggingFace
-2. Samples sentences (corpus is very large)
-3. Extracts sentences containing occupation terms
-4. Outputs real-world Swahili text
+Output: data/collection/cc100_bias_candidates.csv
+  Each row: text, matched_term, matched_gender_marker, category
+
+Usage:
+  python3 scripts/data_collection/download_cc100_swahili.py
+  python3 scripts/data_collection/download_cc100_swahili.py --max-docs 50000
 """
 
 import argparse
 import csv
 import re
+import hashlib
 from pathlib import Path
-from typing import List, Dict, Set
-import random
 
 try:
     from datasets import load_dataset
-    HAS_DATASETS = True
 except ImportError:
-    HAS_DATASETS = False
-    print("⚠️  Warning: 'datasets' library not installed")
-    print("   Install with: pip install datasets")
+    raise SystemExit("Install with: pip install datasets")
 
 try:
     from tqdm import tqdm
-    HAS_TQDM = True
 except ImportError:
-    HAS_TQDM = False
     tqdm = lambda x, **kwargs: x
 
 
-class CC100SwahiliMiner:
-    """Mines CC100 Swahili corpus for occupation sentences"""
+# ── Target patterns ──────────────────────────────────────────────────────────
 
-    DATASET_NAME = "statmt/cc100"
-    LANGUAGE_CODE = "sw"  # Swahili
+GENDER_MARKERS = [
+    'wasichana', 'wanawake', 'mwanamke', 'msichana',
+    'wanaume', 'wavulana', 'mwanamume', 'mvulana',
+    'mama', 'baba', 'dada', 'kaka', 'binti',
+]
 
-    def __init__(self, output_dir: str = "data/raw"):
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.occupation_terms: Set[str] = set()
+CAPABILITY_TERMS = [
+    'wajinga', 'mjinga', 'dhaifu', 'hana akili', 'hawana akili',
+    'hawawezi', 'hawezi', 'wanyonge', 'mnyonge', 'hana uwezo',
+    'hawana uwezo', 'hawaezi', 'upole kupita kiasi',
+]
 
-    def load_occupations(self, lexicon_path: str = "rules/lexicon_sw_v2.csv"):
-        """Load occupation terms from lexicon"""
-        with open(lexicon_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get('language') == 'sw' and 'occupation' in row.get('tags', ''):
-                    biased = row['biased'].lower()
-                    neutral = row.get('neutral_primary', '').lower()
+LEADERSHIP_TERMS = [
+    'hawafai kuongoza', 'hawafai kusimamia', 'hawafai kufanya',
+    'hawafai kushiriki', 'hawafai kupiga kura', 'hawastahili kuongoza',
+    'hawawezi kuongoza', 'hawawezi kusimamia',
+]
 
-                    self.occupation_terms.add(biased)
-                    if neutral and neutral != biased:
-                        self.occupation_terms.add(neutral)
+APPEARANCE_TERMS = [
+    'sura yake ndiyo', 'mwili wake ndiyo', 'uzuri wake ndiyo',
+    'anathaminiwa kwa sura', 'anathaminiwa kwa mwili',
+    'mwanamke mzuri tu', 'msichana mzuri tu',
+]
 
-        print(f"📚 Loaded {len(self.occupation_terms)} occupation terms")
+# Combined: (term, category)
+ALL_PATTERNS = (
+    [(t, 'capability') for t in CAPABILITY_TERMS] +
+    [(t, 'leadership_exclusion') for t in LEADERSHIP_TERMS] +
+    [(t, 'appearance_derogation') for t in APPEARANCE_TERMS]
+)
 
-    def download_dataset(self, max_samples: int = 10000) -> List[str]:
-        """Download CC100 Swahili corpus (sampled)"""
-        if not HAS_DATASETS:
-            raise ImportError(
-                "The 'datasets' library is required. "
-                "Install with: pip install datasets"
-            )
+WINDOW = 120  # characters around match to check for gender marker
 
-        print(f"📥 Downloading CC100 Swahili corpus from HuggingFace...")
-        print(f"   Dataset: {self.DATASET_NAME}")
-        print(f"   Language: {self.LANGUAGE_CODE} (Swahili)")
-        print(f"   Sampling: {max_samples:,} documents (corpus is very large)")
 
-        try:
-            # Load with streaming to avoid downloading entire corpus
-            dataset = load_dataset(
-                self.DATASET_NAME,
-                lang=self.LANGUAGE_CODE,
-                split="train",
-                streaming=True  # Important: stream instead of download all
-            )
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
-            # Sample documents
-            texts = []
-            print("\n   Streaming and sampling documents...")
+def extract_sentences(text: str):
+    for sent in re.split(r'(?<=[.!?])\s+', text):
+        sent = sent.strip()
+        if 30 <= len(sent) <= 600:
+            yield sent
 
-            for i, item in enumerate(dataset):
-                if i >= max_samples:
-                    break
 
-                text = item.get('text', '')
-                if text:
-                    texts.append(text)
+def has_gender_marker(window: str) -> str | None:
+    w = window.lower()
+    for m in GENDER_MARKERS:
+        if m in w:
+            return m
+    return None
 
-                if (i + 1) % 1000 == 0:
-                    print(f"   Processed: {i+1:,} documents")
 
-            print(f"\n✅ Sampled {len(texts):,} documents")
-            return texts
+def mine(texts, max_hits: int = 5000):
+    seen = set()
+    results = []
 
-        except Exception as e:
-            print(f"❌ Download failed: {e}")
-            print("\nAlternative: Download from:")
-            print("https://data.statmt.org/cc-100/")
-            raise
-
-    def extract_sentences(self, text: str) -> List[str]:
-        """Extract sentences from text"""
-        # Split on sentence endings
-        sentences = re.split(r'[.!?]+', text)
-        cleaned = []
-        for sent in sentences:
-            sent = sent.strip()
-            # Length check
-            if len(sent) < 20 or len(sent) > 500:
-                continue
-            cleaned.append(sent)
-        return cleaned
-
-    def is_high_quality(self, sentence: str) -> bool:
-        """Quality filter for sentences"""
-        # Must have alphabetic content
-        if not re.search(r'[a-zA-Z]', sentence):
-            return False
-
-        # Not too much punctuation
-        punct_ratio = sum(c in '.,!?;:' for c in sentence) / len(sentence)
-        if punct_ratio > 0.15:
-            return False
-
-        return True
-
-    def contains_occupation(self, sentence: str) -> bool:
-        """Check if sentence contains occupation term"""
-        sentence_lower = sentence.lower()
-        for term in self.occupation_terms:
-            if re.search(r'\b' + re.escape(term) + r'\b', sentence_lower):
-                return True
-        return False
-
-    def mine_corpus(self, texts: List[str]) -> List[Dict]:
-        """Mine occupation sentences from corpus"""
-        results = []
-
-        print(f"\n🔍 Mining {len(texts):,} documents for occupation terms...")
-
-        for text in tqdm(texts, desc="Mining documents"):
-            sentences = self.extract_sentences(text)
-
-            for sentence in sentences:
-                if not self.is_high_quality(sentence):
+    for text in tqdm(texts, desc="Mining CC100"):
+        for sent in extract_sentences(text):
+            sent_lower = sent.lower()
+            for term, category in ALL_PATTERNS:
+                idx = sent_lower.find(term)
+                if idx == -1:
                     continue
+                window = sent_lower[max(0, idx - WINDOW): idx + WINDOW]
+                marker = has_gender_marker(window)
+                if not marker:
+                    continue
+                key = hashlib.md5(sent.encode()).hexdigest()
+                if key in seen:
+                    continue
+                seen.add(key)
+                results.append({
+                    'text': sent,
+                    'matched_term': term,
+                    'matched_gender_marker': marker,
+                    'category': category,
+                    'has_bias': '',       # to be filled by annotator
+                    'expected_correction': '',
+                })
+                if len(results) >= max_hits:
+                    return results
+    return results
 
-                if self.contains_occupation(sentence):
-                    results.append({
-                        'text': sentence,
-                        'source': 'cc100_swahili',
-                        'corpus': 'commonweb'
-                    })
 
-        print(f"\n✅ Found {len(results):,} sentences with occupations")
-        return results
-
+# ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Download and mine CC100 Swahili corpus"
-    )
-    parser.add_argument(
-        '--max-samples',
-        type=int,
-        default=10000,
-        help="Max documents to sample from corpus (default: 10000)"
-    )
-    parser.add_argument(
-        '--output-file',
-        type=str,
-        default='data/analysis/cc100_swahili_occupations.csv',
-        help="Output file for mined sentences"
-    )
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--max-docs',  type=int, default=100_000,
+                        help='Documents to stream from CC100 (default: 100,000)')
+    parser.add_argument('--max-hits',  type=int, default=5_000,
+                        help='Max candidate sentences to collect (default: 5,000)')
+    parser.add_argument('--output',    type=str,
+                        default='data/collection/cc100_bias_candidates.csv')
     args = parser.parse_args()
 
-    print("=" * 70)
-    print("🌐 CC100 SWAHILI CORPUS MINER")
-    print("=" * 70)
+    print("Loading CC100 Swahili (streaming)...")
+    ds = load_dataset('statmt/cc100', lang='sw', split='train', streaming=True)
 
-    # Initialize miner
-    miner = CC100SwahiliMiner()
+    texts = []
+    for i, row in enumerate(ds):
+        if i >= args.max_docs:
+            break
+        if row.get('text', '').strip():
+            texts.append(row['text'])
 
-    # Load occupations
-    miner.load_occupations()
+    print(f"Streamed {len(texts):,} documents. Mining...")
+    results = mine(texts, max_hits=args.max_hits)
 
-    # Download dataset (streamed/sampled)
-    try:
-        texts = miner.download_dataset(args.max_samples)
-    except ImportError:
-        print("\n💡 To use this script, install: pip install datasets")
-        return
-    except Exception as e:
-        print(f"\n❌ Failed to download: {e}")
-        return
-
-    # Mine sentences
-    results = miner.mine_corpus(texts)
-
-    # Save results
-    output_path = Path(args.output_file)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(output_path, 'w', newline='', encoding='utf-8') as f:
-        fieldnames = ['text', 'source', 'corpus']
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+    out = Path(args.output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with open(out, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=[
+            'text', 'matched_term', 'matched_gender_marker',
+            'category', 'has_bias', 'expected_correction'
+        ])
         writer.writeheader()
         writer.writerows(results)
 
-    print(f"\n💾 Saved to: {output_path}")
-    print("\n" + "=" * 70)
-    print("✅ Mining complete!")
-    print("=" * 70)
+    print(f"\nDone. {len(results):,} candidates saved to {out}")
+    print("Next step: annotate has_bias + expected_correction, then merge into GT.")
+
+    # Summary by category
+    from collections import Counter
+    cats = Counter(r['category'] for r in results)
+    print("\nBreakdown by category:")
+    for cat, n in cats.most_common():
+        print(f"  {cat:<30} {n:>4}")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
