@@ -360,6 +360,46 @@
           "recall": null
         }
       }
+    },
+    {
+      "tag": "v0.9-sw-recall-boost",
+      "timestamp": "2026-04-16T06:30:00",
+      "git_commit": "beb7650",
+      "notes": "SW recall boost +39pp: 28 targeted derogation patterns (violence, daily_life, domestic, leadership, appearance, Sheng capability, purity, sport-fertility). Counter-stereotype bug fix.",
+      "lexicon_sizes": {
+        "en": 77,
+        "sw": 364,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 67290,
+        "fr": 165,
+        "ki": 11622
+      },
+      "metrics": {
+        "en": {
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "sw": {
+          "f1": 0.851,
+          "precision": 0.822,
+          "recall": 0.881
+        },
+        "fr": {
+          "f1": 0.97,
+          "precision": 1.0,
+          "recall": 0.941
+        },
+        "ki": {
+          "f1": 0.667,
+          "precision": 0.967,
+          "recall": 0.51
+        }
+      }
     }
   ]
 }
