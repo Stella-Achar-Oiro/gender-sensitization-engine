@@ -1,0 +1,50 @@
+{
+  "dataset": "ground_truth_ki_v8.csv",
+  "migration_date": "2026-02-18",
+  "input_version": "v7",
+  "output_version": "v8",
+  "schema_version": "aibridge-v1",
+  "row_count": 11848,
+  "compliance_rate": 1.0,
+  "gap_summary": {
+    "input_columns": 33,
+    "canonical_columns": 24,
+    "legacy_retained": 14,
+    "renames": [
+      "sample_id\u2192id",
+      "regional_variant\u2192region_dialect",
+      "data_source\u2192source_type",
+      "source_url\u2192source_ref",
+      "sentiment\u2192sentiment_toward_referent",
+      "validation_status\u2192qa_status",
+      "protected_attribute\u2192sensitive_characteristic"
+    ],
+    "values_remapped": [
+      "source_type(7 ki-specific)",
+      "safety_flag(none\u2192safe)",
+      "domain(5 ki-specific)",
+      "qa_status(validated\u2192passed)"
+    ]
+  },
+  "value_distribution": {
+    "bias_label": {
+      "stereotype": 1181,
+      "neutral": 10525,
+      "derogation": 72,
+      "counter-stereotype": 70
+    },
+    "qa_status": {
+      "passed": 11848
+    },
+    "domain": {
+      "culture_and_religion": 794,
+      "media_and_online": 10326,
+      "livelihoods_and_work": 728
+    },
+    "safety_flag": {
+      "sensitive": 794,
+      "safe": 11054
+    }
+  },
+  "issues": []
+}

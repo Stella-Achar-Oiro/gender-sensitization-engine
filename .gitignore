@@ -1,0 +1,76 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.coverage
+.venv/
+venv/
+*.so
+
+# Data files (large — tracked in HF Datasets, not git)
+eval/ground_truth_*.csv
+eval/ground_truth_sw_v5_submission_20260305.csv
+
+# Generated eval results — keep only model_registry.json
+eval/results/f1_report_*.csv
+eval/results/correction_eval*.json
+eval/results/correction_report*.txt
+eval/results/kappa_*.json
+eval/results/ls_annotations_*.csv
+eval/results/splits/
+eval/results/reporting/
+data/
+submission_for_review/
+annotation/
+audit_logs/
+models/
+
+# AI BRIDGE submission templates (large Excel files)
+*.xlsx
+*.xls
+
+# Lock files
+.~lock.*#
+
+# Scratch/temp files
+metrics.txt
+predictions.csv
+train_sw_bias_v4.ipynb
+
+# Word docs / methodology briefs
+*.docx
+
+# Duplicate model/dataset cards (maintained in docs/)
+HF_MODEL_CARD.md
+dataset_card.md
+
+# Older training notebooks
+train_multilingual_bias_v1.ipynb
+train_sw_bias_v3.ipynb
+
+# Claude AI instructions — not source code
+CLAUDE.md
+
+# Local tooling
+.label_studio_data/
+.ls_venv/
+.thelogicvault/
+.git.backup/
+.git.bak.orig/
+
+# Claude / editor
+.claude/
+apps/
+ml/
+demos/
+docs/
+tests/
+ui/
+scripts/
+poetry.lock
+.env
+*.env

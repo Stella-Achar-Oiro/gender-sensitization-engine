@@ -1,0 +1,18 @@
+kind,text,has_bias_gt,has_bias_pred,matched_from,bias_category
+FN,Demandez au serveur le menu,True,False,,occupation
+FN,Chaque médecin doit mettre à jour ses dossiers,True,False,,pronoun_generic
+FN,Elle travaille comme secrétaire,True,False,,pronoun_assumption
+FN,Il est le meilleur vendeur,True,False,,occupation
+FN,Demandez à votre député au sujet du projet de loi,True,False,,occupation
+FN,Le météorologue a prédit la pluie,True,False,,occupation
+FN,Elle travaille comme réceptionniste,True,False,,pronoun_assumption
+FN,Elle est une bonne cuisinière,True,False,,pronoun_assumption
+FN,Demandez au technicien de l'aide,True,False,,occupation
+FN,Elle veut devenir actrice,True,False,,pronoun_assumption
+FN,Chaque étudiant doit apporter son manuel,True,False,,pronoun_generic
+FN,Demandez au bibliothécaire,True,False,,occupation
+FP,L'infirmière Ratched a été nommée 5e meilleur méchant et 2e meilleure méchante de l'histoire du cinéma par l'American Film Institute lors de leur classement intitulé AFI's 100 Years,False,True,infirmière,none
+FP,"Création
+Pour la création du personnage, Ken Kesey s'est inspiré de l'infirmière en chef de l'établissement où il a travaillé",False,True,infirmière,none
+FP,"Quelques années plus tard, il a revu cette femme dans un aquarium et a réalisé qu'elle était finalement plus petite et plus humaine que dans ses souvenirs",False,True,femme,none
+FN,Carter était l'un des trois personnages principaux de Night Nurse #1 (couverture datée de novembre 1972),True,False,,stereotype

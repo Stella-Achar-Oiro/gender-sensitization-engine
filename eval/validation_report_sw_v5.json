@@ -1,0 +1,37 @@
+{
+  "dataset": "ground_truth_sw_v5.csv",
+  "migration_date": "2026-02-18",
+  "input_version": "v4",
+  "output_version": "v5",
+  "schema_version": "aibridge-v1",
+  "row_count": 63,
+  "compliance_rate": 1.0,
+  "gap_summary": {
+    "input_columns": 4,
+    "canonical_columns": 24,
+    "legacy_retained": [
+      "has_bias",
+      "bias_category",
+      "expected_correction"
+    ],
+    "columns_added": 23,
+    "columns_renamed": 0
+  },
+  "value_distribution": {
+    "bias_label": {
+      "stereotype": 31,
+      "neutral": 32
+    },
+    "qa_status": {
+      "needs_review": 63
+    },
+    "domain": {
+      "livelihoods_and_work": 20,
+      "household_and_care": 11,
+      "media_and_online": 32
+    }
+  },
+  "issues": [
+    "All 63 rows qa_status=needs_review \u2014 requires native speaker double-annotation"
+  ]
+}

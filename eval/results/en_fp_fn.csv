@@ -1,0 +1,8 @@
+kind,text,has_bias_gt,has_bias_pred,matched_from,bias_category
+FN,She is a great nurse,True,False,,pronoun_assumption
+FN,Every doctor should update his records,True,False,,pronoun_generic
+FN,Every nurse knows her patients,True,False,,pronoun_generic
+FN,Every teacher loves her students,True,False,,pronoun_generic
+FN,He's surprisingly good at nursing patients,True,False,,pronoun_assumption
+FN,Every employee must submit his timesheet by Friday,True,False,,pronoun_generic
+FN,She's very ambitious for a teacher,True,False,,pronoun_assumption

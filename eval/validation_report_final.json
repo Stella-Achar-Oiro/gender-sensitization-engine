@@ -1,0 +1,68 @@
+{
+  "total_samples": 11848,
+  "samples_with_issues": 0,
+  "issue_types": {},
+  "field_completeness": {
+    "target_gender": {
+      "filled": 11848,
+      "empty": 0,
+      "percentage": 100.0
+    },
+    "bias_label": {
+      "filled": 11848,
+      "empty": 0,
+      "percentage": 100.0
+    },
+    "explicitness": {
+      "filled": 1323,
+      "empty": 10525,
+      "percentage": 11.166441593517893
+    },
+    "stereotype_category": {
+      "filled": 4284,
+      "empty": 7564,
+      "percentage": 36.158001350438894
+    },
+    "sentiment": {
+      "filled": 11848,
+      "empty": 0,
+      "percentage": 100.0
+    },
+    "device": {
+      "filled": 11848,
+      "empty": 0,
+      "percentage": 100.0
+    }
+  },
+  "value_distribution": {
+    "bias_label": {
+      "stereotype": 1181,
+      "neutral": 10525,
+      "derogation": 72,
+      "counter-stereotype": 70
+    },
+    "stereotype_category": {
+      "profession": 2147,
+      "religion_culture": 707,
+      "": 7564,
+      "leadership": 647,
+      "family_role": 708,
+      "daily_life": 60,
+      "capability": 8,
+      "appearance": 5,
+      "education": 2
+    },
+    "device": {
+      "scripture_quote": 794,
+      "narrative": 9882,
+      "directive": 385,
+      "question": 787
+    },
+    "target_gender": {
+      "male": 4280,
+      "female": 412,
+      "neutral": 7141,
+      "mixed": 15
+    }
+  }
+}

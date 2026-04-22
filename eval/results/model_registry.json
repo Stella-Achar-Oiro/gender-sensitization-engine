@@ -1,0 +1,405 @@
+{
+  "versions": [
+    {
+      "tag": "v0.1-baseline",
+      "timestamp": "2025-11-27T19:47:05",
+      "git_commit": null,
+      "notes": "Initial baseline \u2014 EN+SW only, small ground truth",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 64,
+        "fr": 51,
+        "ki": 22
+      },
+      "ground_truth_sizes": {
+        "en": 67,
+        "sw": 64,
+        "fr": 51,
+        "ki": 34
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.764,
+          "precision": 1.0,
+          "recall": 0.618
+        },
+        "sw": {
+          "f1": 0.681,
+          "precision": 1.0,
+          "recall": 0.516
+        },
+        "fr": {
+          "f1": 0.627,
+          "precision": 1.0,
+          "recall": 0.457
+        },
+        "ki": {
+          "f1": 0.714,
+          "precision": 1.0,
+          "recall": 0.556
+        }
+      }
+    },
+    {
+      "tag": "v0.3-ki-expansion",
+      "timestamp": "2025-12-03T15:12:28",
+      "git_commit": null,
+      "notes": "Kikuyu lexicon expanded 22->1,209 entries, ground truth 34->5,254 samples",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 151,
+        "fr": 51,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64,
+        "fr": 51,
+        "ki": 5254
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.786,
+          "precision": 1.0,
+          "recall": 0.647
+        },
+        "sw": {
+          "f1": 0.708,
+          "precision": 1.0,
+          "recall": 0.548
+        },
+        "fr": {
+          "f1": 0.571,
+          "precision": 1.0,
+          "recall": 0.4
+        },
+        "ki": {
+          "f1": 0.643,
+          "precision": 1.0,
+          "recall": 0.473
+        }
+      }
+    },
+    {
+      "tag": "v0.5-sw-groundtruth-v3",
+      "timestamp": "2026-03-05T00:00:00",
+      "git_commit": "ae5138b",
+      "notes": "ann_sw_v3 pass (13,304 rows), SW ground truth 64->64,723. Honest precision drop from ambiguous Watoto wa Kike/mtoto wa kike FPs.",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 151,
+        "fr": 51,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64723,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.786,
+          "precision": 1.0,
+          "recall": 0.647
+        },
+        "sw": {
+          "f1": 0.708,
+          "precision": 0.958,
+          "recall": 0.548
+        },
+        "fr": {
+          "f1": 0.571,
+          "precision": 1.0,
+          "recall": 0.4
+        },
+        "ki": {
+          "f1": 0.352,
+          "precision": 0.926,
+          "recall": 0.217
+        }
+      }
+    },
+    {
+      "tag": "v0.6-detector-recall-fix",
+      "timestamp": "2026-03-12T00:00:00",
+      "git_commit": "603b840",
+      "notes": "Detector recall fix: OCCUPATION_PREFIXES expanded, NON_OCC_WORDS added. EN F1 0.786->0.847.",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 151,
+        "fr": 51,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64723,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.847,
+          "precision": 1.0,
+          "recall": 0.735
+        },
+        "sw": {
+          "f1": 0.771,
+          "precision": 0.734,
+          "recall": 0.811
+        },
+        "fr": {
+          "f1": 0.571,
+          "precision": 1.0,
+          "recall": 0.4
+        },
+        "ki": {
+          "f1": 0.352,
+          "precision": 0.926,
+          "recall": 0.217
+        }
+      }
+    },
+    {
+      "tag": "v0.7-fr-bronze",
+      "timestamp": "2026-03-12T20:29:34",
+      "git_commit": "945db9f",
+      "notes": "FR lexicon +18 terms -> FR F1 0.571->0.750 (AIBRIDGE Bronze). SW +36 terms: proverbs, Sheng, bride-price, religious framing.",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 187,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64723,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.847,
+          "precision": 1.0,
+          "recall": 0.735
+        },
+        "sw": {
+          "f1": 0.773,
+          "precision": 0.733,
+          "recall": 0.816
+        },
+        "fr": {
+          "f1": 0.75,
+          "precision": 1.0,
+          "recall": 0.6
+        },
+        "ki": {
+          "f1": 0.352,
+          "precision": 0.926,
+          "recall": 0.217
+        }
+      }
+    },
+    {
+      "tag": "v0.8-gt-corrections+disambig",
+      "timestamp": "2026-03-13T00:00:00",
+      "git_commit": "f914baf",
+      "notes": "Rules: 170 SW FN annotation errors corrected -> SW Recall 0.816->0.918, F1 0.773->0.816. Added LLM Stage 2.5 disambiguation (Llama 3.1 8B via HF router) for borderline SW warn-only cases.",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 187,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64723,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": 0.885,
+          "precision": 1.0,
+          "recall": 0.794
+        },
+        "sw": {
+          "f1": 0.816,
+          "precision": 0.735,
+          "recall": 0.918
+        },
+        "fr": {
+          "f1": 0.793,
+          "precision": 1.0,
+          "recall": 0.657
+        },
+        "ki": {
+          "f1": 0.368,
+          "precision": 0.916,
+          "recall": 0.231
+        }
+      }
+    },
+    {
+      "tag": "sw-bias-classifier-v1",
+      "timestamp": "2026-03-10T00:00:00",
+      "git_commit": null,
+      "notes": "ML model: AfroXLM-R fine-tuned on 51,419 SW rows (3 epochs, T4 x2). Val set ~10% of training data. Rules still used for EN/FR/KI. HuggingFace: juakazike/sw-bias-classifier-v1",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 187,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 51419,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "sw": {
+          "f1": 0.854,
+          "precision": 0.938,
+          "recall": 0.784
+        },
+        "fr": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "ki": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        }
+      }
+    },
+    {
+      "tag": "sw-bias-classifier-v2",
+      "timestamp": "2026-03-13T03:35:00",
+      "git_commit": null,
+      "notes": "ML model v2: AfroXLM-R retrained on ground_truth_sw_v5 (64,723 rows). Val split 1,211 samples (NEUTRAL=792, BIAS=419). Val F1=0.9527 TARGET MET (>=0.92). NEUTRAL P=0.98 R=0.97, BIAS P=0.94 R=0.96. HuggingFace: juakazike/sw-bias-classifier-v2",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 187,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 64723,
+        "fr": 50,
+        "ki": 11848
+      },
+      "metrics": {
+        "en": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "sw": {
+          "f1": 0.953,
+          "precision": 0.94,
+          "recall": 0.96
+        },
+        "fr": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "ki": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        }
+      }
+    },
+    {
+      "tag": "sw-bias-classifier-v3",
+      "timestamp": "2026-03-18T21:16:00",
+      "git_commit": null,
+      "notes": "ML model v3: Full retraining after v2 precision issue (333 FPs at threshold 0.5). Evaluated on same 9,709-sample test set. BIAS P: 0.330\u21920.810, Recall: 0.976\u21920.942, F1: 0.493\u21920.871. FPs: 333\u219238. HuggingFace: juakazike/sw-bias-classifier-v3",
+      "lexicon_sizes": {
+        "en": 515,
+        "sw": 187,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 66995,
+        "fr": 165,
+        "ki": 11622
+      },
+      "metrics": {
+        "en": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "sw": {
+          "f1": 0.871,
+          "precision": 0.81,
+          "recall": 0.942,
+          "samples": 66995
+        },
+        "fr": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        },
+        "ki": {
+          "f1": null,
+          "precision": null,
+          "recall": null
+        }
+      }
+    },
+    {
+      "tag": "v0.9-sw-recall-boost",
+      "timestamp": "2026-04-16T06:30:00",
+      "git_commit": "beb7650",
+      "notes": "SW recall boost +39pp: 28 targeted derogation patterns (violence, daily_life, domestic, leadership, appearance, Sheng capability, purity, sport-fertility). Counter-stereotype bug fix.",
+      "lexicon_sizes": {
+        "en": 77,
+        "sw": 364,
+        "fr": 69,
+        "ki": 1209
+      },
+      "ground_truth_sizes": {
+        "en": 66,
+        "sw": 67290,
+        "fr": 165,
+        "ki": 11622
+      },
+      "metrics": {
+        "en": {
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "sw": {
+          "f1": 0.851,
+          "precision": 0.822,
+          "recall": 0.881
+        },
+        "fr": {
+          "f1": 0.97,
+          "precision": 1.0,
+          "recall": 0.941
+        },
+        "ki": {
+          "f1": 0.667,
+          "precision": 0.967,
+          "recall": 0.51
+        }
+      }
+    }
+  ]
+}
