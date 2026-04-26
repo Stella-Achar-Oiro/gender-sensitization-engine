@@ -30,8 +30,9 @@ class RewriteResponse(BaseModel):
     edits: list
     confidence: float
     needs_review: bool
-    source: str  # "rules" | "ml" | "preserved"
+    source: str  # "rules" | "ml" | "preserved" | "disambiguated" | "aibridge_preserved"
     reason: str
     semantic_score: Optional[float] = None
     skipped_context: Optional[list] = None
     has_bias_detected: bool = False
+    aibridge_confidence: Optional[float] = None  # Set when AIBRIDGE gate was consulted

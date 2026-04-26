@@ -138,6 +138,8 @@ def apply_rules_on_spans(
 
 
 def build_reason(source: str, edits: list, skipped: list) -> str:
+    if source == "aibridge_preserved":
+        return "No gender bias detected by external classifier. Text returned unchanged."
     if source == "preserved":
         return "Original preserved — correction would damage meaning (semantic score below threshold)."
     if source == "ml":

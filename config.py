@@ -75,10 +75,25 @@ def get_semantic_threshold() -> float:
 
 
 # Confidence by rewrite source (for API response)
+# "aibridge_preserved" = external AIBRIDGE classifier said no bias; text returned unchanged
 REWRITE_CONFIDENCE_BY_SOURCE: dict[str, float] = {
     "rules": 0.85,
     "ml": 0.60,
     "preserved": 0.95,
     "llm_disambiguated": 0.80,
+    "aibridge_preserved": 0.90,
 }
 DEFAULT_REWRITE_CONFIDENCE: float = 0.85
+
+# ---------------------------------------------------------------------------
+# AIBRIDGE external Bias Detection API
+# ---------------------------------------------------------------------------
+
+AIBRIDGE_BASE_URL: str = os.getenv(
+    "AIBRIDGE_BASE_URL",
+    "https://aibridgebiasdetector-158985802014.us-central1.run.app",
+)
+AIBRIDGE_TIMEOUT: float = float(os.getenv("AIBRIDGE_TIMEOUT", "3.0"))
+AIBRIDGE_CONFIDENCE_THRESHOLD: float = float(os.getenv("AIBRIDGE_CONFIDENCE_THRESHOLD", "0.5"))
+# Set AIBRIDGE_ENABLED=false to disable the external gate and use internal pipeline only
+AIBRIDGE_ENABLED: bool = os.getenv("AIBRIDGE_ENABLED", "true").lower() == "true"
