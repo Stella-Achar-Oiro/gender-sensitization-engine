@@ -23,6 +23,15 @@ class BatchRewriteRequest(BaseModel):
     items: list[RewriteRequest] = Field(..., min_length=1, max_length=100)
 
 
+SourceLiteral = Literal[
+    "rules",
+    "ml",
+    "preserved",
+    "disambiguated",
+    "aibridge_preserved",
+]
+
+
 class RewriteResponse(BaseModel):
     id: str
     original_text: str
@@ -30,9 +39,10 @@ class RewriteResponse(BaseModel):
     edits: list
     confidence: float
     needs_review: bool
-    source: str  # "rules" | "ml" | "preserved" | "disambiguated" | "aibridge_preserved"
+    source: SourceLiteral
     reason: str
     semantic_score: Optional[float] = None
     skipped_context: Optional[list] = None
     has_bias_detected: bool = False
-    aibridge_confidence: Optional[float] = None  # Set when AIBRIDGE gate was consulted
+    aibridge_confidence: Optional[float] = None   # Confidence from external classifier
+    aibridge_detected: Optional[bool] = None      # True/False when AIBRIDGE ran cleanly; None when bypassed or errored

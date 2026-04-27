@@ -80,7 +80,7 @@ REWRITE_CONFIDENCE_BY_SOURCE: dict[str, float] = {
     "rules": 0.85,
     "ml": 0.60,
     "preserved": 0.95,
-    "llm_disambiguated": 0.80,
+    "disambiguated": 0.80,
     "aibridge_preserved": 0.90,
 }
 DEFAULT_REWRITE_CONFIDENCE: float = 0.85

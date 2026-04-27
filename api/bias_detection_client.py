@@ -37,6 +37,22 @@ class AibridgeResult:
     error: Optional[str] = field(default=None)
 
 
+def _parse_has_bias(message: str) -> bool:
+    """
+    The AIBRIDGE has_bias field is bugged and always returns True.
+    Parse the label embedded in message instead:
+      "Bias detected: NoBias (confidence: X%)"  → False
+      "Bias detected: Gender (confidence: X%)"  → True
+    Falls back to True (conservative) if message format is unexpected.
+    """
+    # Extract label between "Bias detected: " and " ("
+    marker = "Bias detected: "
+    if marker in message:
+        label = message[len(marker):].split(" (")[0].strip()
+        return label.lower() != "nobias"
+    return True  # unknown format — conservative: treat as biased
+
+
 def detect_bias(text: str, language: str, timeout: float = None) -> AibridgeResult:
     """
     Call the AIBRIDGE /detect endpoint and return an AibridgeResult.
@@ -85,10 +101,14 @@ def detect_bias(text: str, language: str, timeout: float = None) -> AibridgeResu
             )
 
         data = resp.json()
+        message = str(data.get("message", ""))
+        # has_bias field is bugged — always returns True regardless of result.
+        # Parse the label from message instead: "Bias detected: NoBias (...)" = no bias.
+        has_bias = _parse_has_bias(message)
         return AibridgeResult(
-            has_bias=bool(data.get("has_bias", False)),
+            has_bias=has_bias,
             confidence=float(data.get("confidence", 0.0)),
-            message=str(data.get("message", "")),
+            message=message,
             error=None,
         )
 

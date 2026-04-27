@@ -55,6 +55,7 @@ def rewrite_text(
                 skipped_context=None,
                 has_bias_detected=False,
                 aibridge_confidence=aibridge_result.confidence,
+                aibridge_detected=False,
             )
             audit_info = {
                 "model_info": {
@@ -124,7 +125,9 @@ def rewrite_text(
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)
     needs_review = source == "ml" or len(edits) == 0
-    reason = build_reason(source, edits, skipped)
+    aibridge_ok = aibridge_result is not None and aibridge_result.error is None
+    aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
+    reason = build_reason(source, edits, skipped, aibridge_detected=bool(aibridge_detected))
     has_bias_detected = any(e.get("severity") == "replace" for e in edits)
 
     response = RewriteResponse(
@@ -139,11 +142,13 @@ def rewrite_text(
         semantic_score=semantic_score,
         skipped_context=skipped or None,
         has_bias_detected=has_bias_detected,
-        aibridge_confidence=aibridge_result.confidence if (aibridge_result and aibridge_result.error is None) else None,
+        aibridge_confidence=aibridge_result.confidence if aibridge_ok else None,
+        aibridge_detected=aibridge_detected,
     )
     audit_info = {
         "model_info": ml_info or {"model": "rulepack-v0.3"},
         "latency_ms": latency_ms,
         "region_dialect": region_dialect or "unknown",
+        "aibridge_error": aibridge_result.error if aibridge_result else None,
     }
     return response, audit_info
