@@ -3,9 +3,15 @@
 import time
 from typing import Optional
 
-from config import get_semantic_threshold, REWRITE_CONFIDENCE_BY_SOURCE, DEFAULT_REWRITE_CONFIDENCE
+from config import (
+    AIBRIDGE_ENABLED,
+    DEFAULT_REWRITE_CONFIDENCE,
+    REWRITE_CONFIDENCE_BY_SOURCE,
+    get_semantic_threshold,
+)
 from core.semantic_preservation import SemanticPreservationMetrics
 
+from .bias_detection_client import LANG_CODE_MAP, AibridgeResult, detect_bias
 from .disambiguator import disambiguate
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
@@ -26,6 +32,42 @@ def rewrite_text(
     audit_info has model_info, latency_ms for logging.
     """
     t0 = time.time()
+
+    # Stage 0: AIBRIDGE external bias detection gate (Swahili only).
+    # If the external model says no bias, skip correction entirely and return immediately.
+    # On any network/auth error, aibridge_result.error is set and we fall through silently.
+    aibridge_result: Optional[AibridgeResult] = None
+    ext_lang = LANG_CODE_MAP.get(lang) if AIBRIDGE_ENABLED else None
+    if ext_lang:
+        aibridge_result = detect_bias(text, ext_lang)
+        if aibridge_result.error is None and not aibridge_result.has_bias:
+            latency_ms = int((time.time() - t0) * 1000)
+            response = RewriteResponse(
+                id=id,
+                original_text=text,
+                rewrite=text,
+                edits=[],
+                confidence=REWRITE_CONFIDENCE_BY_SOURCE["aibridge_preserved"],
+                needs_review=False,
+                source="aibridge_preserved",
+                reason=build_reason("aibridge_preserved", [], []),
+                semantic_score=None,
+                skipped_context=None,
+                has_bias_detected=False,
+                aibridge_confidence=aibridge_result.confidence,
+                aibridge_detected=False,
+            )
+            audit_info = {
+                "model_info": {
+                    "model": "aibridge-external",
+                    "confidence": aibridge_result.confidence,
+                    "message": aibridge_result.message,
+                },
+                "latency_ms": latency_ms,
+                "region_dialect": region_dialect or "unknown",
+            }
+            return response, audit_info
+
     rewritten, edits, matched_rules, skipped = apply_rules_on_spans(
         text, lang, flags=flags
     )
@@ -83,7 +125,9 @@ def rewrite_text(
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)
     needs_review = source == "ml" or len(edits) == 0
-    reason = build_reason(source, edits, skipped)
+    aibridge_ok = aibridge_result is not None and aibridge_result.error is None
+    aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
+    reason = build_reason(source, edits, skipped, aibridge_detected=bool(aibridge_detected))
     has_bias_detected = any(e.get("severity") == "replace" for e in edits)
 
     response = RewriteResponse(
@@ -98,10 +142,13 @@ def rewrite_text(
         semantic_score=semantic_score,
         skipped_context=skipped or None,
         has_bias_detected=has_bias_detected,
+        aibridge_confidence=aibridge_result.confidence if aibridge_ok else None,
+        aibridge_detected=aibridge_detected,
     )
     audit_info = {
         "model_info": ml_info or {"model": "rulepack-v0.3"},
         "latency_ms": latency_ms,
         "region_dialect": region_dialect or "unknown",
+        "aibridge_error": aibridge_result.error if aibridge_result else None,
     }
     return response, audit_info

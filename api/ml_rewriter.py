@@ -22,26 +22,30 @@ def _ensure_model():
         raise RuntimeError("ML dependencies not installed. Run: pip install torch transformers")
     global _tokenizer, _model
     if _tokenizer is None:
-        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=False)
     if _model is None:
         _model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_ID)
         _model.to(DEVICE)
         _model.eval()
 
 def ml_rewrite(text: str, lang: str = "en", num_return_sequences: int = 3, max_new_tokens: int = 64) -> Dict[str, Any]:
-    if not _ML_AVAILABLE:
-        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
-
     """
     Returns dict:
       {
         "best": "string",
         "candidates": ["a","b","c"],
-        "model": MODEL_ID,
+        "model": MODEL_ID or "unavailable",
         "latency_ms": 123
       }
+    Falls back gracefully if ML deps are missing or model fails to load.
     """
-    _ensure_model()
+    if not _ML_AVAILABLE:
+        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
+
+    try:
+        _ensure_model()
+    except Exception:
+        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
     start = time.time()
 
     # This prompt to instruct model (works reasonably with mt5)

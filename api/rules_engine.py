@@ -1,4 +1,5 @@
 """Rules engine — applies corrections, builds edit/reason output. Uses core for rules and context."""
+from __future__ import annotations
 
 import re
 from pathlib import Path
@@ -13,6 +14,8 @@ RULES_DIR = BASE / "rules"
 RULES: dict[str, list[dict]] = {
     "en": _load_rules("en", RULES_DIR),
     "sw": _load_rules("sw", RULES_DIR),
+    "fr": _load_rules("fr", RULES_DIR),
+    "ki": _load_rules("ki", RULES_DIR),
 }
 
 
@@ -137,8 +140,12 @@ def apply_rules_on_spans(
     return new_text, edits, len(edits), skipped
 
 
-def build_reason(source: str, edits: list, skipped: list) -> str:
+def build_reason(source: str, edits: list, skipped: list, aibridge_detected: bool = False) -> str:
+    if source == "aibridge_preserved":
+        return "No gender bias detected by external classifier. Text returned unchanged."
     if source == "preserved":
+        if aibridge_detected:
+            return "Bias detected by external classifier but correction suppressed — rewrite would alter meaning (semantic score below threshold)."
         return "Original preserved — correction would damage meaning (semantic score below threshold)."
     if source == "ml":
         return "No lexicon rules matched; ML fallback applied. Human review required."

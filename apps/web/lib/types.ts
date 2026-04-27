@@ -21,8 +21,9 @@ export interface RewriteResponse {
   rewrite: string
   edits: Edit[]
   confidence: number
-  source: string
+  source: "rules" | "ml" | "preserved" | "disambiguated" | "aibridge_preserved"
   reason: string
   semantic_score?: number
   has_bias_detected: boolean
+  aibridge_confidence?: number
 }
