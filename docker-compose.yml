@@ -14,6 +14,7 @@ services:
     environment:
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
+      - AIBRIDGE_TIMEOUT=120
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - juakazi-network

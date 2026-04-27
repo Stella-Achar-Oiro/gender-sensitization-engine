@@ -8,6 +8,8 @@ SOURCE_BADGE = {
     "rules": "🟢 rules",
     "ml": "🟡 ml",
     "preserved": "🔵 preserved",
+    "disambiguated": "🟣 disambiguated",
+    "aibridge_preserved": "⬜ aibridge",
 }
 
 
@@ -85,6 +87,8 @@ def render_meta(resp: dict) -> None:
         parts.append(f"confidence: {resp['confidence']:.0%}")
     if resp.get("semantic_score") is not None:
         parts.append(f"semantic preservation: {resp['semantic_score']:.0%}")
+    if resp.get("aibridge_confidence") is not None:
+        parts.append(f"external classifier: {resp['aibridge_confidence']:.0%}")
     if parts:
         st.caption(" · ".join(parts))
 
