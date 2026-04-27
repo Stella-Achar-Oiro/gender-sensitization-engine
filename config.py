@@ -93,7 +93,7 @@ AIBRIDGE_BASE_URL: str = os.getenv(
     "AIBRIDGE_BASE_URL",
     "https://aibridgebiasdetector-158985802014.us-central1.run.app",
 )
-AIBRIDGE_TIMEOUT: float = float(os.getenv("AIBRIDGE_TIMEOUT", "3.0"))
+AIBRIDGE_TIMEOUT: float = float(os.getenv("AIBRIDGE_TIMEOUT", "120.0"))  # 2 min covers cold start
 AIBRIDGE_CONFIDENCE_THRESHOLD: float = float(os.getenv("AIBRIDGE_CONFIDENCE_THRESHOLD", "0.5"))
 # Set AIBRIDGE_ENABLED=false to disable the external gate and use internal pipeline only
 AIBRIDGE_ENABLED: bool = os.getenv("AIBRIDGE_ENABLED", "true").lower() == "true"
