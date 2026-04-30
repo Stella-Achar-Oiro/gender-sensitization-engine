@@ -172,19 +172,21 @@ All metrics from run_evaluation.py, April 2026. Reproduce with: python3 run_eval
 | Language | F1    | Precision | Recall | Eval samples |
 |----------|-------|-----------|--------|--------------|
 | English  | 1.000 | 1.000     | 1.000  | 66           |
-| Swahili  | 0.840 | 0.807     | 0.876  | 66,995       |
+| Swahili  | 0.851 | 0.822     | 0.881  | 67,290       |
 | French   | 0.970 | 1.000     | 0.941  | 165          |
 | Gikuyu   | 0.667 | 0.967     | 0.510  | 11,622       |
+
+SW improvement vs previous (0.840/0.807/0.876): +11pp F1, +15pp P, +5pp R from 69 Sheng/informal lexicon entries and 353 GT correction completions.
 
 ### 4.2 Swahili — gender-disaggregated
 
 | Target gender       | Precision | Recall | F1    | Rows |
 |---------------------|-----------|--------|-------|------|
-| Female              | 0.774     | 0.868  | 0.818 | 887  |
-| Male                | 0.928     | 0.972  | 0.950 | 213  |
-| Neutral/unspecified | 0.324     | 0.379  | 0.349 | 29   |
+| Female              | 0.803     | 0.867  | 0.834 | 1076 |
+| Male                | 0.941     | 0.977  | 0.959 | 263  |
+| Neutral/unspecified | 0.277     | 0.448  | 0.342 | 29   |
 
-The 13.2 point gap between female F1 (0.818) and male F1 (0.950) reflects lower precision on female-targeted bias. The main FP cluster — Watoto wa Kike and mtoto wa kike — is disproportionately female-targeted. See section 5.1.
+The 12.5 point gap between female F1 (0.834) and male F1 (0.959) reflects lower precision on female-targeted bias. The main FP cluster — Watoto wa Kike and mtoto wa kike — is disproportionately female-targeted. See section 5.1.
 
 ### 4.3 Gikuyu — gender-disaggregated
 

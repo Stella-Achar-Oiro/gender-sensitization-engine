@@ -21,7 +21,7 @@ Detects and rewrites gender-biased language in **Swahili, English, French, and G
 | Language | F1 | Precision | Recall | Samples |
 |---|---|---|---|---|
 | English | 1.000 | 1.000 | 1.000 | 66 |
-| Swahili | 0.840 | 0.807 | 0.876 | 66,995 |
+| Swahili | 0.851 | 0.822 | 0.881 | 67,290 |
 | French | 0.970 | 1.000 | 0.941 | 165 |
 | Gikuyu | 0.667 | 0.967 | 0.510 | 11,622 |
 
