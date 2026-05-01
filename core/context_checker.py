@@ -106,6 +106,8 @@ class ContextCondition(Enum):
     LEGAL = "legal"
     ARTISTIC = "artistic"
     ORGANIZATION = "organization"
+    # Hausa: bare budurwa/budurwar is often neutral (news, relationships); gate before replace.
+    HA_NEUTRAL_BUDURWA = "ha_neutral_budurwa"
 
 
 @dataclass
@@ -246,6 +248,37 @@ class ContextChecker:
             r'\b(TAWOMA|BAWATA|TAMWA|UWT)\b',
             r'\bChama\s+cha\s+\w+\s+{term}',
             r'\b[A-Z]{{2,6}}\b.{{0,20}}{term}',
+        ],
+        ContextCondition.HA_NEUTRAL_BUDURWA: [
+            # Bare budurwa inside fixed phrase wata budurwa — handled by separate lexicon row (warn).
+            r'\bwata\s+{term}\b',
+            # Questions / discourse (shin only — avoids blocking "Ko … balle budurwa!!" sermons).
+            r'\bshin\b.{{0,140}}{term}',
+            r'{term}.{{0,140}}\?',
+            r'\bba\s+matarka\s+ba\s+budurwa\b',
+            r'\byanada\s+budurwa\b',
+            r'\bba\s+na\s+da\s+budurwa\b',
+            r'\byar\s+budurwa\b',
+            r'\bmijinki\s+yanada\s+budurwa\b',
+            r'\bmekwai\s+ko\b.{{0,80}}{term}',
+            r'\bko\s+dae\b.{{0,80}}{term}',
+            r'\bnayi\s+sabuwar\s+budurwa\b',
+            r'\bbudurwa\s+bakadashi\b',
+            r'\btsayayyar\s+budurwa\b',
+            r'\bkiran\s+budurwa\s+ta\b',
+            r'\bbudurwar\s+ta\s+yi\b',
+            r'\b[Jj]arumar\s+budurwa\b',
+            r'\b[ƙƘKk]awayen\s+budurwa\b',
+            r'\bda\s+budurwa\s+kamarta\b',
+            r'\bbudurwa\s+gaskiya\b',
+            # Compound / colloquial neutrals (StudyLabs social & health scroll)
+            r'\byarinya\s+{term}\b',
+            r'\bmaganan\s+{term}\b',
+            r'\bwai\s+{term}\b',
+            r'\bkamar\s+{term}\b',
+            r'\bzamanta\s+{term}\b',
+            r'\b{term}\s+ko\s+saurayi\b',
+            r'\bdadewar\s+{term}\b',
         ],
     }
 

@@ -19,6 +19,10 @@ from .schemas import RewriteResponse
 
 semantic_metrics = SemanticPreservationMetrics()
 
+# Callers that already ran bias detection upstream — skip Stage 0 external /detect gate.
+# StudyLabs (and similar) detect; we only correct when they hit POST /rewrite with this set.
+_SKIP_EXTERNAL_BIAS_GATE_CALLERS = frozenset({"aibridge", "studylabs"})
+
 
 def rewrite_text(
     id: str,
@@ -32,15 +36,18 @@ def rewrite_text(
     Run bias detection + correction. Returns (response, audit_info).
     audit_info has model_info, latency_ms for logging.
 
-    caller="aibridge": skip Stage 0 gate — caller already confirmed bias.
+    caller 'studylabs' or 'aibridge': skip Stage 0 external /detect — partner already
+    detected bias; we only run lexicon (and later stages) to correct.
     """
     t0 = time.time()
 
-    # Stage 0: AIBRIDGE external bias detection gate (SW only, skipped when caller="aibridge").
+    # Stage 0: optional external bias detection gate (haus | swahili | zulu when enabled).
+    # Skipped when the integration partner already flagged bias (StudyLabs, AIBRIDGE pipeline).
     # If the external model says no bias, skip correction entirely and return immediately.
     # On any network/auth error, aibridge_result.error is set and we fall through silently.
     aibridge_result: Optional[AibridgeResult] = None
-    skip_gate = (caller == "aibridge")
+    caller_norm = (caller or "").strip().lower()
+    skip_gate = caller_norm in _SKIP_EXTERNAL_BIAS_GATE_CALLERS
     ext_lang = LANG_CODE_MAP.get(lang) if (AIBRIDGE_ENABLED and not skip_gate) else None
     if ext_lang:
         aibridge_result = detect_bias(text, ext_lang)

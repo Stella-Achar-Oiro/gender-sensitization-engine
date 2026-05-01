@@ -16,7 +16,8 @@ class RewriteRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=5000)
     flags: Optional[list] = None
     region_dialect: Optional[str] = None  # "kenya" | "tanzania" | "uganda" | "sheng" | "coastal"
-    caller: Optional[str] = None  # "aibridge" = skip detection gate (caller already confirmed bias)
+    caller: Optional[str] = None
+    # Skip Stage 0 external /detect when upstream already flagged bias: "studylabs" | "aibridge"
 
 
 class BatchRewriteRequest(BaseModel):
