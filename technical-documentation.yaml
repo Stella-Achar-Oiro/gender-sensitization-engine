@@ -1,0 +1,223 @@
+# JuaKazi Gender Sensitization Engine — Machine-Readable Governance
+# SBD-T Layer 1 compliance file
+# Programme: AI BRIDGE | Engine 2 (Detection: StudyLabs | Correction: JuaKazi)
+# Updated: May 2026
+
+project_id: juakazi-gender-sensitization-engine-v3
+version: "3.3"
+updated: "2026-05-01"
+programme: AI BRIDGE
+engine: Engine 2
+team: JuaKazi
+partner_team: StudyLabs
+live_demo: https://huggingface.co/spaces/juakazike/gender-sensitization-engine
+repository: https://gitlab.com/juakazike/gender-sensitization-engine
+
+intended_use:
+  primary: >
+    Detect and neutralise gender-biased language in written East African text
+    for content moderation, editorial review, and inclusive writing assistance.
+  users:
+    - Journalists and editorial teams
+    - Content platforms and social media moderators
+    - NGOs and civil society organisations
+    - Government communication teams
+    - Educational publishers operating in East Africa
+  languages:
+    - code: sw
+      name: Swahili
+      regions: [kenya, tanzania]
+      coverage: full
+      ml_fallback: true
+    - code: en
+      name: English
+      coverage: full
+    - code: fr
+      name: French
+      coverage: full
+    - code: ki
+      name: Gikuyu
+      coverage: partial
+      recall_note: "R=0.510; religious/traditional-leadership terms not yet covered"
+    - code: ha
+      name: Hausa
+      coverage: precision_first
+      recall_note: "R=0.022; contextual/implicit bias requires ML classifier (planned)"
+    - code: zu
+      name: Zulu
+      coverage: morphological
+      recall_note: "R=0.577; compound constructions not yet covered"
+  not_intended_for:
+    - Real-time speech transcription or audio analysis
+    - Personal messaging surveillance
+    - Automated mass-moderation without a human reviewer in the loop
+    - Detecting non-gender forms of bias (racial, ethnic, disability, age)
+    - Sheng-dominant text without human review (see dialect_handling)
+
+dialect_handling:
+  sheng:
+    status: partial
+    lexicon_terms: 69
+    recommendation: >
+      For Sheng-heavy text, apply JuaKazi correction and set needs_review=true.
+      Do not apply rewrites automatically. Route all outputs through a native
+      Swahili/Sheng speaker before publishing.
+  ugandan_swahili:
+    status: not_covered
+    recommendation: >
+      Ugandan Swahili dialect patterns are not represented in the training data.
+      Human review is required for all Ugandan Swahili content.
+  tanzanian_swahili:
+    status: covered
+    corpus_share: "51.6% of SW ground truth (34,594 rows)"
+  kenyan_swahili:
+    status: covered
+    corpus_share: "48.4% of SW ground truth (32,401 rows)"
+
+sensitive_attributes:
+  - gender
+  - occupational_role
+  - marital_status
+  - cultural_role
+  - morphological_gender_marking  # Zulu, Gikuyu
+
+fairness_metric_primary: f1_score_bias_class
+fairness_metric_rationale: >
+  F1 balances Precision and Recall for the BIAS class. High Precision minimises
+  false corrections on neutral text (user trust). High Recall minimises missed
+  bias (social harm). F1 is the single metric that captures both.
+
+accuracy_tradeoff_pct:
+  description: >
+    Swahili Precision was prioritised over Recall at the v3 lexicon stage.
+    Adding 28 recall-boost derogation patterns in Mar 2026 raised Recall from
+    0.657 to 0.881 (+22.4pp) while Precision dropped from 0.958 to 0.822
+    (-13.6pp). This trade-off was accepted: the system now catches more biased
+    sentences, and the false-positive rate remains below the 20% threshold
+    agreed with AIBRIDGE reviewers.
+  precision_before: 0.958
+  precision_after: 0.822
+  recall_before: 0.657
+  recall_after: 0.881
+  accepted: true
+  rationale: >
+    The remaining FP cluster (Watoto wa Kike / mtoto wa kike, ~320 sentences)
+    is contextually ambiguous — the same phrase appears in both advocacy
+    (not bias) and prescriptive (bias) contexts. Context gating cannot
+    reliably distinguish without sentence-level semantic analysis. Accepted
+    pending next annotation sprint.
+
+bias_sources_identified:
+  - type: historical_bias
+    description: >
+      Training corpora (news, Wikipedia) reflect historical occupational and
+      social gender norms in East Africa. The model learns to flag these norms
+      as bias, but may over-flag in historical/archival contexts — suppressed
+      via avoid_when=historical context gate.
+  - type: measurement_bias
+    description: >
+      Ground truth annotations were produced primarily by a small number of
+      annotators (AO-001 for Swahili, auto-annotation for Gikuyu). Annotator
+      demographic gaps are documented; Gikuyu annotations require native
+      speaker validation.
+  - type: coverage_bias
+    description: >
+      SW corpus is 51.6% Tanzanian, 48.4% Kenyan. Ugandan, Congolese, and
+      diaspora Swahili are not represented. Sheng is represented by only 49
+      incidental rows pre-May 2026 (69 terms added in lexicon May 2026).
+
+inter_annotator_agreement:
+  metric: cohen_kappa
+  value: 0.8537
+  interpretation: Almost Perfect
+  aibridge_threshold: 0.61
+  threshold_met: true
+  computed_on: 500-row overlap set (ann_sw_kappa_v2)
+  languages_measured: [sw]
+  languages_not_measured: [en, fr, ki, ha, zu]
+
+performance_metrics:
+  evaluated: "2026-05-01"
+  languages:
+    - lang: en
+      f1: 1.000
+      precision: 1.000
+      recall: 1.000
+      samples: 66
+    - lang: sw
+      f1: 0.851
+      precision: 0.822
+      recall: 0.881
+      samples: 67290
+    - lang: fr
+      f1: 0.970
+      precision: 1.000
+      recall: 0.941
+      samples: 165
+    - lang: ki
+      f1: 0.667
+      precision: 0.967
+      recall: 0.510
+      samples: 11622
+    - lang: ha
+      f1: 0.043
+      precision: 1.000
+      recall: 0.022
+      samples: 10054
+    - lang: zu
+      f1: 0.732
+      precision: 1.000
+      recall: 0.577
+      samples: 2000
+
+ml_models:
+  - model_id: juakazike/sw-bias-classifier-v3
+    base: Davlan/afro-xlmr-base
+    role: Stage 2 fallback (Swahili only)
+    val_f1: 0.871
+    val_precision: 0.810
+    val_recall: 0.942
+    training_rows: 67290
+    decision_threshold: 0.56
+    output: warn_only  # never auto-corrects; needs_review=True always
+
+ethical_review:
+  principles_aligned:
+    - Mozilla Responsible AI Principles
+    - Google People + AI Research (PAIR) Guidelines
+    - AIBRIDGE programme ethical guidelines
+  harm_minimization:
+    - severity=replace rules require semantic_score >= 0.70 before applying correction
+    - ML outputs carry needs_review=True; never applied automatically
+    - Context gating (11 conditions) suppresses rules in biographical, quote,
+      statistical, counter-stereotype, and other safe contexts
+    - Binary gender framework limitation disclosed; non-binary bias not captured
+    - Gikuyu corrections flagged for native speaker review before production use
+  deployment_warnings:
+    - Do not bulk-rewrite published content using Layer 2 (ML) outputs without review
+    - Swahili false-positive rate ~17.8%; batch automation requires human spot-check
+    - Kikuyu F1=0.667 is below production threshold; use with review
+    - Hausa recall=0.022; engine catches only surface-form occupational terms
+  signed_off_by:
+    name: David Nene
+    role: Technical Lead, JuaKazi
+    date: "2026-05-01"
+
+reproducibility:
+  model_links:
+    - https://huggingface.co/juakazike/sw-bias-classifier-v3
+  decision_threshold: 0.56
+  run_evaluation: "python3 run_evaluation.py"
+  run_tests: "python3 tests/test_system.py"
+  api_start: "uvicorn api.main:app --reload --port 8000"
+  implementation_snippet: |
+    from transformers import pipeline
+    classifier = pipeline(
+        "text-classification",
+        model="juakazike/sw-bias-classifier-v3",
+        tokenizer="Davlan/afro-xlmr-base"
+    )
+    result = classifier("Daktari wa kiume alifika", return_all_scores=True)
+    # Or via API:
+    # POST https://juakazike.hf.space/rewrite
+    # {"id":"1","lang":"sw","text":"...","caller":"studylabs"}

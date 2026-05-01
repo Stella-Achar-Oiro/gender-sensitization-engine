@@ -152,7 +152,23 @@ Evaluation methodology: binary classification of has_bias against ground truth C
 | Hausa | 0.043 | 1.000 | 0.022 | 10,054 | 1,012 |
 | Zulu | 0.732 | 1.000 | 0.577 | 2,000 | 1,978 |
 
-### 4.2 Iteration history (three cycles)
+### 4.2 Precision/Recall trade-off justification
+
+The fairness metric primary is **F1 for the BIAS class**, which balances Precision (false corrections on neutral text damage user trust) and Recall (missed bias causes social harm).
+
+The most significant trade-off was made during the March 2026 recall-boost sprint for Swahili:
+
+| Metric | Before (v2 lexicon) | After (v3 + derogation patterns) | Change |
+|---|---|---|---|
+| Precision | 0.958 | 0.822 | −13.6pp |
+| Recall | 0.657 | 0.881 | +22.4pp |
+| F1 | 0.778 | 0.851 | +7.3pp |
+
+**Rationale for accepting the precision drop**: The 28 added derogation patterns recovered 22.4pp of missed biased sentences. The residual FP cluster (~320 sentences, `Watoto wa Kike` / `mtoto wa kike`) is contextually ambiguous — identical phrases appear in advocacy contexts (not bias) and prescriptive contexts (bias). Context gating cannot distinguish them reliably at the word level. The false-positive rate (~17.8% of flagged SW sentences) remains within the threshold agreed with AIBRIDGE reviewers. All FP cases are documented in `eval/ground_truth_sw_v5.csv`.
+
+For EN, FR, HA, and ZU, Precision = 1.000 is maintained — no false corrections on neutral sentences in those languages.
+
+### 4.3 Iteration history (three cycles)
 
 **Cycle 1 — Baseline (Feb 2026)**
 
@@ -312,7 +328,23 @@ Expert feedback from AIBRIDGE review sessions drove the following changes:
 
 ---
 
-## 8. Deployment Instructions
+## 8. Dialect and Out-of-Distribution Handling
+
+Users must apply appropriate care when processing text from dialect groups not covered in the training corpus.
+
+| Dialect | Coverage | Recommendation |
+|---|---|---|
+| Tanzanian Swahili | Full — 51.6% of SW GT (34,594 rows) | Standard use |
+| Kenyan Swahili | Full — 48.4% of SW GT (32,401 rows) | Standard use |
+| Sheng (Nairobi urban) | Partial — 69 lexicon terms added May 2026 | Apply correction; set `needs_review=true`; route through native Swahili/Sheng speaker before publishing |
+| Ugandan Swahili | Not covered | Human review required for all outputs |
+| Congolese / diaspora Swahili | Not covered | Human review required for all outputs |
+| Hausa (Northern Nigeria) | Precision-first initial coverage | Surface-form occupational terms only; contextual bias will be missed; do not rely on recall |
+| Zulu (morphological) | Suffix patterns covered | Compound constructions not covered; human review recommended for complex sentences |
+
+---
+
+## 9. Deployment Instructions
 
 ### 8.1 HuggingFace Space (live)
 
@@ -362,7 +394,7 @@ make run        # demo_live.py
 
 ---
 
-## 9. Inter-Annotator Agreement
+## 10. Inter-Annotator Agreement
 
 Cohen's κ = 0.8537 (Almost Perfect) computed on a 500-row overlap set (ann_sw_kappa_v2) between two annotators. Exceeds the AIBRIDGE Bronze threshold (κ ≥ 0.61).
 
@@ -370,7 +402,7 @@ English, French, and Kikuyu IAA not yet computed — single annotator, small set
 
 ---
 
-## 10. Next Steps
+## 11. Next Steps
 
 | Priority | Item | Owner | Blocker |
 |---|---|---|---|
@@ -381,6 +413,41 @@ English, French, and Kikuyu IAA not yet computed — single annotator, small set
 | Medium | SW `Watoto wa Kike` FP cluster — narrow match patterns | JuaKazi engineer | None |
 | Low | sw-bias-classifier-v4 retraining (LoRA config fixed) | JuaKazi engineer | None — config fix ready |
 | Low | Non-news domains (health, livelihoods, household) for SW GT | Data team | Collection effort |
+
+---
+
+## 12. Ethical Review Statement
+
+This system was designed and evaluated in alignment with:
+
+- **Mozilla Responsible AI Principles** — transparency, accountability, privacy, inclusion
+- **Google People + AI Research (PAIR) Guidelines** — human oversight, meaningful explanations, graceful failure
+- **AIBRIDGE programme ethical guidelines** — fairness metrics, IAA requirements, harm minimization
+
+**Harm minimization measures in place:**
+
+1. Semantic preservation check (threshold 0.70) — rewrites that alter meaning are discarded; original returned unchanged
+2. ML outputs carry `needs_review=True` and are never applied automatically
+3. Eleven context suppression conditions prevent rules from firing in biographical, historical, statistical, and other safe contexts
+4. All known FP clusters are documented, not hidden
+5. Binary gender framework limitation is disclosed; non-binary bias is not claimed to be covered
+6. Gikuyu corrections flagged for native speaker validation before production deployment
+7. Hausa low recall (0.022) explicitly disclosed — users must not rely on the system for comprehensive Hausa bias detection at this stage
+
+**For Sheng and uncovered dialect text:** Do not apply automated rewrites without routing outputs through a native speaker. The system will return `needs_review=True` for ML-flagged outputs; for rule-based outputs on Sheng text, apply the same caution.
+
+**Machine-readable governance**: All mandatory SBD-T metadata (project_id, intended_use, sensitive_attributes, fairness_metric_primary, accuracy_tradeoff_pct, bias sources) is available in `technical-documentation.yaml` at the repository root.
+
+---
+
+**Formal sign-off**
+
+I confirm that this report accurately reflects the system's capabilities, limitations, and performance as of May 2026. All metrics are derived from reproducible evaluation runs against documented ground truth datasets. No performance figures have been selectively reported or cherry-picked.
+
+**Signed**: David Nene  
+**Role**: Technical Lead, JuaKazi  
+**Date**: 2026-05-01  
+**Programme**: AI BRIDGE — Engine 2
 
 ---
 
