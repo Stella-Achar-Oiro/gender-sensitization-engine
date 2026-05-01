@@ -312,6 +312,8 @@ def test_detector():
              "ZU: gender-marked profession suffix"),
             ("Udokotela uhlulekile ukwenza umsebenzi onzima.", Language.ZULU, False,
              "ZU: neutral profession wording"),
+            ("Kuyamangaza ukubona owesifazane eholwa ithimba labakhi bezindlu.", Language.ZULU, False,
+             "ZU: celebratory counter-stereo — zu_neutral_profession gate"),
         ]
 
         for text, lang, expect_bias, label in cases:

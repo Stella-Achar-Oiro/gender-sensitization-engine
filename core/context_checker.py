@@ -108,6 +108,8 @@ class ContextCondition(Enum):
     ORGANIZATION = "organization"
     # Hausa: bare budurwa/budurwar is often neutral (news, relationships); gate before replace.
     HA_NEUTRAL_BUDURWA = "ha_neutral_budurwa"
+    # Zulu: celebratory / counter-stereotype reporting (amazement, praise) — do not auto-strip wesifazane.
+    ZU_NEUTRAL_PROFESSION = "zu_neutral_profession"
 
 
 @dataclass
@@ -279,6 +281,17 @@ class ContextChecker:
             r'\bzamanta\s+{term}\b',
             r'\b{term}\s+ko\s+saurayi\b',
             r'\bdadewar\s+{term}\b',
+        ],
+        ContextCondition.ZU_NEUTRAL_PROFESSION: [
+            r'\bkuyamangaza\b.{{0,160}}{term}',
+            r'\bkuyamangalisa\b.{{0,160}}{term}',
+            r'{term}.{{0,140}}\bemangalisayo\b',
+            r'\bngisho\s+noma\b.{{0,140}}{term}',
+            r'{term}.{{0,120}}\bngisho\s+noma\b',
+            r'\bomuhle\b.{{0,100}}{term}',
+            r'{term}.{{0,120}}\bomuhle\b',
+            r'{term}.{{0,80}}\b(?:ephumelele|usekhulile)\b',
+            r'{term}.{{0,120}}\bohlakaniphile\s+kakhulu\b',
         ],
     }
 

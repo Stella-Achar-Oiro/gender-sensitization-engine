@@ -24,6 +24,7 @@ class DataVersions:
     GROUND_TRUTH_BY_LANG: dict = {
         "ki": "v8",
         "ha": "v1",
+        "zu": "v1",
     }
 
 

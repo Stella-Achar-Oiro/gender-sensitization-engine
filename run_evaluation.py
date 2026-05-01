@@ -66,7 +66,7 @@ def _save_to_registry(tag: str, results: list) -> None:
         print(f"Warning: tag '{tag}' already exists in registry — skipping save.")
         return
 
-    langs = ["en", "sw", "fr", "ki", "ha"]
+    langs = ["en", "sw", "fr", "ki", "ha", "zu"]
     metrics_map = {}
     for r in results:
         lang = r.language.value if hasattr(r.language, "value") else str(r.language)

@@ -82,6 +82,7 @@ class BiasEvaluationOrchestrator:
                 Language.FRENCH,
                 Language.GIKUYU,
                 Language.HAUSA,
+                Language.ZULU,
             ]
         
         results = []
@@ -99,6 +100,7 @@ class BiasEvaluationOrchestrator:
                     Language.FRENCH: "French",
                     Language.GIKUYU: "Gikuyu",
                     Language.HAUSA: "Hausa",
+                    Language.ZULU: "Zulu",
                 }
                 lang_name = lang_names.get(language, language.value)
                 print(f"{lang_name} Results:")
@@ -169,6 +171,7 @@ class BiasEvaluationOrchestrator:
                 Language.FRENCH: "fr",
                 Language.GIKUYU: "ki",
                 Language.HAUSA: "ha",
+                Language.ZULU: "zu",
             }
             metrics_out = {}
             for r in results:
