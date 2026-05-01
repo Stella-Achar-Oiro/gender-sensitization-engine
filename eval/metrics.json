@@ -24,9 +24,9 @@
     "samples": 11622
   },
   "ha": {
-    "f1": 0.056,
-    "precision": 0.435,
-    "recall": 0.03,
+    "f1": 0.043,
+    "precision": 1.0,
+    "recall": 0.022,
     "samples": 10054
   }
 }
