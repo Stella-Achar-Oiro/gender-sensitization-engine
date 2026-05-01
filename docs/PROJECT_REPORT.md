@@ -394,7 +394,43 @@ make run        # demo_live.py
 
 ---
 
-## 10. Inter-Annotator Agreement
+## 10. Combined End-to-End Pipeline Metrics
+
+AIBRIDGE evaluation measures the full Engine 2 pipeline — StudyLabs detection followed by JuaKazi correction. The combined metrics below reflect what an end-to-end evaluator will observe.
+
+### 10.1 Component metrics
+
+| Component | Language | F1 | Precision | Recall |
+|---|---|---|---|---|
+| StudyLabs (detection) | Swahili | 0.710 | 0.712 | 0.710 |
+| StudyLabs (detection) | Hausa | 0.814 | 0.814 | 0.815 |
+| JuaKazi (correction) | Swahili | 0.851 | 0.822 | 0.881 |
+| JuaKazi (correction) | Hausa | 0.043 | 1.000 | 0.022 |
+
+### 10.2 Combined pipeline estimate
+
+The combined recall is bounded by both stages: sentences StudyLabs does not flag never reach JuaKazi for correction.
+
+| Language | Combined recall ceiling | Combined precision estimate | Notes |
+|---|---|---|---|
+| Swahili | ~0.626 (0.710 × 0.881) | ~0.75–0.80 | SW precision hurt by StudyLabs FPs reaching our rules |
+| Hausa | ~0.018 (0.815 × 0.022) | ~0.81 | HA bottleneck is JuaKazi correction recall, not detection |
+
+**SW interpretation**: StudyLabs misses ~29% of biased SW sentences before we see them. Of the 71% that reach us, we correct 88% correctly. The end-to-end pipeline recovers approximately 62.6% of all biased SW sentences in a document.
+
+**HA interpretation**: StudyLabs detects Hausa bias well (F1=0.814). The bottleneck is entirely on the JuaKazi side — our lexicon covers only surface-form occupational terms. Contextual and implicit Hausa bias (dominant categories: leadership, religion_culture, daily_life) requires an ML classifier. This is the single highest-priority improvement for post-submission.
+
+### 10.3 What moves the needle
+
+| Action | Expected combined recall gain |
+|---|---|
+| HA ML classifier (fine-tune on 10K GT rows) | HA: ~0.018 → ~0.50+ |
+| SW StudyLabs detection improvement (their side) | SW: ~0.626 → proportional gain |
+| SW Watoto wa Kike FP fix | SW precision: ~0.80 → ~0.85+ |
+
+---
+
+## 11. Inter-Annotator Agreement
 
 Cohen's κ = 0.8537 (Almost Perfect) computed on a 500-row overlap set (ann_sw_kappa_v2) between two annotators. Exceeds the AIBRIDGE Bronze threshold (κ ≥ 0.61).
 
@@ -402,21 +438,22 @@ English, French, and Kikuyu IAA not yet computed — single annotator, small set
 
 ---
 
-## 11. Next Steps
+## 12. Next Steps
 
-| Priority | Item | Owner | Blocker |
+**Deadline**: End of day 2026-05-02. Testing over weekend. Monday: address major feedback only.
+
+| Priority | Item | Expected impact | Owner |
 |---|---|---|---|
-| High | HA ML classifier (fine-tune on 10K rows) — recall 0.022 → target ≥0.60 | JuaKazi engineer | None — data available |
-| High | StudyLabs full integration test — end-to-end call with real sentences | Joint | StudyLabs to add `caller="studylabs"` |
-| Medium | ZU lexicon expansion (compound constructions, idiomatic patterns) | JuaKazi engineer | Need ZU native speaker review |
-| Medium | KI religious/leadership lexicon expansion | JuaKazi engineer | KI native speaker review |
-| Medium | SW `Watoto wa Kike` FP cluster — narrow match patterns | JuaKazi engineer | None |
-| Low | sw-bias-classifier-v4 retraining (LoRA config fixed) | JuaKazi engineer | None — config fix ready |
-| Low | Non-news domains (health, livelihoods, household) for SW GT | Data team | Collection effort |
+| Critical | HA ML classifier — fine-tune on 10K GT rows | HA combined recall 0.018 → ~0.50+ | JuaKazi engineer |
+| Critical | End-to-end integration test with StudyLabs on shared sentences | Confirm pipeline works before submission | Joint |
+| High | SW `Watoto wa Kike` FP fix — narrow match patterns | SW combined precision ~0.80 → ~0.85 | JuaKazi engineer |
+| Post-submission | ZU lexicon expansion (compound constructions) | ZU recall 0.577 → higher | JuaKazi engineer |
+| Post-submission | KI religious/leadership lexicon expansion | KI recall 0.510 → higher | JuaKazi engineer |
+| Post-submission | sw-bias-classifier-v4 retraining (config fixed) | SW ML fallback improvement | JuaKazi engineer |
 
 ---
 
-## 12. Ethical Review Statement
+## 13. Ethical Review Statement
 
 This system was designed and evaluated in alignment with:
 
