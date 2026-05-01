@@ -52,6 +52,7 @@ def rewrite(req: RewriteRequest):
             lang=req.lang,
             flags=req.flags,
             region_dialect=req.region_dialect,
+            caller=req.caller,
         )
         log_audit({
             "request": req.model_dump(),

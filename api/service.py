@@ -26,18 +26,22 @@ def rewrite_text(
     lang: str,
     flags: Optional[list] = None,
     region_dialect: Optional[str] = None,
+    caller: Optional[str] = None,
 ) -> tuple[RewriteResponse, dict]:
     """
     Run bias detection + correction. Returns (response, audit_info).
     audit_info has model_info, latency_ms for logging.
+
+    caller="aibridge": skip Stage 0 gate — caller already confirmed bias.
     """
     t0 = time.time()
 
-    # Stage 0: AIBRIDGE external bias detection gate (Swahili only).
+    # Stage 0: AIBRIDGE external bias detection gate (SW only, skipped when caller="aibridge").
     # If the external model says no bias, skip correction entirely and return immediately.
     # On any network/auth error, aibridge_result.error is set and we fall through silently.
     aibridge_result: Optional[AibridgeResult] = None
-    ext_lang = LANG_CODE_MAP.get(lang) if AIBRIDGE_ENABLED else None
+    skip_gate = (caller == "aibridge")
+    ext_lang = LANG_CODE_MAP.get(lang) if (AIBRIDGE_ENABLED and not skip_gate) else None
     if ext_lang:
         aibridge_result = detect_bias(text, ext_lang)
         if aibridge_result.error is None and not aibridge_result.has_bias:

@@ -16,6 +16,8 @@ RULES: dict[str, list[dict]] = {
     "sw": _load_rules("sw", RULES_DIR),
     "fr": _load_rules("fr", RULES_DIR),
     "ki": _load_rules("ki", RULES_DIR),
+    "ha": _load_rules("ha", RULES_DIR),
+    "zu": _load_rules("zu", RULES_DIR),
 }
 
 

@@ -5,8 +5,9 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 # Supported language codes (must match rules_engine and detector)
-SUPPORTED_LANGS = ("en", "sw", "fr", "ki")
-LangCode = Literal["en", "sw", "fr", "ki"]
+# ha/zu: rules-based correction via lexicon_ha_v1 / lexicon_zu_v1
+SUPPORTED_LANGS = ("en", "sw", "fr", "ki", "ha", "zu")
+LangCode = Literal["en", "sw", "fr", "ki", "ha", "zu"]
 
 
 class RewriteRequest(BaseModel):
@@ -15,6 +16,7 @@ class RewriteRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=5000)
     flags: Optional[list] = None
     region_dialect: Optional[str] = None  # "kenya" | "tanzania" | "uganda" | "sheng" | "coastal"
+    caller: Optional[str] = None  # "aibridge" = skip detection gate (caller already confirmed bias)
 
 
 class BatchRewriteRequest(BaseModel):

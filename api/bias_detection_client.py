@@ -26,6 +26,8 @@ SUPPORTED_LANGUAGES = frozenset({"hausa", "swahili", "zulu"})
 # Our lang codes → external API language names
 LANG_CODE_MAP: dict[str, str] = {
     "sw": "swahili",
+    "ha": "hausa",
+    "zu": "zulu",
 }
 
 

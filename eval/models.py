@@ -109,6 +109,8 @@ class Language(str, Enum):
     SWAHILI = "sw"
     FRENCH = "fr"
     GIKUYU = "ki"
+    HAUSA = "ha"
+    ZULU = "zu"
 
 
 @dataclass

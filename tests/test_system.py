@@ -39,14 +39,13 @@ def test_imports():
 
 
 def test_lexicon():
-    """Test current v3 lexicons load without errors."""
+    """Test active lexicons load without errors (paths from config.lexicon_filename)."""
     try:
         import csv
-        lexicons = {
-            'en': 'rules/lexicon_en_v3.csv',
-            'sw': 'rules/lexicon_sw_v3.csv',
-        }
-        for lang, path in lexicons.items():
+        from config import lexicon_filename
+
+        for lang in ("en", "sw", "fr", "ki", "ha", "zu"):
+            path = "rules/" + lexicon_filename(lang)
             with open(path, newline='', encoding='utf-8') as f:
                 rows = list(csv.DictReader(f))
             assert len(rows) > 0, f"{path} is empty"
@@ -301,6 +300,18 @@ def test_detector():
              "FR: gendered occupation 'président'"),
             ("La réunion a bien commencé.", Language.FRENCH, False,
              "FR: neutral sentence"),
+
+            # ── Hausa (StudyLabs lexicon v1) ───────────────────────────────────────
+            ("Wasu sun ce mata ba sa iya shugabanci a kan ofis.", Language.HAUSA, True,
+             "HA: capability denial phrase from lexicon"),
+            ("Likita ya bincika marasa lafiya a asibiti.", Language.HAUSA, False,
+             "HA: neutral occupation sentence"),
+
+            # ── Zulu (StudyLabs lexicon v1) ──────────────────────────────────────
+            ("Udokotela wesifazane uhlulekile ukwenza lo msebenzi onzima.", Language.ZULU, True,
+             "ZU: gender-marked profession suffix"),
+            ("Udokotela uhlulekile ukwenza umsebenzi onzima.", Language.ZULU, False,
+             "ZU: neutral profession wording"),
         ]
 
         for text, lang, expect_bias, label in cases:

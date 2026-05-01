@@ -32,7 +32,9 @@ def _git_commit() -> str | None:
 def _lexicon_size(lang: str) -> int:
     try:
         import csv
-        path = project_root / "rules" / f"lexicon_{lang}_v3.csv"
+        from config import lexicon_filename
+
+        path = project_root / "rules" / lexicon_filename(lang)
         with open(path, newline="", encoding="utf-8") as f:
             return sum(1 for _ in csv.reader(f)) - 1
     except Exception:
