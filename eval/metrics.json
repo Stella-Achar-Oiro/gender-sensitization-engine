@@ -28,5 +28,11 @@
     "precision": 1.0,
     "recall": 0.022,
     "samples": 10054
+  },
+  "zu": {
+    "f1": 0.732,
+    "precision": 1.0,
+    "recall": 0.577,
+    "samples": 2000
   }
 }
