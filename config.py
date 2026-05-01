@@ -23,6 +23,7 @@ class DataVersions:
     # Per-language overrides (Kikuyu is ahead of the default version)
     GROUND_TRUTH_BY_LANG: dict = {
         "ki": "v8",
+        "ha": "v1",
     }
 
 

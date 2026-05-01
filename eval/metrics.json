@@ -22,5 +22,11 @@
     "precision": 0.967,
     "recall": 0.51,
     "samples": 11622
+  },
+  "ha": {
+    "f1": 0.056,
+    "precision": 0.435,
+    "recall": 0.03,
+    "samples": 10054
   }
 }
