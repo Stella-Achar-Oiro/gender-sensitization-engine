@@ -13,8 +13,8 @@ def load_rules(lang: str, rules_dir: Optional[Path] = None) -> list[dict]:
     Load lexicon rules for a language. Returns list of row dicts (all columns as str).
 
     Args:
-        lang: Language code (en, sw, fr, ki).
-        rules_dir: Directory containing lexicon_*_v3.csv. Defaults to project rules/.
+        lang: Language code (en, sw, fr, ki, ha, zu).
+        rules_dir: Directory containing lexicon files (see config.lexicon_filename). Defaults to project rules/.
 
     Returns:
         List of dicts with keys from CSV (biased, neutral_primary, severity, avoid_when, etc.).

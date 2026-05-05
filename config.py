@@ -14,9 +14,17 @@ class DataVersions:
     LEXICON: str = "v3"
     GROUND_TRUTH: str = "v5"  # default for en, sw, fr
 
+    # Per-language lexicon file versions (Hausa/Zulu initial packs use v1 filenames)
+    LEXICON_BY_LANG: dict = {
+        "ha": "v1",
+        "zu": "v1",
+    }
+
     # Per-language overrides (Kikuyu is ahead of the default version)
     GROUND_TRUTH_BY_LANG: dict = {
         "ki": "v8",
+        "ha": "v1",
+        "zu": "v1",
     }
 
 
@@ -42,7 +50,9 @@ class RegionDialects:
 
 def lexicon_filename(language_code: str, version: str | None = None) -> str:
     """Build the lexicon filename for a given language code."""
-    current_version = version or DataVersions.LEXICON
+    current_version = version or DataVersions.LEXICON_BY_LANG.get(
+        language_code, DataVersions.LEXICON
+    )
     return f"lexicon_{language_code}_{current_version}.csv"
 
 
@@ -56,9 +66,10 @@ def ground_truth_filename(language_code: str, version: str | None = None) -> str
 
 
 def lexicon_glob_pattern(version: str | None = None) -> str:
-    """Return a glob pattern that matches lexicons for the active version."""
-    current_version = version or DataVersions.LEXICON
-    return f"lexicon_*_{current_version}.csv"
+    """Return a glob pattern that matches lexicon CSVs in rules/ (all active versions)."""
+    if version is not None:
+        return f"lexicon_*_{version}.csv"
+    return "lexicon_*.csv"
 
 
 # ---------------------------------------------------------------------------

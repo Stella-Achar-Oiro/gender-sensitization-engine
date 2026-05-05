@@ -32,7 +32,9 @@ def _git_commit() -> str | None:
 def _lexicon_size(lang: str) -> int:
     try:
         import csv
-        path = project_root / "rules" / f"lexicon_{lang}_v3.csv"
+        from config import lexicon_filename
+
+        path = project_root / "rules" / lexicon_filename(lang)
         with open(path, newline="", encoding="utf-8") as f:
             return sum(1 for _ in csv.reader(f)) - 1
     except Exception:
@@ -64,7 +66,7 @@ def _save_to_registry(tag: str, results: list) -> None:
         print(f"Warning: tag '{tag}' already exists in registry — skipping save.")
         return
 
-    langs = ["en", "sw", "fr", "ki"]
+    langs = ["en", "sw", "fr", "ki", "ha", "zu"]
     metrics_map = {}
     for r in results:
         lang = r.language.value if hasattr(r.language, "value") else str(r.language)

@@ -99,6 +99,7 @@ class QAStatus(str, Enum):
     """Quality assurance status for annotations."""
     GOLD = "gold"
     PASSED = "passed"
+    ACCEPTED = "accepted"
     NEEDS_REVIEW = "needs_review"
     REJECTED = "rejected"
 
@@ -109,6 +110,8 @@ class Language(str, Enum):
     SWAHILI = "sw"
     FRENCH = "fr"
     GIKUYU = "ki"
+    HAUSA = "ha"
+    ZULU = "zu"
 
 
 @dataclass

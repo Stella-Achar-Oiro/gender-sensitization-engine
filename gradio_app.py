@@ -42,6 +42,8 @@ LANGS = {
     "Swahili":  ("sw", Language.SWAHILI),
     "French":   ("fr", Language.FRENCH),
     "Gikuyu":   ("ki", Language.GIKUYU),
+    "Hausa":    ("ha", Language.HAUSA),
+    "Zulu":     ("zu", Language.ZULU),
 }
 
 # Load live metrics from eval/metrics.json if available (written by eval/evaluator.py)
@@ -70,23 +72,27 @@ def _ml_m(field: str, fallback):
 MODEL_METRICS = {
     "rules": {
         "label": "Rules-based (lexicon)",
-        "description": "Deterministic lexicon rules across all 4 languages. High precision, no GPU needed.",
+        "description": "Deterministic lexicon rules across all 6 languages. High precision, no GPU needed.",
         "en": dict(f1=_m("en","f1",1.000), precision=_m("en","precision",1.000), recall=_m("en","recall",1.000), tier="Pre-Bronze", samples=_m("en","samples",66)),
-        "sw": dict(f1=_m("sw","f1",0.840), precision=_m("sw","precision",0.807), recall=_m("sw","recall",0.876), tier="Gold (sample count)", samples=_m("sw","samples",66_995)),
+        "sw": dict(f1=_m("sw","f1",0.851), precision=_m("sw","precision",0.822), recall=_m("sw","recall",0.881), tier="Gold (sample count)", samples=_m("sw","samples",67_290)),
         "fr": dict(f1=_m("fr","f1",0.970), precision=_m("fr","precision",1.000), recall=_m("fr","recall",0.941), tier="Pre-Bronze", samples=_m("fr","samples",165)),
         "ki": dict(f1=_m("ki","f1",0.667), precision=_m("ki","precision",0.967), recall=_m("ki","recall",0.510), tier="Bronze (sample count)", samples=_m("ki","samples",11_622)),
+        "ha": dict(f1=_m("ha","f1",0.043), precision=_m("ha","precision",1.000), recall=_m("ha","recall",0.022), tier="Initial (precision-first)", samples=_m("ha","samples",10_054)),
+        "zu": dict(f1=_m("zu","f1",0.732), precision=_m("zu","precision",1.000), recall=_m("zu","recall",0.577), tier="Initial (morphological)", samples=_m("zu","samples",2_000)),
     },
     "ml_classifier": {
         "label": f"{_ML_MODEL_SHORT} (ML)",
-        "description": f"AfroXLM-R fine-tuned on 66K Swahili rows ({_ML_MODEL_SHORT}). Swahili only — not trained on EN/FR/KI.",
+        "description": f"AfroXLM-R fine-tuned on 67K Swahili rows ({_ML_MODEL_SHORT}). Swahili only — not trained on other languages.",
         "en": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
         "sw": dict(
-            f1=_ml_m("f1", 0.953), precision=_ml_m("precision", 0.940),
-            recall=_ml_m("recall", 0.960), tier="Gold (sample count)",
-            samples=_ml_m("samples", 66_995),
+            f1=_ml_m("f1", 0.871), precision=_ml_m("precision", 0.810),
+            recall=_ml_m("recall", 0.942), tier="Gold (sample count)",
+            samples=_ml_m("samples", 67_290),
         ),
         "fr": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
         "ki": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
+        "ha": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
+        "zu": dict(f1=None, precision=None, recall=None, tier="N/A (ML is SW only)", samples=None),
     },
 }
 
@@ -130,6 +136,20 @@ EXAMPLES = {
         "Mũrũgamĩrĩri ũcio nĩ mũndũ mũrũme.",
         "Mwarimu ũcio nĩ mũtumia.",
         "Mũrutani ũcio nĩ mũndũ mwega.",
+    ],
+    "Hausa": [
+        "Matan gida suna girki kawai.",
+        "Shugaban gari ya yanke hukunci.",
+        "Uwargida ta kula da yara.",
+        "Budurwar nan ba ta cancanci jagoranci ba.",
+        "Likita namiji ya zo asibiti.",
+    ],
+    "Zulu": [
+        "Umuntu wesifazane akanalo ilungelo lokuphatha.",
+        "Owesifazane kumele ahlale ekhaya.",
+        "Udokotela wesilisa weza esibhedlela.",
+        "Umfazi kumele alalele indoda yakhe.",
+        "Ingane yomfana izokhula ibe inhloko yomuzi.",
     ],
 }
 

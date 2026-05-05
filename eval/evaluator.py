@@ -75,8 +75,15 @@ class BiasEvaluationOrchestrator:
             EvaluationError: If evaluation fails
         """
         if languages is None:
-            # JuaKazi languages: EN (production), SW (foundation), FR/KI (pending validation)
-            languages = [Language.ENGLISH, Language.SWAHILI, Language.FRENCH, Language.GIKUYU]
+            # JuaKazi languages: EN (production), SW (foundation), FR/KI/HA (extended coverage)
+            languages = [
+                Language.ENGLISH,
+                Language.SWAHILI,
+                Language.FRENCH,
+                Language.GIKUYU,
+                Language.HAUSA,
+                Language.ZULU,
+            ]
         
         results = []
         
@@ -91,7 +98,9 @@ class BiasEvaluationOrchestrator:
                     Language.ENGLISH: "English",
                     Language.SWAHILI: "Swahili",
                     Language.FRENCH: "French",
-                    Language.GIKUYU: "Gikuyu"
+                    Language.GIKUYU: "Gikuyu",
+                    Language.HAUSA: "Hausa",
+                    Language.ZULU: "Zulu",
                 }
                 lang_name = lang_names.get(language, language.value)
                 print(f"{lang_name} Results:")
@@ -157,8 +166,12 @@ class BiasEvaluationOrchestrator:
 
             # Write metrics.json for gradio_app.py to load at startup
             lang_map = {
-                Language.ENGLISH: "en", Language.SWAHILI: "sw",
-                Language.FRENCH: "fr", Language.GIKUYU: "ki",
+                Language.ENGLISH: "en",
+                Language.SWAHILI: "sw",
+                Language.FRENCH: "fr",
+                Language.GIKUYU: "ki",
+                Language.HAUSA: "ha",
+                Language.ZULU: "zu",
             }
             metrics_out = {}
             for r in results:
