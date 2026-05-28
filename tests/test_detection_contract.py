@@ -159,6 +159,10 @@ def test_ki_detection():
     _assert_thresholds("ki", metrics)
 
 
+@pytest.mark.skipif(
+    not (ROOT / GT_FILES["fr"]).exists(),
+    reason="FR ground truth not in repo (gitignored large file)"
+)
 def test_fr_detection():
     """FR lexicon rules already meet threshold (F1=0.97). Phase 1b will improve recall further."""
     metrics = _evaluate("fr", max_rows=2000)

@@ -176,6 +176,10 @@ def _evaluate_corrections(lang_code: str):
 
 # ── Tests ────────────────────────────────────────────────────────────────────
 
+@pytest.mark.skipif(
+    not (ROOT / CORRECTION_FILES["sw"]).exists(),
+    reason="SW correction pairs not in repo (gitignored large file)"
+)
 def test_sw_correction():
     """SW correction must work — lexicon rules already produce corrections."""
     metrics = _evaluate_corrections("sw")
@@ -205,6 +209,10 @@ def test_ha_correction():
         f"HA change rate {metrics['change_rate']} too low — corrector not making changes"
 
 
+@pytest.mark.skipif(
+    not (ROOT / CORRECTION_FILES["zu"]).exists(),
+    reason="ZU correction pairs not in repo (gitignored large file)"
+)
 def test_zu_correction():
     """ZU lexicon rules already produce good corrections (BLEU=1.0 on sample). Phase 4.2 improves coverage."""
     metrics = _evaluate_corrections("zu")
