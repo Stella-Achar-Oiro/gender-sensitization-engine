@@ -22,7 +22,10 @@ jobs:
           cache: pip
 
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install fastapi uvicorn pydantic httpx requests transformers \
+                      scikit-learn numpy pandas sentencepiece
+          pip install -r requirements-dev.txt
 
       - name: Pytest acceptance gates
         run: |

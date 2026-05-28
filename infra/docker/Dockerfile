@@ -9,22 +9,17 @@ ARG NEXT_PUBLIC_API_URL=/
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
-# Stage 2: Install Python deps
+# Stage 2: Install Python deps with uv
 FROM python:3.11-slim AS python-builder
-RUN pip install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 WORKDIR /build
-COPY requirements.txt .
-# Install without the torch CPU extra-index-url (use standard torch for container)
-RUN grep -v "extra-index-url" requirements.txt > requirements_docker.txt && \
-    sed -i 's/torch==2\.2\.2+cpu/torch==2.2.2/g' requirements_docker.txt && \
-    uv pip install --target /venv -r requirements_docker.txt \
-      --extra-index-url https://download.pytorch.org/whl/cpu || \
-    pip install --target /venv -r requirements_docker.txt
+COPY requirements_docker.txt .
+RUN uv pip install --system --no-cache -r requirements_docker.txt
 
 # Stage 3: Runtime (non-root)
 FROM python:3.11-slim
-COPY --from=python-builder /venv /venv
-ENV PYTHONPATH=/venv
+COPY --from=python-builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=python-builder /usr/local/bin /usr/local/bin
 WORKDIR /app
 COPY api/ api/
 COPY eval/ eval/

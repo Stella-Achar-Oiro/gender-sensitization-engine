@@ -18,7 +18,10 @@ jobs:
           cache: pip
 
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install fastapi uvicorn pydantic httpx requests transformers \
+                      scikit-learn numpy pandas sentencepiece
+          pip install -r requirements-dev.txt
 
       - name: Pytest acceptance gates
         run: |
@@ -40,7 +43,7 @@ jobs:
 
       - name: Install Node dependencies
         working-directory: frontend
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Next.js build
         working-directory: frontend
@@ -48,7 +51,7 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: "/"
 
-      - name: Docker build smoke test (no push)
+      - name: Docker build (linux/amd64)
         run: |
           docker build \
             --platform linux/amd64 \
