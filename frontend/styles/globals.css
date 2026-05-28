@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green:          #00a651;
+  --green-light:    #e6f7ed;
+  --sidebar:        #111827;
+  --sidebar-hover:  #1f2937;
+  --sidebar-active: rgba(0,166,81,.15);
+  --bg:             #f8fafc;
+  --surface:        #ffffff;
+  --border:         #e2e8f0;
+  --text:           #0f172a;
+  --muted:          #64748b;
+  --dim:            #94a3b8;
+  --r:              8px;
+  --sw:             252px;
+}
+
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
