@@ -4,9 +4,9 @@ import json
 import logging
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from .audit import log as log_audit
@@ -14,6 +14,8 @@ from .schemas import BatchRewriteRequest, RewriteRequest, RewriteResponse
 from .service import rewrite_text as service_rewrite
 
 logger = logging.getLogger(__name__)
+
+_STATIC = Path(__file__).parent.parent / "static"
 
 app = FastAPI(title="JuaKazi Correction Engine", version="0.4")
 app.add_middleware(
@@ -23,23 +25,31 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-# Serve Next.js static export if present (production Docker build)
-# Next.js exports _next/ paths — mount the whole out/ dir at root
-_STATIC = Path(__file__).parent.parent / "static"
+# Mount entire Next.js static export directory
+# This serves _next/static/css/, _next/static/chunks/, etc.
 if _STATIC.exists():
-    # Mount _next/ sub-directory for JS/CSS chunks
-    _NEXT = _STATIC / "_next"
-    if _NEXT.exists():
-        app.mount("/_next", StaticFiles(directory=str(_NEXT)), name="next-assets")
+    app.mount("/_next", StaticFiles(directory=str(_STATIC / "_next")), name="next-static")
 
 
 @app.get("/")
 def root():
-    """Serve Next.js frontend index.html in production."""
+    """Serve Next.js frontend."""
     index = _STATIC / "index.html"
     if index.exists():
-        return FileResponse(str(index))
+        return FileResponse(str(index), media_type="text/html")
     return {"service": "JuaKazi API", "docs": "/docs"}
+
+
+@app.get("/languages")
+def languages_page():
+    """Serve Next.js languages page."""
+    page = _STATIC / "languages" / "index.html"
+    if page.exists():
+        return FileResponse(str(page), media_type="text/html")
+    index = _STATIC / "index.html"
+    if index.exists():
+        return FileResponse(str(index), media_type="text/html")
+    return {"service": "JuaKazi API"}
 
 
 @app.get("/metrics")
