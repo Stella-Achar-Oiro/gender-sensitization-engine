@@ -203,13 +203,18 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     lang_code, lang_enum = LANGS[lang_name]
     m = model_info[lang_code]
 
-    # ML is Swahili-only — fall back to rules for EN/FR/KI
+    # ML classifier now supports all 6 languages (per-language models)
+    # Falls back to rules if the language model is not yet trained/available
     ml_fallback_note = ""
-    if model_key == "ml_classifier" and lang_code != "sw":
-        ml_fallback_note = f"\n> ⚠️ **ML classifier is Swahili-only** — using rules-based detection for {lang_name}."
-        model_key = "rules"
-        model_info = MODEL_METRICS["rules"]
-        m = model_info[lang_code]
+    if model_key == "ml_classifier":
+        from eval.ml_classifier import is_available
+        from eval.models import Language as _Lang
+        _lang_enum_check = LANGS.get(lang_name, (None, None))[1]
+        if _lang_enum_check and not is_available(_lang_enum_check):
+            ml_fallback_note = f"\n> ⚠️ **ML classifier not yet trained for {lang_name}** — using rules-based detection."
+            model_key = "rules"
+            model_info = MODEL_METRICS["rules"]
+            m = model_info[lang_code]
 
     # Detection
     try:
@@ -252,14 +257,42 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     rules_warn = [e for e in result.warn_edits if e.get("severity") != "ml_fallback"]
 
     model_badge = f" `[{model_info['label']}]`"
+    confidence  = getattr(result, 'confidence', 0.0) or 0.0
+    low_conf    = has_bias and confidence > 0 and confidence < 0.75
+
     if has_bias:
-        verdict = f"🔴 **Gender bias detected** — {len(result.detected_edits)} rule(s) matched{llm_verdict_note}{model_badge}"
+        conf_str = f" · confidence `{confidence:.0%}`" if confidence > 0 else ""
+        flag_str = "\n\n⚠️ **Low confidence — flag for human review**" if low_conf else ""
+        verdict = (
+            f'<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;'
+            f'padding:14px 18px;margin-bottom:8px">'
+            f'🔴 <strong>Gender bias detected</strong> — '
+            f'{len(result.detected_edits)} rule(s) matched{llm_verdict_note}'
+            f'{conf_str}{model_badge}{flag_str}</div>'
+        )
     elif ml_edits:
-        verdict = f"🟠 **Implicit bias detected (ML)** — {len(ml_edits)} pattern(s) flagged by {_ML_MODEL_SHORT}{model_badge}"
+        verdict = (
+            f'<div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:8px;'
+            f'padding:14px 18px;margin-bottom:8px">'
+            f'🟠 <strong>Implicit bias detected (ML)</strong> — '
+            f'{len(ml_edits)} pattern(s) flagged{model_badge}'
+            f'\n\n⚠️ **Low confidence — flag for human review**</div>'
+        )
     elif has_warn:
-        verdict = f"🟡 **Advisory** — {len(rules_warn)} gendered term(s) noted (no correction applied){llm_verdict_note}{model_badge}"
+        verdict = (
+            f'<div style="background:#fffbeb;border:1.5px solid #fde68a;border-radius:8px;'
+            f'padding:14px 18px;margin-bottom:8px">'
+            f'🟡 <strong>Advisory</strong> — '
+            f'{len(rules_warn)} gendered term(s) noted (no correction applied)'
+            f'{llm_verdict_note}{model_badge}</div>'
+        )
     else:
-        verdict = f"🟢 **No bias detected** — text passes all rules and ML classifier{llm_verdict_note}{model_badge}"
+        verdict = (
+            f'<div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;'
+            f'padding:14px 18px;margin-bottom:8px">'
+            f'🟢 <strong>No bias detected</strong> — '
+            f'text passes all checks{llm_verdict_note}{model_badge}</div>'
+        )
 
     verdict += ml_fallback_note
 
@@ -298,9 +331,13 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
         if reason:
             correction_md += f"\n\n*Reason: {reason}*"
     elif has_bias:
-        correction_md = "Bias detected but no automatic correction available. Manual review recommended."
+        correction_md = (
+            "⚠️ **Bias detected — no automatic correction available.**\n\n"
+            "This sentence needs human review. "
+            "The bias pattern was identified but could not be automatically rewritten."
+        )
         if reason:
-            correction_md += f"\n\n*Reason: {reason}*"
+            correction_md += f"\n\n*{reason}*"
     else:
         correction_md = "No correction needed."
         if reason and skipped:
@@ -474,7 +511,7 @@ with gr.Blocks(title="JuaKazi · Gender Bias Detection", theme=_theme) as demo:
                     )
                     analyse_btn = gr.Button("Analyse", variant="primary", size="lg")
 
-                    verdict_out = gr.Markdown()
+                    verdict_out = gr.HTML()
 
                     with gr.Row():
                         with gr.Column():

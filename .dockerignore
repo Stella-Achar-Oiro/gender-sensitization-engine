@@ -56,9 +56,10 @@ audit_logs/*
 !audit_logs/.gitkeep
 reports/*
 
-# Exclude heavy dirs so Dockerfile.api build context stays under Railway 4GB limit
+# Exclude heavy dirs — keep eval/ (needed at runtime for ml_classifier, models, bias_detector)
 apps/
-eval/
+eval/ground_truth_*.csv
+eval/results/
 data/
 scripts/
 ml/

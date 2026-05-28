@@ -52,9 +52,6 @@ dataset_card.md
 train_multilingual_bias_v1.ipynb
 train_sw_bias_v3.ipynb
 
-# Claude AI instructions — not source code
-CLAUDE.md
-
 # Local tooling
 .label_studio_data/
 .ls_venv/
@@ -62,15 +59,48 @@ CLAUDE.md
 .git.backup/
 .git.bak.orig/
 
-# Claude / editor
+# Claude / editor state
 .claude/
 apps/
 ml/
 demos/
 
-tests/
-ui/
-scripts/
+# Tests tracked — needed for CI
+# scripts/ tracked — needed for data pipeline
+# ui/ tracked — needed for Gradio HF Space
+
 poetry.lock
 .env
 *.env
+
+# Batch state files
+.ha_batch_id
+
+# Raw data CSVs — large, tracked in HF Datasets not git
+French Annotated - final (1).csv
+IsiZulu_Ithute_Dataset_Final.csv
+Umunthu Data - Swahili Annotated (3).csv
+sheng_gender_tweets.csv - Sheet1.csv
+sheng_gender_tweets_clean.csv
+study-labs-non-synthetics-qa-approved-sentences-2026-04-27T09-23-46-234Z.csv
+twitter-hausa-bias-2026-04-29T17-14-06-511Z_classified.csv
+v3_revised_hausa_bias_ds.csv
+v4_revised_hausa_bias_ds.csv
+zulu_retraining - zulu_retraining.csv.csv
+flagged_for_human_review_corrected.csv
+
+# Correction pairs — large, pushed to HF Datasets separately
+juakazi_ha_correction_pairs_v1.csv
+juakazi_sw_correction_pairs_v1.csv
+juakazi_zu_correction_pairs_v1.csv
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Terraform state (sensitive)
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+infra/terraform/*.tfvars
