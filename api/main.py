@@ -24,9 +24,13 @@ app.add_middleware(
 )
 
 # Serve Next.js static export if present (production Docker build)
+# Next.js exports _next/ paths — mount the whole out/ dir at root
 _STATIC = Path(__file__).parent.parent / "static"
 if _STATIC.exists():
-    app.mount("/static", StaticFiles(directory=str(_STATIC)), name="static")
+    # Mount _next/ sub-directory for JS/CSS chunks
+    _NEXT = _STATIC / "_next"
+    if _NEXT.exists():
+        app.mount("/_next", StaticFiles(directory=str(_NEXT)), name="next-assets")
 
 
 @app.get("/")
