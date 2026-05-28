@@ -3,24 +3,23 @@
 FROM node:20-alpine AS node-builder
 WORKDIR /frontend
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 COPY frontend/ ./
 ARG NEXT_PUBLIC_API_URL=/
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
-# Stage 2: Install Python deps + pre-download HF models
+# Stage 2: Install Python deps
 FROM python:3.11-slim AS python-builder
 RUN pip install uv
 WORKDIR /build
 COPY requirements.txt .
-RUN uv pip install --target /venv -r requirements.txt
-# Pre-download SW classifier so cold start is fast
-RUN python -c "\
-from transformers import AutoTokenizer, AutoModelForSequenceClassification; \
-AutoTokenizer.from_pretrained('juakazike/sw-bias-classifier-v3'); \
-AutoModelForSequenceClassification.from_pretrained('juakazike/sw-bias-classifier-v3')" \
-  || echo "Model pre-download skipped (will download on first request)"
+# Install without the torch CPU extra-index-url (use standard torch for container)
+RUN grep -v "extra-index-url" requirements.txt > requirements_docker.txt && \
+    sed -i 's/torch==2\.2\.2+cpu/torch==2.2.2/g' requirements_docker.txt && \
+    uv pip install --target /venv -r requirements_docker.txt \
+      --extra-index-url https://download.pytorch.org/whl/cpu || \
+    pip install --target /venv -r requirements_docker.txt
 
 # Stage 3: Runtime (non-root)
 FROM python:3.11-slim
