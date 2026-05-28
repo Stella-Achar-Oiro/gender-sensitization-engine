@@ -23,6 +23,7 @@ COPY --from=python-builder /usr/local/bin /usr/local/bin
 WORKDIR /app
 COPY api/ api/
 COPY eval/ eval/
+COPY core/ core/
 COPY rules/ rules/
 COPY config.py .
 COPY --from=node-builder /frontend/out ./static
