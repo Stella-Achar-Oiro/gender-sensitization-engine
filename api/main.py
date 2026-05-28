@@ -25,10 +25,18 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-# Mount entire Next.js static export directory
-# This serves _next/static/css/, _next/static/chunks/, etc.
+# Serve Next.js static export — catch-all file serving
+# Uses a path parameter to serve any file under /app/static/
 if _STATIC.exists():
-    app.mount("/_next", StaticFiles(directory=str(_STATIC / "_next")), name="next-static")
+    from fastapi.responses import FileResponse as _FileResponse
+    from starlette.responses import Response as _Response
+
+    @app.get("/_next/{file_path:path}")
+    async def serve_next_static(file_path: str):
+        f = _STATIC / "_next" / file_path
+        if f.exists() and f.is_file():
+            return _FileResponse(str(f))
+        return _Response(status_code=404)
 
 
 @app.get("/")
