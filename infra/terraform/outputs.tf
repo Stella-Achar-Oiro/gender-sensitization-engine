@@ -1,9 +1,9 @@
-output "service_url" {
-  description = "JuaKazi Cloud Run service URL"
-  value       = google_cloud_run_v2_service.juakazi.uri
+output "ecr_repository_url" {
+  description = "ECR repository URL"
+  value       = aws_ecr_repository.juakazi.repository_url
 }
 
-output "registry_url" {
-  description = "Artifact Registry URL for Docker images"
-  value       = "${local.registry_host}/${var.project_id}/juakazi"
+output "app_runner_url" {
+  description = "App Runner service URL"
+  value       = aws_apprunner_service.juakazi.service_url
 }

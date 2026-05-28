@@ -1,92 +1,76 @@
 terraform {
   required_version = ">= 1.6"
   required_providers {
-    google = {
-      source  = "hashicorp/google"
+    aws = {
+      source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
 }
 
-provider "google" {
-  project = var.project_id
-  region  = var.region
+provider "aws" {
+  region = var.region
 }
 
-locals {
-  registry_host = "${var.region}-docker.pkg.dev"
-  image_name    = "${local.registry_host}/${var.project_id}/juakazi/juakazi:${var.image_tag}"
+# ECR repository
+resource "aws_ecr_repository" "juakazi" {
+  name                 = "juakazi"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
 }
 
-resource "google_project_service" "cloud_run" {
-  service            = "run.googleapis.com"
-  disable_on_destroy = false
+# IAM role for App Runner to pull from ECR
+resource "aws_iam_role" "app_runner_ecr_role" {
+  name = "juakazi-app-runner-ecr-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "build.apprunner.amazonaws.com" }
+    }]
+  })
 }
 
-resource "google_project_service" "artifact_registry" {
-  service            = "artifactregistry.googleapis.com"
-  disable_on_destroy = false
+resource "aws_iam_role_policy_attachment" "app_runner_ecr" {
+  role       = aws_iam_role.app_runner_ecr_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
 
-resource "google_artifact_registry_repository" "juakazi" {
-  location      = var.region
-  repository_id = "juakazi"
-  format        = "DOCKER"
-  depends_on    = [google_project_service.artifact_registry]
-}
+# App Runner service
+resource "aws_apprunner_service" "juakazi" {
+  service_name = "juakazi"
 
-data "google_project" "project" {
-  project_id = var.project_id
-}
-
-resource "google_cloud_run_v2_service" "juakazi" {
-  name     = "juakazi"
-  location = var.region
-
-  template {
-    scaling {
-      min_instance_count = 0
-      max_instance_count = 3
+  source_configuration {
+    authentication_configuration {
+      access_role_arn = aws_iam_role.app_runner_ecr_role.arn
     }
-    containers {
-      image = local.image_name
-
-      resources {
-        limits = {
-          cpu    = "1"
-          memory = "4Gi"
+    image_repository {
+      image_identifier      = "${aws_ecr_repository.juakazi.repository_url}:${var.image_tag}"
+      image_repository_type = "ECR"
+      image_configuration {
+        port = "8000"
+        runtime_environment_variables = {
+          ENVIRONMENT = "production"
         }
       }
-
-      env {
-        name  = "ENVIRONMENT"
-        value = "production"
-      }
-
-      ports {
-        container_port = 8000
-      }
-
-      liveness_probe {
-        http_get {
-          path = "/health"
-        }
-        initial_delay_seconds = 15
-        period_seconds        = 30
-      }
     }
+    auto_deployments_enabled = false
   }
 
-  depends_on = [
-    google_project_service.cloud_run,
-    google_artifact_registry_repository.juakazi,
-  ]
-}
+  instance_configuration {
+    cpu    = "0.25 vCPU"
+    memory = "0.5 GB"
+  }
 
-resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
-  project  = var.project_id
-  location = var.region
-  name     = google_cloud_run_v2_service.juakazi.name
-  role     = "roles/run.invoker"
-  member   = "allUsers"
+  health_check_configuration {
+    protocol = "HTTP"
+    path     = "/health"
+    interval = 10
+    timeout  = 5
+  }
 }

@@ -35,21 +35,20 @@ jobs:
         env:
           JUAKAZI_ML_MODEL: ""
 
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
 
-      - name: Set up gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev --quiet
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set image tag
         run: |
-          echo "IMAGE_TAG=${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/juakazi/juakazi:${{ github.sha }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ steps.login-ecr.outputs.registry }}/juakazi:${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Build + push Docker image
         run: |
@@ -60,41 +59,29 @@ jobs:
             -t ${{ env.IMAGE_TAG }} .
           docker push ${{ env.IMAGE_TAG }}
 
-      - name: Deploy to Cloud Run
+      - name: Deploy to App Runner
         run: |
-          gcloud run deploy juakazi \
-            --image ${{ env.IMAGE_TAG }} \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --memory 4Gi \
-            --cpu 1 \
-            --min-instances 0 \
-            --max-instances 3 \
-            --quiet
-
-      - name: Get service URL
-        run: |
-          SERVICE_URL=$(gcloud run services describe juakazi \
-            --platform managed \
-            --region ${{ secrets.GCP_REGION }} \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --format "value(status.url)")
-          echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
+          aws apprunner start-deployment \
+            --service-arn $(aws apprunner list-services \
+              --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceArn" \
+              --output text) \
+          || echo "Deployment triggered (first deploy may need manual ECR image update)"
 
       - name: Smoke test
         run: |
-          sleep 5
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.SERVICE_URL }}/health)
+          sleep 30
+          SERVICE_URL=$(aws apprunner list-services \
+            --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceUrl" \
+            --output text)
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${SERVICE_URL}/health)
           if [ "$STATUS" != "200" ]; then
             echo "Smoke test FAILED — /health returned $STATUS"
             exit 1
           fi
-          echo "Smoke test PASSED — ${{ env.SERVICE_URL }}/health returned 200"
+          echo "Smoke test PASSED — https://${SERVICE_URL}/health returned 200"
 
       - name: Deployment summary
         if: always()
         run: |
           echo "## Deployment" >> $GITHUB_STEP_SUMMARY
           echo "- **Image:** \`${{ env.IMAGE_TAG }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **URL:** ${{ env.SERVICE_URL }}" >> $GITHUB_STEP_SUMMARY

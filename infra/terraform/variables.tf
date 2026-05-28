@@ -1,13 +1,7 @@
-variable "project_id" {
-  description = "GCP project ID"
-  type        = string
-  default     = "stella-cyber-analyzer"
-}
-
 variable "region" {
-  description = "GCP region"
+  description = "AWS region"
   type        = string
-  default     = "us-central1"
+  default     = "us-east-1"
 }
 
 variable "image_tag" {
