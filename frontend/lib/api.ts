@@ -1,4 +1,5 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+// Strip trailing slash to avoid "//rewrite" double-slash when API_BASE="/"
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 
 export interface AnalyseRequest {
   id: string;
