@@ -48,6 +48,14 @@ def root():
     return {"service": "JuaKazi API", "docs": "/docs"}
 
 
+@app.get("/favicon.ico")
+def favicon():
+    f = _STATIC / "favicon.ico"
+    if f.exists():
+        return FileResponse(str(f), media_type="image/x-icon")
+    return Response(status_code=204)
+
+
 @app.get("/languages")
 def languages_page():
     """Serve Next.js languages page."""
