@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import type { AnalyseResponse } from "../lib/api";
 
 interface Props {
@@ -5,10 +7,21 @@ interface Props {
 }
 
 export default function DiffView({ result }: Props) {
-  const { original_text, rewrite, edits, has_bias_detected } = result;
+  const { original_text, rewrite, edits, has_bias_detected, aibridge_detected, reason } = result;
+  const biasDetected = has_bias_detected || aibridge_detected;
   const corrected = rewrite !== original_text;
+  const [copied, setCopied] = useState(false);
 
-  if (!has_bias_detected && !corrected) {
+  const handleCopy = () => {
+    navigator.clipboard.writeText(
+      `[BIAS FLAGGED FOR REVIEW]\n\nOriginal: ${original_text}\n\nReason: ${reason ?? "Gender bias detected — automatic correction unavailable"}`
+    );
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // No bias, no correction needed
+  if (!biasDetected && !corrected) {
     return (
       <div className="rounded-lg border border-slate-200 bg-white px-4 py-3.5 text-sm text-muted">
         No correction needed.
@@ -16,19 +29,45 @@ export default function DiffView({ result }: Props) {
     );
   }
 
-  if (has_bias_detected && !corrected) {
+  // Bias detected but correction not available
+  if (biasDetected && !corrected) {
     return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3.5">
-        <p className="text-sm font-medium text-amber-800">
-          ⚠️ Bias detected — no automatic correction available
-        </p>
-        <p className="mt-1 text-xs text-amber-700">
-          This sentence needs human review.
-        </p>
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-amber-800">
+              Automatic correction unavailable
+            </p>
+            <p className="mt-1 text-xs text-amber-700 leading-relaxed">
+              {reason
+                ? reason.replace("Bias detected by external classifier but correction suppressed — ", "")
+                : "The bias pattern was identified but could not be automatically rewritten without changing the meaning."}
+            </p>
+            <p className="mt-2 text-xs text-amber-600 font-medium">
+              → Send to a human reviewer or rewrite manually.
+            </p>
+          </div>
+          <button
+            onClick={handleCopy}
+            className="flex-shrink-0 text-xs bg-amber-100 hover:bg-amber-200 text-amber-800
+                       border border-amber-300 rounded-md px-3 py-1.5 font-medium transition-colors"
+          >
+            {copied ? "Copied ✓" : "Copy for review"}
+          </button>
+        </div>
+
+        {/* Show original highlighted */}
+        <div className="mt-3 bg-white rounded border border-amber-100 px-3 py-2">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 mb-1">
+            Original (needs review)
+          </div>
+          <p className="text-sm text-slate-700 leading-relaxed">{original_text}</p>
+        </div>
       </div>
     );
   }
 
+  // Full correction available
   const replaceEdits = edits.filter((e) => e.severity === "replace");
 
   return (

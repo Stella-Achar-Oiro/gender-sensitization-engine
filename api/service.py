@@ -51,33 +51,9 @@ def rewrite_text(
     ext_lang = LANG_CODE_MAP.get(lang) if (AIBRIDGE_ENABLED and not skip_gate) else None
     if ext_lang:
         aibridge_result = detect_bias(text, ext_lang)
-        if aibridge_result.error is None and not aibridge_result.has_bias:
-            latency_ms = int((time.time() - t0) * 1000)
-            response = RewriteResponse(
-                id=id,
-                original_text=text,
-                rewrite=text,
-                edits=[],
-                confidence=REWRITE_CONFIDENCE_BY_SOURCE["aibridge_preserved"],
-                needs_review=False,
-                source="aibridge_preserved",
-                reason=build_reason("aibridge_preserved", [], []),
-                semantic_score=None,
-                skipped_context=None,
-                has_bias_detected=False,
-                aibridge_confidence=aibridge_result.confidence,
-                aibridge_detected=False,
-            )
-            audit_info = {
-                "model_info": {
-                    "model": "aibridge-external",
-                    "confidence": aibridge_result.confidence,
-                    "message": aibridge_result.message,
-                },
-                "latency_ms": latency_ms,
-                "region_dialect": region_dialect or "unknown",
-            }
-            return response, audit_info
+        # Do NOT return early — always run our lexicon rules regardless of AIBRIDGE result.
+        # AIBRIDGE has low recall and misses real bias; our lexicon rules have higher precision.
+        # AIBRIDGE result is used as an additional signal in the final response only.
 
     rewritten, edits, matched_rules, skipped = apply_rules_on_spans(
         text, lang, flags=flags
@@ -88,9 +64,14 @@ def rewrite_text(
 
     threshold = get_semantic_threshold()
     if rewritten != text:
+        # Lexicon replace-severity rules are high precision — use a lower threshold (0.40)
+        # so paraphrase-style corrections (hawafai→wanaweza) are not suppressed.
+        # Only apply strict threshold to ML-generated corrections.
+        has_replace_edits = any(e.get("severity") == "replace" for e in edits)
+        effective_threshold = 0.40 if has_replace_edits else threshold
         score = semantic_metrics.calculate_composite_preservation_score(text, rewritten)
         semantic_score = score["composite_score"]
-        if semantic_score < threshold:
+        if semantic_score < effective_threshold:
             rewritten, edits, source, semantic_score = text, [], "preserved", 1.0
 
     # Stage 2.5: LLM disambiguation for borderline warn-only matches (SW).
