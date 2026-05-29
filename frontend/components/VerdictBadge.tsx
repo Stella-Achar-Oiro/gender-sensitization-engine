@@ -7,8 +7,10 @@ interface Props {
 export default function VerdictBadge({ result }: Props) {
   const { has_bias_detected, aibridge_detected, aibridge_confidence, edits, confidence, needs_review } = result;
 
-  // Bias is detected if either the lexicon/ML pipeline flagged it OR the external classifier did
-  const biasDetected = has_bias_detected || aibridge_detected;
+  // Only trust aibridge_detected if our own pipeline also found something (edits exist)
+  // or has_bias_detected is true. Prevents false positives from low-confidence external API.
+  const hasRealEdits = edits.some((e) => e.severity === "replace" || e.severity === "warn");
+  const biasDetected = has_bias_detected || (aibridge_detected && hasRealEdits);
   const conf = aibridge_confidence ?? confidence;
   const lowConf = biasDetected && conf > 0 && conf < 0.75;
   const correctionSuppressed = aibridge_detected && !has_bias_detected;

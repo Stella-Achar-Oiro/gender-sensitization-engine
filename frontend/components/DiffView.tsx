@@ -8,7 +8,8 @@ interface Props {
 
 export default function DiffView({ result }: Props) {
   const { original_text, rewrite, edits, has_bias_detected, aibridge_detected, reason } = result;
-  const biasDetected = has_bias_detected || aibridge_detected;
+  const hasRealEdits = edits.some((e) => e.severity === "replace" || e.severity === "warn");
+  const biasDetected = has_bias_detected || (aibridge_detected && hasRealEdits);
   const corrected = rewrite !== original_text;
   const [copied, setCopied] = useState(false);
 
