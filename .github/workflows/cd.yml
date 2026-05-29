@@ -64,11 +64,25 @@ jobs:
 
       - name: Deploy to App Runner
         run: |
-          aws apprunner start-deployment \
-            --service-arn $(aws apprunner list-services \
-              --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceArn" \
-              --output text) \
-          || echo "Deployment triggered (first deploy may need manual ECR image update)"
+          SERVICE_ARN=$(aws apprunner list-services \
+            --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceArn" \
+            --output text)
+          aws apprunner update-service \
+            --service-arn "$SERVICE_ARN" \
+            --source-configuration "{
+              \"ImageRepository\": {
+                \"ImageIdentifier\": \"${{ env.IMAGE_TAG }}\",
+                \"ImageRepositoryType\": \"ECR\",
+                \"ImageConfiguration\": {
+                  \"Port\": \"8000\",
+                  \"RuntimeEnvironmentVariables\": {\"ENVIRONMENT\": \"production\"}
+                }
+              },
+              \"AuthenticationConfiguration\": {
+                \"AccessRoleArn\": \"arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/juakazi-app-runner-ecr-role\"
+              },
+              \"AutoDeploymentsEnabled\": false
+            }"
 
       - name: Smoke test
         run: |
