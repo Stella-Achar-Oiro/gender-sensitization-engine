@@ -23,6 +23,9 @@ export interface AnalyseResponse {
   confidence: number;
   source: string;
   has_bias_detected: boolean;
+  aibridge_detected?: boolean;
+  aibridge_confidence?: number;
+  needs_review?: boolean;
   reason?: string;
 }
 

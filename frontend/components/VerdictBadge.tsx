@@ -5,25 +5,43 @@ interface Props {
 }
 
 export default function VerdictBadge({ result }: Props) {
-  const { has_bias_detected, edits, confidence } = result;
-  const lowConf = has_bias_detected && confidence > 0 && confidence < 0.75;
-  const warnOnly = !has_bias_detected && edits.some((e) => e.severity === "warn");
-  const mlOnly   = !has_bias_detected && edits.some((e) => e.severity === "ml_fallback");
+  const { has_bias_detected, aibridge_detected, aibridge_confidence, edits, confidence, needs_review } = result;
 
-  if (has_bias_detected) {
+  // Bias is detected if either the lexicon/ML pipeline flagged it OR the external classifier did
+  const biasDetected = has_bias_detected || aibridge_detected;
+  const conf = aibridge_confidence ?? confidence;
+  const lowConf = biasDetected && conf > 0 && conf < 0.75;
+  const correctionSuppressed = aibridge_detected && !has_bias_detected;
+
+  const warnOnly = !biasDetected && edits.some((e) => e.severity === "warn");
+  const mlOnly   = !biasDetected && edits.some((e) => e.severity === "ml_fallback");
+
+  if (biasDetected) {
+    const replaceCount = edits.filter((e) => e.severity === "replace").length;
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3.5">
         <div className="flex items-center gap-2">
           <span className="text-lg leading-none">🔴</span>
           <span className="font-semibold text-red-800">Gender bias detected</span>
           <span className="ml-auto text-xs text-red-500">
-            {edits.filter((e) => e.severity === "replace").length} rule(s) matched
-            {confidence > 0 && ` · ${(confidence * 100).toFixed(0)}% confidence`}
+            {replaceCount > 0
+              ? `${replaceCount} rule(s) matched`
+              : `${(conf * 100).toFixed(0)}% confidence`}
           </span>
         </div>
-        {lowConf && (
+        {correctionSuppressed && (
+          <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+            ⚠️ Automatic correction unavailable — flag for human review
+          </p>
+        )}
+        {!correctionSuppressed && lowConf && (
           <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
             ⚠️ Low confidence — flag for human review
+          </p>
+        )}
+        {needs_review && !correctionSuppressed && !lowConf && (
+          <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
+            ⚠️ Flagged for human review
           </p>
         )}
       </div>
