@@ -8,6 +8,8 @@ const LANGUAGES: { value: Language; label: string }[] = [
   { value: "en", label: "English" },
   { value: "fr", label: "Français" },
   { value: "ki", label: "Gĩkũyũ" },
+  { value: "ha", label: "Hausa" },
+  { value: "zu", label: "isiZulu" },
 ]
 
 interface Props {

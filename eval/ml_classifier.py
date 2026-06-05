@@ -1,16 +1,12 @@
 """
-ML bias classifier — Stage 1 detector for the pipeline.
+ML bias classifier -- Stage 1 detector for the pipeline.
 
-Each language has its own fine-tuned model loaded lazily on first call.
-Falls back gracefully when a model is not yet trained (returns 0.0).
+Single multilingual model covers all 6 languages (SW, HA, ZU, KI, FR, EN).
+Falls back gracefully when the model is unavailable (returns 0.0).
 
-Supported:
-  SW  → juakazike/sw-bias-classifier-v3  (trained, production)
-  HA  → juakazike/ha-bias-classifier-v1  (Phase 1 — set env var when trained)
-  ZU  → juakazike/zu-bias-classifier-v1  (Phase 2 — set env var when trained)
-  KI  → juakazike/ki-bias-classifier-v1  (Phase 3 — uses 76L base)
-  EN  → juakazike/sw-bias-classifier-v3  (shared SW model, acceptable)
-  FR  → juakazike/sw-bias-classifier-v3  (shared SW model until FR trained)
+  ALL -> juakazike/multilingual-bias-classifier-v1
+         Davlan/afro-xlmr-base fine-tuned on 137K rows across 6 languages
+         Trained Jun 2026 on Kaggle T4 x2, Epoch 3: F1=0.917, F1_bias=0.877
 """
 from __future__ import annotations
 
@@ -19,31 +15,31 @@ from typing import Optional
 
 from .models import Language
 
-# ── Per-language model IDs (override via env vars after training) ────────────
+_MULTILINGUAL_MODEL = "juakazike/multilingual-bias-classifier-v1"
+
+# ── Per-language model IDs (all point to multilingual; override via env vars) ─
 _MODEL_IDS: dict[Language, str] = {
-    Language.SWAHILI: os.environ.get("JUAKAZI_SW_MODEL", "juakazike/sw-bias-classifier-v3"),
-    Language.HAUSA:   os.environ.get("JUAKAZI_HA_MODEL", "juakazike/ha-bias-classifier-v1"),
-    Language.ZULU:    os.environ.get("JUAKAZI_ZU_MODEL", "juakazike/zu-bias-classifier-v1"),
-    Language.GIKUYU:  os.environ.get("JUAKAZI_KI_MODEL", "juakazike/ki-bias-classifier-v1"),
-    Language.ENGLISH: os.environ.get("JUAKAZI_EN_MODEL", "juakazike/sw-bias-classifier-v3"),
-    Language.FRENCH:  os.environ.get("JUAKAZI_FR_MODEL", "juakazike/sw-bias-classifier-v3"),
+    Language.SWAHILI: os.environ.get("JUAKAZI_SW_MODEL",  _MULTILINGUAL_MODEL),
+    Language.HAUSA:   os.environ.get("JUAKAZI_HA_MODEL",  _MULTILINGUAL_MODEL),
+    Language.ZULU:    os.environ.get("JUAKAZI_ZU_MODEL",  _MULTILINGUAL_MODEL),
+    Language.GIKUYU:  os.environ.get("JUAKAZI_KI_MODEL",  _MULTILINGUAL_MODEL),
+    Language.ENGLISH: os.environ.get("JUAKAZI_EN_MODEL",  _MULTILINGUAL_MODEL),
+    Language.FRENCH:  os.environ.get("JUAKAZI_FR_MODEL",  _MULTILINGUAL_MODEL),
 }
 
 # ── Per-language thresholds ──────────────────────────────────────────────────
 _THRESHOLDS: dict[Language, float] = {
-    Language.SWAHILI: float(os.environ.get("JUAKAZI_SW_THRESHOLD", "0.30")),
-    Language.HAUSA:   float(os.environ.get("JUAKAZI_HA_THRESHOLD", "0.50")),
-    Language.ZULU:    float(os.environ.get("JUAKAZI_ZU_THRESHOLD", "0.50")),
-    Language.GIKUYU:  float(os.environ.get("JUAKAZI_KI_THRESHOLD", "0.50")),
-    Language.ENGLISH: float(os.environ.get("JUAKAZI_EN_THRESHOLD", "0.50")),
-    Language.FRENCH:  float(os.environ.get("JUAKAZI_FR_THRESHOLD", "0.50")),
+    Language.SWAHILI: float(os.environ.get("JUAKAZI_SW_THRESHOLD", "0.75")),
+    Language.HAUSA:   float(os.environ.get("JUAKAZI_HA_THRESHOLD", "0.75")),
+    Language.ZULU:    float(os.environ.get("JUAKAZI_ZU_THRESHOLD", "0.75")),
+    Language.GIKUYU:  float(os.environ.get("JUAKAZI_KI_THRESHOLD", "0.75")),
+    Language.ENGLISH: float(os.environ.get("JUAKAZI_EN_THRESHOLD", "0.75")),
+    Language.FRENCH:  float(os.environ.get("JUAKAZI_FR_THRESHOLD", "0.75")),
 }
 
 # Legacy env var support (existing deployments)
-_LEGACY_THRESHOLD = float(os.environ.get("JUAKAZI_ML_THRESHOLD", "0.56"))
-_LEGACY_MODEL     = os.environ.get("JUAKAZI_ML_MODEL", "")
+_LEGACY_MODEL = os.environ.get("JUAKAZI_ML_MODEL", "")
 if _LEGACY_MODEL:
-    # If old-style env var is set, apply it to SW (backwards compat)
     _MODEL_IDS[Language.SWAHILI] = _LEGACY_MODEL
 
 # ── Lazy-loaded pipelines per language ──────────────────────────────────────
@@ -73,14 +69,10 @@ def _ensure_loaded(language: Language) -> None:
 
 def classify(text: str, language: Language) -> float:
     """
-    Return a bias confidence score 0.0–1.0 for the given language.
+    Return a bias confidence score 0.0-1.0 for the given language.
 
-    Returns 0.0 if:
-    - model not yet trained / not available on HF
-    - model failed to load
-    - text is empty
-
-    Score > threshold(language) → caller should flag as possible bias.
+    Returns 0.0 if model unavailable or text is empty.
+    Score > threshold(language) -> caller should flag as possible bias.
     """
     if not text or not text.strip():
         return 0.0
@@ -106,7 +98,7 @@ def classify(text: str, language: Language) -> float:
 
 def threshold(language: Language) -> float:
     """Return the detection threshold for this language."""
-    return _THRESHOLDS.get(language, 0.50)
+    return _THRESHOLDS.get(language, 0.75)
 
 
 def is_available(language: Language) -> bool:

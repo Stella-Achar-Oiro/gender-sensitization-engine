@@ -6,12 +6,18 @@ interface Props {
   result: AnalyseResponse;
 }
 
+type ReviewState = "pending" | "accepted" | "edited" | "rejected";
+
 export default function DiffView({ result }: Props) {
   const { original_text, rewrite, edits, has_bias_detected, aibridge_detected, reason } = result;
   const hasRealEdits = edits.some((e) => e.severity === "replace" || e.severity === "warn");
   const biasDetected = has_bias_detected || (aibridge_detected && hasRealEdits);
   const corrected = rewrite !== original_text;
+
   const [copied, setCopied] = useState(false);
+  const [reviewState, setReviewState] = useState<ReviewState>("pending");
+  const [editedText, setEditedText] = useState(rewrite);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
@@ -20,6 +26,13 @@ export default function DiffView({ result }: Props) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const handleAccept = () => { setReviewState("accepted"); setIsEditing(false); };
+  const handleReject = () => { setReviewState("rejected"); setIsEditing(false); };
+  const handleEdit   = () => { setIsEditing(true); setReviewState("pending"); };
+  const handleSave   = () => { setIsEditing(false); setReviewState("edited"); };
+  const handleCancel = () => { setIsEditing(false); setEditedText(rewrite); };
+  const handleReset  = () => { setReviewState("pending"); setIsEditing(false); setEditedText(rewrite); };
 
   // No bias, no correction needed
   if (!biasDetected && !corrected) {
@@ -30,7 +43,7 @@ export default function DiffView({ result }: Props) {
     );
   }
 
-  // Bias detected but correction not available
+  // Bias detected but no automatic correction available
   if (biasDetected && !corrected) {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-4">
@@ -45,7 +58,7 @@ export default function DiffView({ result }: Props) {
                 : "The bias pattern was identified but could not be automatically rewritten without changing the meaning."}
             </p>
             <p className="mt-2 text-xs text-amber-600 font-medium">
-              → Send to a human reviewer or rewrite manually.
+              → Rewrite manually below or copy for a reviewer.
             </p>
           </div>
           <button
@@ -57,23 +70,44 @@ export default function DiffView({ result }: Props) {
           </button>
         </div>
 
-        {/* Show original highlighted */}
         <div className="mt-3 bg-white rounded border border-amber-100 px-3 py-2">
           <div className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 mb-1">
             Original (needs review)
           </div>
           <p className="text-sm text-slate-700 leading-relaxed">{original_text}</p>
         </div>
+
+        {/* Manual rewrite box */}
+        <div className="mt-3">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 mb-1">
+            Your correction
+          </div>
+          <textarea
+            className="w-full text-sm border border-amber-200 rounded-lg px-3 py-2 bg-white
+                       focus:outline-none focus:ring-2 focus:ring-amber-300 resize-none"
+            rows={2}
+            placeholder="Write a corrected version…"
+            value={editedText === rewrite ? "" : editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+          />
+        </div>
       </div>
     );
   }
 
-  // Full correction available
+  // Full correction available — with human review actions
   const replaceEdits = edits.filter((e) => e.severity === "replace");
+
+  const correctedBg =
+    reviewState === "accepted" || reviewState === "edited"
+      ? "bg-emerald-100/80 border-t-2 border-emerald-400"
+      : reviewState === "rejected"
+      ? "bg-slate-50/80 border-t border-slate-200"
+      : "bg-emerald-50/50";
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
-      {/* Original with struck-through biased terms */}
+      {/* Original */}
       <div className="px-4 py-3 border-b border-slate-100">
         <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-1.5">
           Original
@@ -83,14 +117,38 @@ export default function DiffView({ result }: Props) {
         </p>
       </div>
 
-      {/* Corrected text */}
-      <div className="px-4 py-3 bg-emerald-50/50">
-        <div className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700 mb-1.5">
-          Corrected
+      {/* Corrected / editable */}
+      <div className={`px-4 py-3 ${correctedBg}`}>
+        <div className="flex items-center justify-between mb-1.5">
+          <div className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700">
+            {reviewState === "accepted" && "✓ Accepted"}
+            {reviewState === "edited"   && "✓ Edited & accepted"}
+            {reviewState === "rejected" && "✗ Rejected — keeping original"}
+            {reviewState === "pending"  && "Corrected"}
+          </div>
+          {reviewState !== "pending" && (
+            <button onClick={handleReset} className="text-[10px] text-muted hover:underline">
+              Reset
+            </button>
+          )}
         </div>
-        <p className="text-sm text-emerald-900 font-medium leading-relaxed">
-          {rewrite}
-        </p>
+
+        {isEditing ? (
+          <textarea
+            autoFocus
+            className="w-full text-sm border border-emerald-300 rounded-lg px-3 py-2 bg-white
+                       focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
+            rows={3}
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+          />
+        ) : (
+          <p className={`text-sm font-medium leading-relaxed ${
+            reviewState === "rejected" ? "line-through text-slate-400" : "text-emerald-900"
+          }`}>
+            {editedText}
+          </p>
+        )}
       </div>
 
       {/* Edit list */}
@@ -115,6 +173,53 @@ export default function DiffView({ result }: Props) {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Human review actions */}
+      {reviewState === "pending" && !isEditing && (
+        <div className="px-4 py-3 border-t border-slate-100 flex items-center gap-2">
+          <button
+            onClick={handleAccept}
+            className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white
+                       px-3 py-1.5 rounded-md font-semibold transition-colors"
+          >
+            Accept
+          </button>
+          <button
+            onClick={handleEdit}
+            className="text-xs bg-white hover:bg-slate-50 text-slate-700
+                       border border-slate-300 px-3 py-1.5 rounded-md font-medium transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleReject}
+            className="text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5
+                       rounded-md font-medium transition-colors"
+          >
+            Reject
+          </button>
+        </div>
+      )}
+
+      {isEditing && (
+        <div className="px-4 py-3 border-t border-slate-100 flex items-center gap-2">
+          <button
+            onClick={handleSave}
+            disabled={!editedText.trim()}
+            className="text-xs bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40
+                       text-white px-3 py-1.5 rounded-md font-semibold transition-colors"
+          >
+            Save
+          </button>
+          <button
+            onClick={handleCancel}
+            className="text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5
+                       rounded-md font-medium transition-colors"
+          >
+            Cancel
+          </button>
         </div>
       )}
     </div>

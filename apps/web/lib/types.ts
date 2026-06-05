@@ -1,4 +1,4 @@
-export type Language = "sw" | "en" | "fr" | "ki"
+export type Language = "sw" | "en" | "fr" | "ki" | "ha" | "zu"
 
 export interface Edit {
   from: string

@@ -13,6 +13,8 @@ const EXAMPLES: Record<Language, string> = {
   en: "The chairman opened the meeting with the stewardess.",
   fr: "Le médecin homme est arrivé à l'hôpital tôt le matin.",
   ki: "Mũndũ-mũrũme nĩ we mũtongoria wa nyũmba.",
+  ha: "Matan gida suna girki kawai.",
+  zu: "Umuntu wesifazane akanalo ilungelo lokuphatha.",
 }
 
 interface TextAnalyzerProps {
