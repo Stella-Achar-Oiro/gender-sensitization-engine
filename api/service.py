@@ -103,7 +103,7 @@ def rewrite_text(
     aibridge_ok = aibridge_result is not None and aibridge_result.error is None
     aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
     reason = build_reason(source, edits, skipped, aibridge_detected=bool(aibridge_detected))
-    has_bias_detected = any(e.get("severity") == "replace" for e in edits)
+    has_bias_detected = any(e.get("severity") in ("replace", "warn") for e in edits)
 
     response = RewriteResponse(
         id=id,
