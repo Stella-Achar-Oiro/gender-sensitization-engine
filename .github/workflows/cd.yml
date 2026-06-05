@@ -67,6 +67,16 @@ jobs:
           SERVICE_ARN=$(aws apprunner list-services \
             --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceArn" \
             --output text)
+          # Wait for any in-progress operation to finish before updating (max 10 min)
+          for i in $(seq 1 20); do
+            STATUS=$(aws apprunner describe-service \
+              --service-arn "$SERVICE_ARN" \
+              --query "Service.Status" --output text)
+            echo "App Runner status: $STATUS"
+            if [ "$STATUS" = "RUNNING" ]; then break; fi
+            if [ $i -eq 20 ]; then echo "Timed out waiting for RUNNING"; exit 1; fi
+            sleep 30
+          done
           aws apprunner update-service \
             --service-arn "$SERVICE_ARN" \
             --source-configuration "{
