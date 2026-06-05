@@ -9,9 +9,8 @@ interface Props {
 type ReviewState = "pending" | "accepted" | "edited" | "rejected";
 
 export default function DiffView({ result }: Props) {
-  const { original_text, rewrite, edits, has_bias_detected, aibridge_detected, reason } = result;
-  const hasRealEdits = edits.some((e) => e.severity === "replace" || e.severity === "warn");
-  const biasDetected = has_bias_detected || (aibridge_detected && hasRealEdits);
+  const { original_text, rewrite, edits, has_bias_detected, reason } = result;
+  const biasDetected = has_bias_detected;
   const corrected = rewrite !== original_text;
 
   const [copied, setCopied] = useState(false);
@@ -74,8 +73,23 @@ export default function DiffView({ result }: Props) {
           <div className="text-[10px] font-semibold uppercase tracking-widest text-amber-600 mb-1">
             Original (needs review)
           </div>
-          <p className="text-sm text-slate-700 leading-relaxed">{original_text}</p>
+          <p className="text-sm text-slate-700 leading-relaxed">
+            {highlightOriginal(original_text, edits)}
+          </p>
         </div>
+
+        {/* Flagged terms */}
+        {edits.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {edits.map((edit, i) => (
+              <span key={i} className="inline-flex items-center gap-1 text-xs bg-amber-100
+                                       text-amber-800 border border-amber-300 rounded px-2 py-0.5">
+                <span className="font-mono font-semibold">{edit.from}</span>
+                {edit.reason && <span className="text-amber-600">— {edit.reason}</span>}
+              </span>
+            ))}
+          </div>
+        )}
 
         {/* Manual rewrite box */}
         <div className="mt-3">
