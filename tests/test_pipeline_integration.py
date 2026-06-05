@@ -8,7 +8,7 @@ Rules:
 - Biased sentence  → detected=True, corrected != original, reason non-empty
 - Neutral sentence → detected=False, corrected == original
 
-These tests pass for SW now. HA/ZU/KI are xfail until classifiers are trained.
+These tests pass for SW, EN, HA, ZU, KI, FR.
 
 Run:
     pytest tests/test_pipeline_integration.py -v
@@ -145,9 +145,8 @@ def test_en_neutral_sentence():
     _assert_neutral("en", result, s["neutral"])
 
 
-# ── Hausa (xfail until Phase 1) ─────────────────────────────────────────────
+# ── Hausa ───────────────────────────────────────────────────────────────────
 
-@pytest.mark.xfail(reason="HA classifier not trained — Phase 1 target", strict=True)
 def test_ha_biased_sentence():
     s = SENTENCES["ha"]
     result = _run_pipeline(s["biased"], "ha")
