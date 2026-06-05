@@ -94,25 +94,8 @@ def rewrite_text(
             rewritten = text
             source = "preserved"
 
-    if matched_rules == 0 and source != "preserved":
-        ml_out = ml_rewrite(text, lang=lang, num_return_sequences=3)
-        ml_score = semantic_metrics.calculate_composite_preservation_score(
-            text, ml_out["best"]
-        )
-        if ml_score["composite_score"] < threshold:
-            rewritten, source, semantic_score = text, "preserved", 1.0
-        else:
-            rewritten = ml_out["best"]
-            source = "ml"
-            semantic_score = ml_score["composite_score"]
-            ml_info = ml_out
-            edits.append({
-                "from": text,
-                "to": rewritten,
-                "severity": "ml_fallback",
-                "tags": "",
-                "reason": "ML rewrite",
-            })
+    # ml_rewrite (mt5-small) is not trained for bias correction — skip it.
+    # If lexicon found nothing, return clean no-bias result.
 
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)

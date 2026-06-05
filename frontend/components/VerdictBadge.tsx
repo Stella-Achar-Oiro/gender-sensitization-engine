@@ -16,7 +16,7 @@ export default function VerdictBadge({ result }: Props) {
   const correctionSuppressed = aibridge_detected && !has_bias_detected;
 
   const warnOnly = !biasDetected && edits.some((e) => e.severity === "warn");
-  const mlOnly   = !biasDetected && edits.some((e) => e.severity === "ml_fallback");
+  const mlOnly   = !biasDetected && edits.some((e) => e.severity === "ml_fallback" && e.from !== e.to);
 
   if (biasDetected) {
     const replaceCount = edits.filter((e) => e.severity === "replace").length;
