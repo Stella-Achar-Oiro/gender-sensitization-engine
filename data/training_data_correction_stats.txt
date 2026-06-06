@@ -1,19 +1,24 @@
-Total pairs: 6,971
+Total pairs: 10,401
 
 By language:
-  SW: 1,586 pairs
-  HA: 1,917 pairs
-  ZU: 1,931 pairs
-  KI: 867 pairs
-  FR: 636 pairs
-  EN: 34 pairs
+language
+en    3464
+zu    1931
+ha    1917
+sw    1586
+ki     867
+fr     636
 
 By source:
-  zu_retraining: 1931
-  ha_pairs_v1: 1917
-  sw_pairs_v1: 1586
-  fr_annotated_lexicon: 601
-  ki_gt_lexicon: 600
-  ki_gt_v8: 267
-  fr_gt_v5: 35
-  en_gt_v5: 34
+source
+winobias                    3162
+zu_retraining               1931
+ha_pairs_v1                 1917
+sw_pairs_v1                 1586
+fr_annotated_lexicon         601
+ki_gt_lexicon                600
+ki_gt_v8                     267
+en_title_expansion           240
+fr_gt_v5                      35
+en_attitudinal_templates      32
+en_pronoun_templates          30
