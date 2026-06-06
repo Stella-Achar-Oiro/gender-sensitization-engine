@@ -94,8 +94,28 @@ def rewrite_text(
             rewritten = text
             source = "preserved"
 
-    # ml_rewrite (mt5-small) is not trained for bias correction — skip it.
-    # If lexicon found nothing, return clean no-bias result.
+    # Stage 3: ML corrector — fires only when bias is detected AND lexicon found no match.
+    # Uses juakazike/multilingual-bias-corrector-v1 (AfriTeVa fine-tuned on 7K pairs).
+    # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
+    lexicon_corrected = any(e.get("severity") == "replace" for e in edits)
+    has_any_bias_signal = bool(edits) or (aibridge_result is not None and aibridge_result.has_bias)
+    if not lexicon_corrected and has_any_bias_signal:
+        ml_result = ml_rewrite(text, lang=lang)
+        if ml_result["model"] != "unavailable":
+            candidate = ml_result["best"]
+            if candidate and candidate.strip() and candidate != text:
+                rewritten = candidate
+                source = "ml"
+                ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
+                edits = [{
+                    "from": text,
+                    "to": rewritten,
+                    "severity": "warn",
+                    "tags": "ml-correction",
+                    "bias_type": "ml-detected",
+                    "stereotype_category": "",
+                    "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
+                }]
 
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)

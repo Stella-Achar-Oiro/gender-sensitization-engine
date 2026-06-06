@@ -1,7 +1,22 @@
-import time
-from typing import List, Dict, Any
+"""
+Stage 3 ML corrector — seq2seq bias correction.
 
-# Optional ML dependencies — not required for rules-based operation
+Model: juakazike/multilingual-bias-corrector-v1
+Base:  castorini/afriteva_v2_base
+Input: "correct bias {lang}: {biased sentence}"
+Output: corrected/neutral sentence
+
+Falls back gracefully when model unavailable (local dev, unit tests).
+"""
+import os
+import time
+from typing import Any
+
+_CORRECTOR_MODEL = os.environ.get(
+    "JUAKAZI_CORRECTOR_MODEL",
+    "juakazike/multilingual-bias-corrector-v1",
+)
+
 try:
     import torch
     from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
@@ -9,57 +24,58 @@ try:
 except ImportError:
     _ML_AVAILABLE = False
 
-# I decided to choose a multilingual small seq2seq model
-MODEL_ID = "google/mt5-small"
-DEVICE = "cuda" if (_ML_AVAILABLE and __import__("torch").cuda.is_available()) else "cpu"
-
-# Lazy load
+_DEVICE = "cuda" if (_ML_AVAILABLE and __import__("torch").cuda.is_available()) else "cpu"
 _tokenizer = None
 _model = None
 
-def _ensure_model():
-    if not _ML_AVAILABLE:
-        raise RuntimeError("ML dependencies not installed. Run: pip install torch transformers")
-    global _tokenizer, _model
-    if _tokenizer is None:
-        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=False)
-    if _model is None:
-        _model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_ID)
-        _model.to(DEVICE)
-        _model.eval()
 
-def ml_rewrite(text: str, lang: str = "en", num_return_sequences: int = 3, max_new_tokens: int = 64) -> Dict[str, Any]:
-    """
-    Returns dict:
-      {
-        "best": "string",
-        "candidates": ["a","b","c"],
-        "model": MODEL_ID or "unavailable",
-        "latency_ms": 123
-      }
-    Falls back gracefully if ML deps are missing or model fails to load.
-    """
+def _ensure_model() -> None:
+    global _tokenizer, _model
+    if _tokenizer is not None:
+        return
     if not _ML_AVAILABLE:
-        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
+        raise RuntimeError("transformers not installed")
+    _tokenizer = AutoTokenizer.from_pretrained(_CORRECTOR_MODEL)
+    _model = AutoModelForSeq2SeqLM.from_pretrained(_CORRECTOR_MODEL)
+    _model.to(_DEVICE)
+    _model.eval()
+
+
+def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
+    """
+    Returns {"best": corrected_text, "model": model_id, "latency_ms": int}.
+    Returns {"best": text, "model": "unavailable"} if model not loaded.
+    """
+    _unavailable = {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
+
+    if not _ML_AVAILABLE:
+        return _unavailable
 
     try:
         _ensure_model()
     except Exception:
-        return {"best": text, "candidates": [text], "model": "unavailable", "latency_ms": 0}
-    start = time.time()
+        return _unavailable
 
-    # This prompt to instruct model (works reasonably with mt5)
-    prompt = f"Rewrite to remove gender bias while preserving meaning (language={lang}): {text}"
-
-    inputs = _tokenizer(prompt, return_tensors="pt", truncation=True, padding=True).to(DEVICE)
-    # I decided to use num_return_sequences via beam search
-    outputs = _model.generate(
-        **inputs,
-        max_new_tokens=max_new_tokens,
-        num_beams=max(2, num_return_sequences),
-        num_return_sequences=num_return_sequences,
-        early_stopping=True
-    )
-    candidates = [_tokenizer.decode(o, skip_special_tokens=True, clean_up_tokenization_spaces=True) for o in outputs]
-    latency_ms = int((time.time() - start) * 1000)
-    return {"best": candidates[0], "candidates": candidates, "model": MODEL_ID, "latency_ms": latency_ms}
+    t0 = time.time()
+    prompt = f"correct bias {lang}: {text}"
+    try:
+        inputs = _tokenizer(
+            prompt, return_tensors="pt", truncation=True, max_length=128
+        )
+        inputs = {k: v.to(_DEVICE) for k, v in inputs.items()}
+        with torch.no_grad():
+            out = _model.generate(
+                **inputs,
+                max_new_tokens=128,
+                num_beams=4,
+                early_stopping=True,
+            )
+        corrected = _tokenizer.decode(out[0], skip_special_tokens=True)
+        return {
+            "best": corrected,
+            "candidates": [corrected],
+            "model": _CORRECTOR_MODEL,
+            "latency_ms": int((time.time() - t0) * 1000),
+        }
+    except Exception:
+        return _unavailable

@@ -1,0 +1,19 @@
+Total pairs: 6,971
+
+By language:
+  SW: 1,586 pairs
+  HA: 1,917 pairs
+  ZU: 1,931 pairs
+  KI: 867 pairs
+  FR: 636 pairs
+  EN: 34 pairs
+
+By source:
+  zu_retraining: 1931
+  ha_pairs_v1: 1917
+  sw_pairs_v1: 1586
+  fr_annotated_lexicon: 601
+  ki_gt_lexicon: 600
+  ki_gt_v8: 267
+  fr_gt_v5: 35
+  en_gt_v5: 34
