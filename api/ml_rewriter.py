@@ -14,7 +14,7 @@ from typing import Any
 
 _CORRECTOR_MODEL = os.environ.get(
     "JUAKAZI_CORRECTOR_MODEL",
-    "juakazike/multilingual-bias-corrector-v1",
+    "juakazike/multilingual-bias-corrector-v2",
 )
 
 try:
