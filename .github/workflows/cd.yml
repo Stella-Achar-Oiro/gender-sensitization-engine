@@ -85,7 +85,7 @@ jobs:
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
                   \"Port\": \"8000\",
-                  \"RuntimeEnvironmentVariables\": {\"ENVIRONMENT\": \"production\"}
+                  \"RuntimeEnvironmentVariables\": {\"ENVIRONMENT\": \"production\", \"JUAKAZI_CORRECTOR_MODEL\": \"juakazike/multilingual-bias-corrector-v2\"}
                 }
               },
               \"AuthenticationConfiguration\": {
