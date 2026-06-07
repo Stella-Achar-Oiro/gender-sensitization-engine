@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { LanguageMetrics } from "../lib/api";
 import type { AnalyseResponse } from "../lib/api";
 import { loadHistory, deleteFromHistory, clearHistory } from "../lib/history";
@@ -49,8 +48,10 @@ interface Props {
   activeLang: string;
   onLangChange: (code: string) => void;
   onHistoryClick: (entry: HistoryEntry) => void;
+  onMetricsClick: () => void;
   metrics: Record<string, LanguageMetrics>;
   historyVersion: number;
+  metricsOpen: boolean;
 }
 
 function relativeTime(ts: number): string {
@@ -65,7 +66,7 @@ function relativeTime(ts: number): string {
 }
 
 export default function Sidebar({
-  activeLang, onHistoryClick, metrics, historyVersion,
+  activeLang, onHistoryClick, onMetricsClick, metrics, historyVersion, metricsOpen,
 }: Props) {
   const topLang = LANGUAGES.find((l) => l.code === activeLang);
   const m = metrics[activeLang];
@@ -120,9 +121,16 @@ export default function Sidebar({
               </div>
             ))}
           </div>
-          <Link href="/languages" className="mt-2 block text-center text-[11px] text-[#00a651] hover:underline">
-            All languages →
-          </Link>
+          <button
+            onClick={onMetricsClick}
+            className={`mt-2 w-full text-center text-[11px] font-medium transition-colors rounded-md py-1 ${
+              metricsOpen
+                ? "text-white/70 bg-white/[0.07]"
+                : "text-[#00a651] hover:text-[#00c060]"
+            }`}
+          >
+            {metricsOpen ? "← Back to analysis" : "All metrics →"}
+          </button>
         </div>
       )}
 
@@ -191,11 +199,24 @@ export default function Sidebar({
           <span>Languages</span><span className="text-white/40">6</span>
         </div>
         <div className="flex justify-between">
-          <span>Model</span><span className="text-white/40">afro-xlmr</span>
+          <span>Bias detector model</span><span className="text-white/40">afro-xlmr</span>
         </div>
         <div className="flex justify-between">
-          <span>Corrector</span><span className="text-white/40">afriteva-v2</span>
+          <span>Bias corrector model</span><span className="text-white/40">afriteva-v2</span>
         </div>
+        {/* Always-visible metrics button when no language is selected */}
+        {!m && (
+          <button
+            onClick={onMetricsClick}
+            className={`mt-2 w-full text-center text-[11px] font-medium transition-colors rounded-md py-1 ${
+              metricsOpen
+                ? "text-white/70 bg-white/[0.07]"
+                : "text-[#00a651] hover:text-[#00c060]"
+            }`}
+          >
+            {metricsOpen ? "← Back to analysis" : "All metrics →"}
+          </button>
+        )}
       </div>
     </aside>
   );
