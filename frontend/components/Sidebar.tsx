@@ -110,20 +110,20 @@ export default function Sidebar({
       {m && topLang && (
         <div className="px-4 py-3 border-b border-white/[0.06]">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-base leading-none">{topLang.flag}</span>
-            <span className="text-white/70 text-xs font-semibold">{topLang.label}</span>
+            <span className="text-lg leading-none">{topLang.flag}</span>
+            <span className="text-white/80 text-sm font-semibold">{topLang.label}</span>
           </div>
           <div className="grid grid-cols-3 gap-1.5">
             {([["F1", m.f1], ["Prec.", m.precision], ["Rec.", m.recall]] as [string, number][]).map(([label, val]) => (
-              <div key={label} className="bg-white/[0.05] rounded-lg px-2 py-1.5 text-center">
-                <div className="text-[9px] text-white/30 uppercase tracking-wider">{label}</div>
-                <div className="text-white/80 text-xs font-bold mt-0.5">{val.toFixed(2)}</div>
+              <div key={label} className="bg-white/[0.07] rounded-lg px-2 py-2 text-center">
+                <div className="text-[11px] text-white/45 uppercase tracking-wide">{label}</div>
+                <div className="text-white/90 text-sm font-bold mt-0.5">{val.toFixed(3)}</div>
               </div>
             ))}
           </div>
           <button
             onClick={onMetricsClick}
-            className={`mt-2 w-full text-center text-[11px] font-medium transition-colors rounded-md py-1 ${
+            className={`mt-2 w-full text-center text-xs font-medium transition-colors rounded-md py-1.5 ${
               metricsOpen
                 ? "text-white/70 bg-white/[0.07]"
                 : "text-[#00a651] hover:text-[#00c060]"
@@ -137,18 +137,18 @@ export default function Sidebar({
       {/* Recent sessions */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-white/25">
+          <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
             Recent
           </span>
           {history.length > 0 && (
-            <button onClick={handleClear} className="text-[10px] text-white/20 hover:text-white/50 transition-colors">
+            <button onClick={handleClear} className="text-xs text-white/30 hover:text-white/60 transition-colors">
               Clear
             </button>
           )}
         </div>
         <div className="flex-1 overflow-y-auto px-2.5 pb-2">
           {history.length === 0 ? (
-            <p className="text-[11px] text-white/20 px-2 py-4 text-center leading-relaxed">
+            <p className="text-xs text-white/30 px-2 py-4 text-center leading-relaxed">
               Analysed sentences<br />will appear here
             </p>
           ) : (
@@ -163,14 +163,14 @@ export default function Sidebar({
                     className="group flex items-start gap-2 px-2.5 py-2 rounded-lg text-left
                                hover:bg-white/[0.06] transition-all duration-150"
                   >
-                    <span className={`flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full ${
+                    <span className={`flex-shrink-0 mt-1.5 w-2 h-2 rounded-full ${
                       biased ? "bg-red-400" : "bg-emerald-400"
                     }`} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-white/60 group-hover:text-white/85 truncate leading-snug transition-colors">
+                      <p className="text-xs text-white/70 group-hover:text-white/90 truncate leading-snug transition-colors">
                         {entry.text.length > 42 ? entry.text.slice(0, 42) + "…" : entry.text}
                       </p>
-                      <p className="text-[10px] text-white/25 mt-0.5">
+                      <p className="text-[11px] text-white/35 mt-0.5">
                         {entryLang?.flag} {relativeTime(entry.ts)}
                       </p>
                     </div>
@@ -194,21 +194,21 @@ export default function Sidebar({
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-white/[0.06] px-4 py-3 text-[10px] text-white/25 space-y-0.5">
+      <div className="border-t border-white/[0.06] px-4 py-3 text-xs text-white/40 space-y-1">
         <div className="flex justify-between">
-          <span>Languages</span><span className="text-white/40">6</span>
+          <span>Languages</span><span className="text-white/60">6</span>
         </div>
         <div className="flex justify-between">
-          <span>Bias detector model</span><span className="text-white/40">afro-xlmr</span>
+          <span>Detector</span><span className="text-white/60">afro-xlmr</span>
         </div>
         <div className="flex justify-between">
-          <span>Bias corrector model</span><span className="text-white/40">afriteva-v2</span>
+          <span>Corrector</span><span className="text-white/60">afriteva-v2</span>
         </div>
         {/* Always-visible metrics button when no language is selected */}
         {!m && (
           <button
             onClick={onMetricsClick}
-            className={`mt-2 w-full text-center text-[11px] font-medium transition-colors rounded-md py-1 ${
+            className={`mt-2 w-full text-center text-xs font-medium transition-colors rounded-md py-1.5 ${
               metricsOpen
                 ? "text-white/70 bg-white/[0.07]"
                 : "text-[#00a651] hover:text-[#00c060]"

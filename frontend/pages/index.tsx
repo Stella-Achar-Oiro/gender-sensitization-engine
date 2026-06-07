@@ -195,7 +195,7 @@ export default function Home({ initialMetrics }: Props) {
             <div className="max-w-2xl mx-auto px-5 py-7">
 
               {/* Language pills */}
-              <div className="flex flex-wrap gap-1.5 mb-5">
+              <div className="flex flex-wrap gap-2 mb-5">
                 {LANGUAGES.map((l) => {
                   const m = metrics[l.code];
                   const isActive = l.code === lang;
@@ -203,7 +203,7 @@ export default function Home({ initialMetrics }: Props) {
                     <button
                       key={l.code}
                       onClick={() => handleLangChange(l.code)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold
                                   border transition-all duration-150 ${
                         isActive
                           ? "bg-[#00a651] text-white border-[#00a651] shadow-sm"
@@ -213,7 +213,7 @@ export default function Home({ initialMetrics }: Props) {
                       <span>{l.flag}</span>
                       <span>{l.label}</span>
                       {m && (
-                        <span className={`text-[10px] ${isActive ? "opacity-75" : "opacity-40"}`}>
+                        <span className={`text-xs font-mono ${isActive ? "opacity-75" : "opacity-50"}`}>
                           {m.f1.toFixed(2)}
                         </span>
                       )}
@@ -233,7 +233,7 @@ export default function Home({ initialMetrics }: Props) {
                       key={m}
                       onClick={() => { if (!noLang) { setMode(m); resetResults(); setPdfName(null); }}}
                       disabled={noLang}
-                      className={`flex-1 py-2.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed ${
+                      className={`flex-1 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed ${
                         mode === m && !noLang
                           ? "text-[#00a651] border-b-2 border-[#00a651] bg-emerald-50/40"
                           : "text-slate-400 hover:text-slate-600"
@@ -286,7 +286,7 @@ export default function Home({ initialMetrics }: Props) {
                     <div className="relative">
                       <textarea
                         disabled={noLang}
-                        className="w-full px-4 pt-4 pb-3 text-sm text-slate-800 resize-none outline-none
+                        className="w-full px-4 pt-4 pb-3 text-base text-slate-800 resize-none outline-none
                                    placeholder-slate-300 leading-relaxed disabled:cursor-not-allowed
                                    disabled:bg-transparent"
                         rows={mode === "paragraph" ? 6 : 4}
@@ -317,13 +317,13 @@ export default function Home({ initialMetrics }: Props) {
                     </div>
 
                     <div className="px-4 pb-3 flex items-center justify-between border-t border-slate-50">
-                      <span className="text-[11px] text-muted">
+                      <span className="text-xs text-muted">
                         {listening ? "🔴 Listening…" : noLang ? "Pick a language first" : "⌘ + Enter to analyse"}
                       </span>
                       <button
                         onClick={handleAnalyse}
                         disabled={loading || !text.trim() || noLang}
-                        className="bg-[#00a651] text-white text-sm font-semibold px-5 py-2 rounded-lg
+                        className="bg-[#00a651] text-white text-sm font-semibold px-5 py-2.5 rounded-lg
                                    hover:bg-[#009448] active:bg-[#007a3a] transition-colors
                                    disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                       >

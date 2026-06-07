@@ -7,11 +7,11 @@ interface Props {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center bg-white border border-slate-200 rounded-lg px-4 py-2.5 min-w-[80px]">
-      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-1">
+    <div className="flex flex-col items-center bg-white border border-slate-200 rounded-lg px-4 py-3 min-w-[88px]">
+      <span className="text-xs font-semibold uppercase tracking-wide text-muted mb-1">
         {label}
       </span>
-      <span className="text-base font-bold text-slate-800">{value}</span>
+      <span className="text-lg font-bold text-slate-800">{value}</span>
     </div>
   );
 }
@@ -36,9 +36,9 @@ export default function MetricsBar({ lang, metrics }: Props) {
       <Stat label="Precision" value={metrics.precision.toFixed(3)} />
       <Stat label="Recall"    value={metrics.recall.toFixed(3)} />
       <Stat label="Samples"   value={metrics.samples.toLocaleString()} />
-      <div className={`flex flex-col items-center border rounded-lg px-4 py-2.5 min-w-[80px] ${tierColor}`}>
-        <span className="text-[10px] font-semibold uppercase tracking-widest mb-1">Tier</span>
-        <span className="text-base font-bold">{tier}</span>
+      <div className={`flex flex-col items-center border rounded-lg px-4 py-3 min-w-[88px] ${tierColor}`}>
+        <span className="text-xs font-semibold uppercase tracking-wide mb-1">Tier</span>
+        <span className="text-lg font-bold">{tier}</span>
       </div>
     </div>
   );
