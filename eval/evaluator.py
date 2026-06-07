@@ -34,7 +34,7 @@ class BiasEvaluationOrchestrator:
         data_dir: Path = Path("eval"),
         rules_dir: Path = Path("rules"),
         results_dir: Path = Path("eval/results"),
-        enable_ml: bool = bool(os.environ.get("JUAKAZI_ML_MODEL", "")),
+        enable_ml: bool = None,
         ml_threshold: float = 0.56,
     ):
         """
@@ -47,6 +47,8 @@ class BiasEvaluationOrchestrator:
             enable_ml: Run ML fallback when rules find nothing (slow — downloads model)
             ml_threshold: ML confidence threshold (default 0.56, tuned on v2)
         """
+        if enable_ml is None:
+            enable_ml = bool(os.environ.get("JUAKAZI_ML_MODEL", ""))
         self.ground_truth_loader = GroundTruthLoader(data_dir)
         self.bias_detector = BiasDetector(
             rules_dir,

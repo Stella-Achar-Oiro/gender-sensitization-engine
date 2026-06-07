@@ -292,11 +292,12 @@ class BiasDetector:
                             "source": "ml",
                             "confidence": ml_score,
                         }
-                        if not has_bias and not warn_edits:
+                        if not has_bias:
+                            # ML is the only signal — promote to detected
                             result.warn_edits = [ml_edit]
                             result.confidence = ml_score
-                        # If lexicon already flagged it, boost confidence
-                        elif has_bias:
+                            result.has_bias_detected = True
+                        else:
                             result.confidence = max(result.confidence, ml_score)
                 except Exception:
                     pass  # ML unavailable — rules result stands
