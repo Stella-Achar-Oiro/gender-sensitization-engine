@@ -1,10 +1,12 @@
 """JuaKazi Correction API — HTTP routing only."""
 
+import io
 import json
 import logging
+import re
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -124,3 +126,50 @@ def rewrite(req: RewriteRequest):
 @app.post("/rewrite/batch", response_model=list[RewriteResponse])
 def rewrite_batch(body: BatchRewriteRequest):
     return [rewrite(item) for item in body.items]
+
+
+_SENT_SPLIT = re.compile(r"(?<=[.!?؟。？！])\s+")
+_MAX_PDF_BYTES = 10 * 1024 * 1024  # 10 MB
+
+
+def _split_sentences(text: str) -> list[str]:
+    parts = _SENT_SPLIT.split(text)
+    return [s.strip() for s in parts if s.strip()]
+
+
+@app.post("/rewrite/pdf", response_model=list[RewriteResponse])
+async def rewrite_pdf(
+    file: UploadFile = File(...),
+    lang: str = "sw",
+):
+    """Extract text from a PDF, split into sentences, run bias detection on each."""
+    if file.content_type not in ("application/pdf", "application/octet-stream"):
+        raise HTTPException(status_code=415, detail="Only PDF files are accepted.")
+
+    data = await file.read()
+    if len(data) > _MAX_PDF_BYTES:
+        raise HTTPException(status_code=413, detail="PDF exceeds 10 MB limit.")
+
+    try:
+        from pypdf import PdfReader
+        reader = PdfReader(io.BytesIO(data))
+        pages_text = [page.extract_text() or "" for page in reader.pages]
+        full_text = " ".join(pages_text)
+    except Exception as e:
+        logger.exception("PDF extraction failed")
+        raise HTTPException(status_code=422, detail=f"Could not read PDF: {e}") from e
+
+    sentences = _split_sentences(full_text)
+    if not sentences:
+        raise HTTPException(status_code=422, detail="No text found in PDF.")
+    if len(sentences) > 200:
+        sentences = sentences[:200]
+
+    if lang not in ("en", "sw", "fr", "ki", "ha", "zu"):
+        lang = "sw"
+
+    items = [
+        RewriteRequest(id=str(i), lang=lang, text=s)  # type: ignore[arg-type]
+        for i, s in enumerate(sentences)
+    ]
+    return [rewrite(item) for item in items]

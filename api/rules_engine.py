@@ -52,7 +52,18 @@ def _apply_rule(text: str, rule: dict) -> tuple[str, dict | None]:
     biased = rule["biased"]
     neutral = rule["neutral_primary"]
     severity = rule.get("severity", "replace")
-    pattern = r"\b" + re.escape(biased) + r"\b"
+
+    # context_pattern: if set, rule only fires when this regex also matches in the text
+    ctx_pat = rule.get("context_pattern", "").strip()
+    if ctx_pat and not re.search(ctx_pat, text, flags=re.IGNORECASE):
+        return text, None
+
+    # Use explicit regex pattern from lexicon when available
+    raw_pattern = rule.get("patterns", "").strip()
+    if raw_pattern:
+        pattern = raw_pattern
+    else:
+        pattern = r"\b" + re.escape(biased) + r"\b"
 
     if not re.search(pattern, text, flags=re.IGNORECASE):
         return text, None
@@ -103,7 +114,8 @@ def apply_rules_on_spans(
 
             for rule in rules:
                 biased = rule["biased"]
-                pattern = r"\b" + re.escape(biased) + r"\b"
+                raw_p = rule.get("patterns", "").strip()
+                pattern = raw_p if raw_p else r"\b" + re.escape(biased) + r"\b"
                 if not re.search(pattern, span_text, flags=re.IGNORECASE):
                     continue
 
@@ -125,7 +137,8 @@ def apply_rules_on_spans(
 
     for rule in rules:
         biased = rule["biased"]
-        pattern = r"\b" + re.escape(biased) + r"\b"
+        raw_p = rule.get("patterns", "").strip()
+        pattern = raw_p if raw_p else r"\b" + re.escape(biased) + r"\b"
         if not re.search(pattern, new_text, flags=re.IGNORECASE):
             continue
 

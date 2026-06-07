@@ -160,7 +160,11 @@ export default function DiffView({ result }: Props) {
           <p className={`text-sm font-medium leading-relaxed ${
             reviewState === "rejected" ? "line-through text-slate-400" : "text-emerald-900"
           }`}>
-            {editedText}
+            {reviewState === "rejected" ? (
+              editedText
+            ) : (
+              <WordDiffView original={original_text} corrected={editedText} />
+            )}
           </p>
         )}
       </div>
@@ -259,4 +263,63 @@ function highlightOriginal(text: string, edits: AnalyseResponse["edits"]) {
   }
   if (remaining) parts.push(<span key={key++}>{remaining}</span>);
   return <>{parts}</>;
+}
+
+// Word-level inline diff: tokens deleted in red strikethrough, inserted in green
+type DiffOp = { type: "keep" | "del" | "ins"; text: string };
+
+function wordDiff(original: string, corrected: string): DiffOp[] {
+  const aWords = original.split(/(\s+)/);
+  const bWords = corrected.split(/(\s+)/);
+  const m = aWords.length;
+  const n = bWords.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      if (aWords[i].toLowerCase() === bWords[j].toLowerCase()) {
+        dp[i][j] = 1 + dp[i + 1][j + 1];
+      } else {
+        dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+      }
+    }
+  }
+  const ops: DiffOp[] = [];
+  let i = 0, j = 0;
+  while (i < m || j < n) {
+    if (i < m && j < n && aWords[i].toLowerCase() === bWords[j].toLowerCase()) {
+      ops.push({ type: "keep", text: aWords[i] });
+      i++; j++;
+    } else if (j < n && (i >= m || dp[i][j + 1] >= dp[i + 1][j])) {
+      ops.push({ type: "ins", text: bWords[j] });
+      j++;
+    } else {
+      ops.push({ type: "del", text: aWords[i] });
+      i++;
+    }
+  }
+  return ops;
+}
+
+export function WordDiffView({ original, corrected }: { original: string; corrected: string }) {
+  if (original === corrected) return <span className="text-slate-700">{original}</span>;
+  const ops = wordDiff(original, corrected);
+  return (
+    <span>
+      {ops.map((op, i) => {
+        if (op.type === "keep") return <span key={i}>{op.text}</span>;
+        if (op.type === "del")
+          return (
+            <span key={i} className="bg-red-100 text-red-700 line-through rounded px-0.5 mx-px">
+              {op.text}
+            </span>
+          );
+        if (!op.text.trim()) return null;
+        return (
+          <span key={i} className="bg-emerald-100 text-emerald-800 rounded px-0.5 mx-px font-medium">
+            {op.text}
+          </span>
+        );
+      })}
+    </span>
+  );
 }

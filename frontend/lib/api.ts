@@ -51,3 +51,15 @@ export async function fetchMetrics(): Promise<Record<string, LanguageMetrics>> {
   if (!res.ok) return {};
   return res.json();
 }
+
+export async function analyseBatch(
+  items: AnalyseRequest[]
+): Promise<AnalyseResponse[]> {
+  const res = await fetch(`${API_BASE}/rewrite/batch`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  return res.json();
+}
