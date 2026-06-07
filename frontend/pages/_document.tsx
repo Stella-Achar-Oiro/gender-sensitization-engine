@@ -5,8 +5,10 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="UTF-8" />
-        <meta name="description" content="JuaKazi Gender Bias Detection & Correction" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="JuaKazi — Gender Bias Detection & Correction for African Languages" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
+        <meta name="theme-color" content="#111827" />
       </Head>
       <body>
         <Main />

@@ -112,16 +112,36 @@ export default function DiffView({ result }: Props) {
   // Full correction available — with human review actions
   const replaceEdits = edits.filter((e) => e.severity === "replace");
 
+  // Plain-language reason: "Changed 'chairman' → 'chair' — gendered job title"
+  const plainReasons = replaceEdits
+    .filter((e) => e.from && e.to)
+    .map((e) => {
+      const category = e.stereotype_category ?? e.bias_type ?? "";
+      const label =
+        category === "profession"  ? "gendered job title" :
+        category === "family_role" ? "gendered family role" :
+        category === "capability"  ? "gendered capability stereotype" :
+        category === "daily_life"  ? "gendered pronoun" :
+        "gender bias";
+      return `Changed '${e.from}' → '${e.to}' — ${label}`;
+    });
+
+  const handleCopyCorrection = () => {
+    navigator.clipboard.writeText(editedText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const correctedBg =
     reviewState === "accepted" || reviewState === "edited"
-      ? "bg-emerald-100/80 border-t-2 border-emerald-400"
+      ? "bg-emerald-50 border-t-2 border-emerald-400"
       : reviewState === "rejected"
-      ? "bg-slate-50/80 border-t border-slate-200"
-      : "bg-emerald-50/50";
+      ? "bg-slate-50 border-t border-slate-200"
+      : "bg-emerald-50/60";
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden">
-      {/* Original */}
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+      {/* Original with inline highlights */}
       <div className="px-4 py-3 border-b border-slate-100">
         <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-1.5">
           Original
@@ -131,19 +151,17 @@ export default function DiffView({ result }: Props) {
         </p>
       </div>
 
-      {/* Corrected / editable */}
+      {/* Corrected */}
       <div className={`px-4 py-3 ${correctedBg}`}>
         <div className="flex items-center justify-between mb-1.5">
           <div className="text-[10px] font-semibold uppercase tracking-widest text-emerald-700">
             {reviewState === "accepted" && "✓ Accepted"}
             {reviewState === "edited"   && "✓ Edited & accepted"}
             {reviewState === "rejected" && "✗ Rejected — keeping original"}
-            {reviewState === "pending"  && "Corrected"}
+            {reviewState === "pending"  && "Suggested correction"}
           </div>
           {reviewState !== "pending" && (
-            <button onClick={handleReset} className="text-[10px] text-muted hover:underline">
-              Reset
-            </button>
+            <button onClick={handleReset} className="text-[10px] text-muted hover:underline">Reset</button>
           )}
         </div>
 
@@ -160,61 +178,55 @@ export default function DiffView({ result }: Props) {
           <p className={`text-sm font-medium leading-relaxed ${
             reviewState === "rejected" ? "line-through text-slate-400" : "text-emerald-900"
           }`}>
-            {reviewState === "rejected" ? (
-              editedText
-            ) : (
+            {reviewState === "rejected" ? editedText : (
               <WordDiffView original={original_text} corrected={editedText} />
             )}
           </p>
         )}
-      </div>
 
-      {/* Edit list */}
-      {replaceEdits.length > 0 && (
-        <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/50">
-          <div className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-2">
-            Changes ({replaceEdits.length})
-          </div>
-          <div className="flex flex-col gap-1.5">
-            {replaceEdits.map((edit, i) => (
-              <div key={i} className="flex items-start gap-2 text-xs">
-                <span className="bg-red-100 text-red-700 px-1.5 py-0.5 rounded line-through font-mono">
-                  {edit.from}
-                </span>
-                <span className="text-slate-400">→</span>
-                <span className="bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-mono">
-                  {edit.to || "(removed)"}
-                </span>
-                {edit.reason && (
-                  <span className="text-muted italic flex-1">{edit.reason}</span>
-                )}
-              </div>
+        {/* Plain-language reason */}
+        {plainReasons.length > 0 && reviewState === "pending" && !isEditing && (
+          <div className="mt-2 flex flex-col gap-0.5">
+            {plainReasons.map((r, i) => (
+              <p key={i} className="text-[11px] text-emerald-700 opacity-80">{r}</p>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Human review actions */}
+      {/* Actions row */}
       {reviewState === "pending" && !isEditing && (
         <div className="px-4 py-3 border-t border-slate-100 flex items-center gap-2">
+          {/* Prominent copy button */}
+          <button
+            onClick={handleCopyCorrection}
+            className="flex items-center gap-1.5 text-xs bg-[#00a651] hover:bg-[#009448]
+                       text-white px-3 py-1.5 rounded-md font-semibold transition-colors"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+            {copied ? "Copied!" : "Copy correction"}
+          </button>
           <button
             onClick={handleAccept}
-            className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white
-                       px-3 py-1.5 rounded-md font-semibold transition-colors"
+            className="text-xs bg-white hover:bg-emerald-50 text-emerald-700
+                       border border-emerald-300 px-3 py-1.5 rounded-md font-semibold transition-colors"
           >
             Accept
           </button>
           <button
             onClick={handleEdit}
-            className="text-xs bg-white hover:bg-slate-50 text-slate-700
-                       border border-slate-300 px-3 py-1.5 rounded-md font-medium transition-colors"
+            className="text-xs bg-white hover:bg-slate-50 text-slate-600
+                       border border-slate-200 px-3 py-1.5 rounded-md font-medium transition-colors"
           >
             Edit
           </button>
           <button
             onClick={handleReject}
-            className="text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5
-                       rounded-md font-medium transition-colors"
+            className="text-xs text-slate-400 hover:text-slate-600 px-3 py-1.5
+                       rounded-md font-medium transition-colors ml-auto"
           >
             Reject
           </button>
@@ -238,6 +250,20 @@ export default function DiffView({ result }: Props) {
           >
             Cancel
           </button>
+        </div>
+      )}
+
+      {/* Change detail chips */}
+      {replaceEdits.length > 0 && (
+        <div className="px-4 py-2.5 border-t border-slate-100 bg-slate-50/60 flex flex-wrap gap-1.5">
+          {replaceEdits.map((edit, i) => (
+            <span key={i} className="inline-flex items-center gap-1 text-[11px] bg-white
+                                     border border-slate-200 rounded-full px-2 py-0.5 text-slate-600">
+              <span className="text-red-500 line-through font-mono">{edit.from}</span>
+              <span className="text-slate-300">→</span>
+              <span className="text-emerald-600 font-mono">{edit.to || "∅"}</span>
+            </span>
+          ))}
         </div>
       )}
     </div>
