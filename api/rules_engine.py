@@ -158,6 +158,11 @@ def apply_rules_on_spans(
 
 
 def build_reason(source: str, edits: list, skipped: list, aibridge_detected: bool = False) -> str:
+    if source == "low_confidence":
+        return (
+            "Possible gender bias detected but no correction available. "
+            "Flagged for human review — automated correction requires additional training data."
+        )
     if source == "aibridge_preserved":
         return "No gender bias detected by external classifier. Text returned unchanged."
     if source == "preserved":

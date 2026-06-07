@@ -16,15 +16,15 @@ class DataVersions:
 
     # Per-language lexicon file versions (Hausa/Zulu initial packs use v1 filenames)
     LEXICON_BY_LANG: dict = {
-        "ha": "v1",
-        "zu": "v1",
+        "ha": "v2",
+        "zu": "v2",
     }
 
     # Per-language overrides (Kikuyu is ahead of the default version)
     GROUND_TRUTH_BY_LANG: dict = {
         "ki": "v8",
-        "ha": "v1",
-        "zu": "v1",
+        "ha": "v2",
+        "zu": "v2",
     }
 
 
@@ -93,6 +93,7 @@ REWRITE_CONFIDENCE_BY_SOURCE: dict[str, float] = {
     "preserved": 0.95,
     "disambiguated": 0.80,
     "aibridge_preserved": 0.90,
+    "low_confidence": 0.30,
 }
 DEFAULT_REWRITE_CONFIDENCE: float = 0.85
 

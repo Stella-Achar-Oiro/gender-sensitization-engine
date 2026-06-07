@@ -99,6 +99,7 @@ def rewrite_text(
     # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
     lexicon_corrected = any(e.get("severity") == "replace" for e in edits)
     has_any_bias_signal = bool(edits) or (aibridge_result is not None and aibridge_result.has_bias)
+    ml_unavailable = False
     if not lexicon_corrected and has_any_bias_signal:
         ml_result = ml_rewrite(text, lang=lang)
         if ml_result["model"] != "unavailable":
@@ -116,14 +117,25 @@ def rewrite_text(
                     "stereotype_category": "",
                     "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
                 }]
+        else:
+            ml_unavailable = True
+
+    # When the external gate detected bias but neither lexicon nor ML could correct it,
+    # return an honest "low confidence, flagged for review" signal instead of a confident
+    # false negative ("No gender bias detected").
+    aibridge_ok = aibridge_result is not None and aibridge_result.error is None
+    aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
+    if not edits and (aibridge_detected or ml_unavailable):
+        source = "low_confidence"
 
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)
-    needs_review = source == "ml" or len(edits) == 0
-    aibridge_ok = aibridge_result is not None and aibridge_result.error is None
-    aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
+    needs_review = source in ("ml", "low_confidence") or len(edits) == 0
     reason = build_reason(source, edits, skipped, aibridge_detected=bool(aibridge_detected))
-    has_bias_detected = any(e.get("severity") in ("replace", "warn") for e in edits)
+    has_bias_detected = (
+        any(e.get("severity") in ("replace", "warn") for e in edits)
+        or source == "low_confidence"
+    )
 
     response = RewriteResponse(
         id=id,
