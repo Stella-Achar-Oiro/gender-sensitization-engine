@@ -48,10 +48,9 @@ export const EXAMPLES: Record<string, string[]> = {
 interface Props {
   activeLang: string;
   onLangChange: (code: string) => void;
-  onExampleClick: (text: string) => void;
   onHistoryClick: (entry: HistoryEntry) => void;
   metrics: Record<string, LanguageMetrics>;
-  historyVersion: number; // bumped by parent on new save to trigger re-render
+  historyVersion: number;
 }
 
 function relativeTime(ts: number): string {
@@ -66,13 +65,12 @@ function relativeTime(ts: number): string {
 }
 
 export default function Sidebar({
-  activeLang, onExampleClick, onHistoryClick, metrics, historyVersion,
+  activeLang, onHistoryClick, metrics, historyVersion,
 }: Props) {
   const topLang = LANGUAGES.find((l) => l.code === activeLang);
   const m = metrics[activeLang];
 
   const [history, setHistory] = useState<HistoryEntry[]>([]);
-  const [tab, setTab] = useState<"examples" | "recent">("recent");
 
   // Load history on mount and whenever historyVersion changes
   useEffect(() => {
@@ -128,113 +126,63 @@ export default function Sidebar({
         </div>
       )}
 
-      {/* Tab switcher */}
-      <div className="flex border-b border-white/[0.06]">
-        {(["recent", "examples"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`flex-1 py-2 text-[11px] font-semibold capitalize transition-colors ${
-              tab === t
-                ? "text-[#00a651] border-b-2 border-[#00a651]"
-                : "text-white/30 hover:text-white/55"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {/* Panel */}
+      {/* Recent sessions */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-
-        {tab === "recent" ? (
-          <div className="flex-1 overflow-y-auto px-2.5 py-2">
-            {history.length === 0 ? (
-              <p className="text-[11px] text-white/20 px-2 py-4 text-center leading-relaxed">
-                Your analysed sentences<br />will appear here
-              </p>
-            ) : (
-              <>
-                <div className="flex items-center justify-between px-2 mb-1.5">
-                  <span className="text-[10px] text-white/25 uppercase tracking-widest font-semibold">
-                    {history.length} session{history.length !== 1 ? "s" : ""}
-                  </span>
-                  <button
-                    onClick={handleClear}
-                    className="text-[10px] text-white/20 hover:text-white/50 transition-colors"
-                  >
-                    Clear all
-                  </button>
-                </div>
-                <div className="flex flex-col gap-px">
-                  {history.map((entry) => {
-                    const lang = LANGUAGES.find((l) => l.code === entry.lang);
-                    const biased = entry.result.has_bias_detected;
-                    return (
-                      <button
-                        key={entry.id}
-                        onClick={() => onHistoryClick(entry)}
-                        className="group flex items-start gap-2 px-2.5 py-2 rounded-lg text-left
-                                   hover:bg-white/[0.06] transition-all duration-150"
-                      >
-                        {/* Bias indicator dot */}
-                        <span className={`flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full ${
-                          biased ? "bg-red-400" : "bg-emerald-400"
-                        }`} />
-
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] text-white/60 group-hover:text-white/85
-                                        truncate leading-snug transition-colors">
-                            {entry.text.length > 42
-                              ? entry.text.slice(0, 42) + "…"
-                              : entry.text}
-                          </p>
-                          <p className="text-[10px] text-white/25 mt-0.5">
-                            {lang?.flag} {relativeTime(entry.ts)}
-                          </p>
-                        </div>
-
-                        {/* Delete */}
-                        <button
-                          onClick={(e) => handleDelete(entry.id, e)}
-                          className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-white/30
-                                     hover:text-white/70 transition-all p-0.5 rounded mt-0.5"
-                          title="Remove"
-                        >
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-                               stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <path d="M18 6L6 18M6 6l12 12"/>
-                          </svg>
-                        </button>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </div>
-        ) : (
-          <div className="flex-1 overflow-y-auto px-2.5 py-2">
-            <div className="text-[10px] font-semibold uppercase tracking-widest text-white/25 px-2 mb-1.5">
-              Examples
-            </div>
+        <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-white/25">
+            Recent
+          </span>
+          {history.length > 0 && (
+            <button onClick={handleClear} className="text-[10px] text-white/20 hover:text-white/50 transition-colors">
+              Clear
+            </button>
+          )}
+        </div>
+        <div className="flex-1 overflow-y-auto px-2.5 pb-2">
+          {history.length === 0 ? (
+            <p className="text-[11px] text-white/20 px-2 py-4 text-center leading-relaxed">
+              Analysed sentences<br />will appear here
+            </p>
+          ) : (
             <div className="flex flex-col gap-px">
-              {(EXAMPLES[activeLang] ?? []).map((ex, i) => (
-                <button
-                  key={i}
-                  onClick={() => onExampleClick(ex)}
-                  className="flex items-start gap-2 px-2.5 py-2 rounded-lg text-white/45 text-[11px]
-                             text-left hover:bg-white/[0.06] hover:text-white/80 transition-all duration-150
-                             leading-snug"
-                >
-                  <span className="flex-shrink-0 mt-0.5 opacity-40 text-[10px]">›</span>
-                  {ex}
-                </button>
-              ))}
+              {history.map((entry) => {
+                const entryLang = LANGUAGES.find((l) => l.code === entry.lang);
+                const biased = entry.result.has_bias_detected;
+                return (
+                  <button
+                    key={entry.id}
+                    onClick={() => onHistoryClick(entry)}
+                    className="group flex items-start gap-2 px-2.5 py-2 rounded-lg text-left
+                               hover:bg-white/[0.06] transition-all duration-150"
+                  >
+                    <span className={`flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full ${
+                      biased ? "bg-red-400" : "bg-emerald-400"
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] text-white/60 group-hover:text-white/85 truncate leading-snug transition-colors">
+                        {entry.text.length > 42 ? entry.text.slice(0, 42) + "…" : entry.text}
+                      </p>
+                      <p className="text-[10px] text-white/25 mt-0.5">
+                        {entryLang?.flag} {relativeTime(entry.ts)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={(e) => handleDelete(entry.id, e)}
+                      className="flex-shrink-0 opacity-0 group-hover:opacity-100 text-white/30
+                                 hover:text-white/70 transition-all p-0.5 rounded mt-0.5"
+                      title="Remove"
+                    >
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                           stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </button>
+                );
+              })}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Bottom */}

@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Sidebar from "../components/Sidebar";
-import { LANGUAGES } from "../components/Sidebar";
+import { LANGUAGES, EXAMPLES } from "../components/Sidebar";
 import VerdictBadge from "../components/VerdictBadge";
 import DiffView from "../components/DiffView";
 import BatchView from "../components/BatchView";
@@ -33,7 +33,8 @@ const LANG_LOCALES: Record<string, string> = {
 };
 
 export default function Home({ initialMetrics }: Props) {
-  const [lang, setLang]               = useState("sw");
+  // null = no language chosen yet
+  const [lang, setLang]               = useState<string | null>(null);
   const [text, setText]               = useState("");
   const [mode, setMode]               = useState<Mode>("single");
   const [loading, setLoading]         = useState(false);
@@ -52,11 +53,11 @@ export default function Home({ initialMetrics }: Props) {
   }, []);
 
   const handleLangChange = useCallback((code: string) => {
-    setLang(code); resetResults();
+    setLang(code); resetResults(); setText("");
   }, [resetResults]);
 
   const handleAnalyse = useCallback(async () => {
-    if (!text.trim()) return;
+    if (!text.trim() || !lang) return;
     setLoading(true);
     resetResults();
 
@@ -88,6 +89,7 @@ export default function Home({ initialMetrics }: Props) {
   }, [lang, text, mode, resetResults]);
 
   const handlePdfUpload = useCallback(async (file: File) => {
+    if (!lang) return;
     setPdfName(file.name);
     setLoading(true);
     resetResults();
@@ -120,6 +122,7 @@ export default function Home({ initialMetrics }: Props) {
   }, []);
 
   const handleVoice = useCallback(() => {
+    if (!lang) return;
     const SR = typeof window !== "undefined"
       ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition)
       : null;
@@ -138,7 +141,16 @@ export default function Home({ initialMetrics }: Props) {
   }, [lang, listening]);
 
   const showBatch = mode === "paragraph" || mode === "pdf";
-  const langMeta = LANGUAGES.find((l) => l.code === lang);
+  const langMeta  = lang ? LANGUAGES.find((l) => l.code === lang) : null;
+  const noLang    = lang === null;
+
+  // Placeholder rotates through examples for the chosen language
+  const examples  = lang ? (EXAMPLES[lang] ?? []) : [];
+  const placeholder = noLang
+    ? "Choose a language above to get started…"
+    : mode === "paragraph"
+    ? `Paste a paragraph in ${langMeta?.label ?? ""}…`
+    : examples[0] ?? `Type a ${langMeta?.label ?? ""} sentence…`;
 
   return (
     <>
@@ -146,9 +158,8 @@ export default function Home({ initialMetrics }: Props) {
 
       <div className="flex h-screen overflow-hidden">
         <Sidebar
-          activeLang={lang}
+          activeLang={lang ?? ""}
           onLangChange={handleLangChange}
-          onExampleClick={(t) => { setText(t); resetResults(); setMode("single"); }}
           onHistoryClick={handleHistoryClick}
           metrics={metrics}
           historyVersion={historyVersion}
@@ -157,12 +168,16 @@ export default function Home({ initialMetrics }: Props) {
         <main className="flex-1 overflow-y-auto bg-[#f8fafc]">
           {/* Top bar */}
           <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-slate-200 px-6 py-3 flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-base leading-none">{langMeta?.flag}</span>
-              <span className="font-semibold text-slate-800 text-sm">{langMeta?.label}</span>
-            </div>
-            <span className="text-slate-300 text-xs">·</span>
-            <span className="text-xs text-muted">afro-xlmr-base</span>
+            {langMeta ? (
+              <>
+                <span className="text-base leading-none">{langMeta.flag}</span>
+                <span className="font-semibold text-slate-800 text-sm">{langMeta.label}</span>
+                <span className="text-slate-300 text-xs">·</span>
+                <span className="text-xs text-muted">afro-xlmr-base</span>
+              </>
+            ) : (
+              <span className="text-sm text-muted">Select a language to begin</span>
+            )}
             <Link href="/languages" className="ml-auto text-xs text-[#00a651] hover:underline font-medium">
               All metrics →
             </Link>
@@ -199,16 +214,18 @@ export default function Home({ initialMetrics }: Props) {
             </div>
 
             {/* Input card */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-
+            <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-colors ${
+              noLang ? "border-slate-100 opacity-60" : "border-slate-200"
+            }`}>
               {/* Mode tabs */}
               <div className="flex border-b border-slate-100">
                 {([["single","Sentence"],["paragraph","Paragraph"],["pdf","PDF"]] as [Mode,string][]).map(([m, label]) => (
                   <button
                     key={m}
-                    onClick={() => { setMode(m); resetResults(); setPdfName(null); }}
-                    className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${
-                      mode === m
+                    onClick={() => { if (!noLang) { setMode(m); resetResults(); setPdfName(null); }}}
+                    disabled={noLang}
+                    className={`flex-1 py-2.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed ${
+                      mode === m && !noLang
                         ? "text-[#00a651] border-b-2 border-[#00a651] bg-emerald-50/40"
                         : "text-slate-400 hover:text-slate-600"
                     }`}
@@ -219,7 +236,7 @@ export default function Home({ initialMetrics }: Props) {
               </div>
 
               {/* PDF drop zone */}
-              {mode === "pdf" ? (
+              {mode === "pdf" && !noLang ? (
                 <div
                   className="flex flex-col items-center justify-center gap-3 py-10 px-6 cursor-pointer
                              hover:bg-emerald-50/30 transition-colors"
@@ -259,44 +276,44 @@ export default function Home({ initialMetrics }: Props) {
                 <>
                   <div className="relative">
                     <textarea
+                      disabled={noLang}
                       className="w-full px-4 pt-4 pb-3 text-sm text-slate-800 resize-none outline-none
-                                 placeholder-slate-300 leading-relaxed"
+                                 placeholder-slate-300 leading-relaxed disabled:cursor-not-allowed
+                                 disabled:bg-transparent"
                       rows={mode === "paragraph" ? 6 : 4}
-                      placeholder={
-                        mode === "paragraph"
-                          ? "Paste a paragraph — each sentence will be checked…"
-                          : `Type or paste a ${langMeta?.label ?? ""} sentence…`
-                      }
+                      placeholder={placeholder}
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAnalyse();
                       }}
                     />
-                    {/* Voice mic */}
-                    <button
-                      onClick={handleVoice}
-                      title={listening ? "Stop" : "Speak"}
-                      className={`absolute top-3 right-3 p-2 rounded-full transition-all ${
-                        listening
-                          ? "bg-red-100 text-red-500 animate-pulse shadow-sm"
-                          : "text-slate-300 hover:text-slate-500 hover:bg-slate-100"
-                      }`}
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V22h2v-1.06A9 9 0 0 0 21 12v-2h-2z"/>
-                      </svg>
-                    </button>
+                    {/* Voice mic — only when lang chosen */}
+                    {!noLang && (
+                      <button
+                        onClick={handleVoice}
+                        title={listening ? "Stop" : "Speak"}
+                        className={`absolute top-3 right-3 p-2 rounded-full transition-all ${
+                          listening
+                            ? "bg-red-100 text-red-500 animate-pulse shadow-sm"
+                            : "text-slate-300 hover:text-slate-500 hover:bg-slate-100"
+                        }`}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V22h2v-1.06A9 9 0 0 0 21 12v-2h-2z"/>
+                        </svg>
+                      </button>
+                    )}
                   </div>
 
                   <div className="px-4 pb-3 flex items-center justify-between border-t border-slate-50">
                     <span className="text-[11px] text-muted">
-                      {listening ? "🔴 Listening…" : "⌘ + Enter to analyse"}
+                      {listening ? "🔴 Listening…" : noLang ? "Pick a language first" : "⌘ + Enter to analyse"}
                     </span>
                     <button
                       onClick={handleAnalyse}
-                      disabled={loading || !text.trim()}
+                      disabled={loading || !text.trim() || noLang}
                       className="bg-[#00a651] text-white text-sm font-semibold px-5 py-2 rounded-lg
                                  hover:bg-[#009448] active:bg-[#007a3a] transition-colors
                                  disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
@@ -325,7 +342,7 @@ export default function Home({ initialMetrics }: Props) {
                 {(result.edits.length > 0 || result.has_bias_detected) && (
                   <DiffView result={result} />
                 )}
-                <MetricsBar lang={lang} metrics={metrics[lang]} />
+                <MetricsBar lang={lang!} metrics={lang ? metrics[lang] : undefined} />
               </div>
             )}
 
