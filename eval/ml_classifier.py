@@ -4,9 +4,9 @@ ML bias classifier -- Stage 1 detector for the pipeline.
 Single multilingual model covers all 6 languages (SW, HA, ZU, KI, FR, EN).
 Falls back gracefully when the model is unavailable (returns 0.0).
 
-  ALL -> juakazike/multilingual-bias-classifier-v1
-         Davlan/afro-xlmr-base fine-tuned on 137K rows across 6 languages
-         Trained Jun 2026 on Kaggle T4 x2, Epoch 3: F1=0.917, F1_bias=0.877
+  ALL -> juakazike/multilingual-bias-classifier-v2
+         Davlan/afro-xlmr-base fine-tuned on 148K rows across 6 languages
+         Trained Jun 2026 on Kaggle T4 x2, Epoch 3: F1_bias=0.893, SW=0.951, HA=0.800, ZU=0.996, KI=0.865, FR=0.891, EN=0.855
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from typing import Optional
 
 from .models import Language
 
-_MULTILINGUAL_MODEL = "juakazike/multilingual-bias-classifier-v1"
+_MULTILINGUAL_MODEL = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/multilingual-bias-classifier-v1")
 
 # ── Per-language model IDs (all point to multilingual; override via env vars) ─
 _MODEL_IDS: dict[Language, str] = {
@@ -37,10 +37,6 @@ _THRESHOLDS: dict[Language, float] = {
     Language.FRENCH:  float(os.environ.get("JUAKAZI_FR_THRESHOLD", "0.75")),
 }
 
-# Legacy env var support (existing deployments)
-_LEGACY_MODEL = os.environ.get("JUAKAZI_ML_MODEL", "")
-if _LEGACY_MODEL:
-    _MODEL_IDS[Language.SWAHILI] = _LEGACY_MODEL
 
 # ── Lazy-loaded pipelines per language ──────────────────────────────────────
 _pipes:       dict[Language, object]          = {}

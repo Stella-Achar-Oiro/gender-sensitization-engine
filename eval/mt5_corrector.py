@@ -1,6 +1,7 @@
 """
 MT5-based bias correction using the generative approach from dev branch
 """
+import os
 import time
 from typing import Dict, Any
 from .models import Language
@@ -9,7 +10,9 @@ class MT5BiasCorrector:
     """MT5-based bias correction system"""
     
     def __init__(self):
-        self.model_id = "google/mt5-small"
+        self.model_id = os.environ.get(
+            "JUAKAZI_CORRECTOR_MODEL", "juakazike/multilingual-bias-corrector-v2"
+        )
         self._tokenizer = None
         self._model = None
     
@@ -35,7 +38,7 @@ class MT5BiasCorrector:
         
         # Language-specific prompting
         lang_code = language.value
-        prompt = f"Rewrite to remove gender bias while preserving meaning (language={lang_code}): {text}"
+        prompt = f"correct bias {lang_code}: {text}"
         
         inputs = self._tokenizer(prompt, return_tensors="pt", truncation=True, padding=True).to(self._device)
         
