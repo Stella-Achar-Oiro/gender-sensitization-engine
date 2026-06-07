@@ -18,6 +18,8 @@ class DataVersions:
     LEXICON_BY_LANG: dict = {
         "ha": "v2",
         "zu": "v2",
+        "fr": "v4",
+        "ki": "v4",
     }
 
     # Per-language overrides (Kikuyu is ahead of the default version)
