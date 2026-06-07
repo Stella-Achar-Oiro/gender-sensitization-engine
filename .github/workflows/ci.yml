@@ -20,7 +20,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install fastapi uvicorn pydantic httpx requests transformers \
-                      scikit-learn numpy pandas sentencepiece
+                      scikit-learn numpy pandas sentencepiece python-multipart pypdf
           pip install -r requirements-dev.txt
 
       - name: Pytest acceptance gates
