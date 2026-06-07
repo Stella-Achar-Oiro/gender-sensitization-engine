@@ -9,6 +9,8 @@ import BatchView from "../components/BatchView";
 import MetricsBar from "../components/MetricsBar";
 import { analyse, analyseBatch } from "../lib/api";
 import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
+import { saveToHistory } from "../lib/history";
+import type { HistoryEntry } from "../lib/history";
 import type { GetStaticProps } from "next";
 
 interface Props {
@@ -40,6 +42,7 @@ export default function Home({ initialMetrics }: Props) {
   const [batchResults, setBatchResults] = useState<AnalyseResponse[]>([]);
   const [pdfName, setPdfName]         = useState<string | null>(null);
   const [listening, setListening]     = useState(false);
+  const [historyVersion, setHistoryVersion] = useState(0);
   const recognitionRef                = useRef<any>(null);
   const fileInputRef                  = useRef<HTMLInputElement>(null);
   const metrics = initialMetrics;
@@ -59,8 +62,11 @@ export default function Home({ initialMetrics }: Props) {
 
     if (mode === "single") {
       try {
-        const res = await analyse({ id: crypto.randomUUID(), lang, text: text.trim() });
+        const id = crypto.randomUUID();
+        const res = await analyse({ id, lang, text: text.trim() });
         setResult(res);
+        saveToHistory({ id, lang, text: text.trim(), result: res, ts: Date.now() });
+        setHistoryVersion((v) => v + 1);
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : "Analysis failed");
       } finally {
@@ -104,6 +110,15 @@ export default function Home({ initialMetrics }: Props) {
     }
   }, [lang, resetResults]);
 
+  const handleHistoryClick = useCallback((entry: HistoryEntry) => {
+    setLang(entry.lang);
+    setText(entry.text);
+    setResult(entry.result);
+    setMode("single");
+    setBatchResults([]);
+    setError(null);
+  }, []);
+
   const handleVoice = useCallback(() => {
     const SR = typeof window !== "undefined"
       ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition)
@@ -134,7 +149,9 @@ export default function Home({ initialMetrics }: Props) {
           activeLang={lang}
           onLangChange={handleLangChange}
           onExampleClick={(t) => { setText(t); resetResults(); setMode("single"); }}
+          onHistoryClick={handleHistoryClick}
           metrics={metrics}
+          historyVersion={historyVersion}
         />
 
         <main className="flex-1 overflow-y-auto bg-[#f8fafc]">
