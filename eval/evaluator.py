@@ -5,6 +5,7 @@ This module coordinates the evaluation process and provides the main interface
 for running evaluations.
 """
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
@@ -33,7 +34,7 @@ class BiasEvaluationOrchestrator:
         data_dir: Path = Path("eval"),
         rules_dir: Path = Path("rules"),
         results_dir: Path = Path("eval/results"),
-        enable_ml: bool = False,
+        enable_ml: bool = bool(os.environ.get("JUAKAZI_ML_MODEL", "")),
         ml_threshold: float = 0.56,
     ):
         """
