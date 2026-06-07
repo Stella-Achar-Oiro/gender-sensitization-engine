@@ -32,6 +32,7 @@ SourceLiteral = Literal[
     "preserved",
     "disambiguated",
     "aibridge_preserved",
+    "low_confidence",
 ]
 
 
