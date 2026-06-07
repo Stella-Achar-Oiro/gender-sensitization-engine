@@ -276,10 +276,10 @@ class BiasDetector:
             if skipped_edits:
                 result._skipped_edits = skipped_edits
 
-            # Stage 2 — ML classifier fallback
-            # Only runs when rules found nothing (has_bias=False, no warn_edits).
-            # Produces warn-severity edits only — never replace. Precision preserved.
-            if not has_bias and not warn_edits and self.enable_ml_fallback:
+            # Stage 2 — ML classifier
+            # Runs on every sentence when enabled. OR'd with lexicon result:
+            # bias detected if lexicon OR ML fires. Warn-severity only from ML.
+            if self.enable_ml_fallback:
                 try:
                     from .ml_classifier import classify as ml_classify
                     ml_score = ml_classify(text, language)
@@ -292,8 +292,12 @@ class BiasDetector:
                             "source": "ml",
                             "confidence": ml_score,
                         }
-                        result.warn_edits = [ml_edit]
-                        result.confidence = ml_score
+                        if not has_bias and not warn_edits:
+                            result.warn_edits = [ml_edit]
+                            result.confidence = ml_score
+                        # If lexicon already flagged it, boost confidence
+                        elif has_bias:
+                            result.confidence = max(result.confidence, ml_score)
                 except Exception:
                     pass  # ML unavailable — rules result stands
 

@@ -9,6 +9,7 @@ Main entry point for bias detection evaluation.
 """
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -110,9 +111,11 @@ def main():
         return
 
     from eval.evaluator import BiasEvaluationOrchestrator
-    if args.ml:
-        print("ML fallback enabled (sw-bias-classifier-v2, threshold=0.56) — this will be slow on CPU")
-    orchestrator = BiasEvaluationOrchestrator(enable_ml=args.ml)
+    ml_model = os.environ.get("JUAKAZI_ML_MODEL", "")
+    use_ml = args.ml or bool(ml_model)
+    if use_ml:
+        print(f"ML enabled ({ml_model or 'juakazike/multilingual-bias-classifier-v1'}, threshold=0.56) — slow on CPU")
+    orchestrator = BiasEvaluationOrchestrator(enable_ml=use_ml)
     results = orchestrator.run_evaluation()
 
     if args.tag:
