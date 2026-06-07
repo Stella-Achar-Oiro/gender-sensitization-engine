@@ -304,7 +304,13 @@ export default function Home({ initialMetrics }: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: { initialMetrics: {} },
-  };
+  try {
+    const fs = await import("fs");
+    const path = await import("path");
+    const p = path.join(process.cwd(), "..", "eval", "metrics.json");
+    const initialMetrics = JSON.parse(fs.readFileSync(p, "utf-8"));
+    return { props: { initialMetrics } };
+  } catch {
+    return { props: { initialMetrics: {} } };
+  }
 };

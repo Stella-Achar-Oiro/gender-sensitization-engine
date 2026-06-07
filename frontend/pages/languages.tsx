@@ -102,5 +102,13 @@ export default function Languages({ metrics }: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  return { props: { metrics: {} } };
+  try {
+    const fs = await import("fs");
+    const path = await import("path");
+    const p = path.join(process.cwd(), "..", "eval", "metrics.json");
+    const metrics = JSON.parse(fs.readFileSync(p, "utf-8"));
+    return { props: { metrics } };
+  } catch {
+    return { props: { metrics: {} } };
+  }
 };
