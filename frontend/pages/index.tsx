@@ -31,36 +31,52 @@ interface ThreadItem {
   exportRow?: ExportRow;
 }
 
+// Category labels shown alongside examples to explain what kind of bias each represents
+const EXAMPLE_CATEGORIES: Record<string, string[]> = {
+  en: ["Leadership",  "Profession",   "Profession"],
+  sw: ["Profession",  "Capability",   "Neutral check"],
+  fr: ["Leadership",  "Capability",   "Neutral check"],
+  ki: ["Family role", "Capability"],
+  ha: ["Profession",  "Family role"],
+  zu: ["Profession",  "Leadership"],
+};
+
 function EmptyState({ lang, onExample }: { lang: string | null; onExample: (t: string) => void }) {
   const examples = lang ? (EXAMPLES[lang] ?? []) : [];
+  const cats     = lang ? (EXAMPLE_CATEGORIES[lang] ?? []) : [];
   const langMeta = lang ? LANGUAGES.find(l => l.code === lang) : null;
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-[#00a651] flex items-center justify-center mb-5 shadow-lg">
-        <span className="text-white font-bold text-3xl leading-none">J</span>
+      <div className="w-14 h-14 rounded-2xl bg-[#00a651] flex items-center justify-center mb-4 shadow-lg">
+        <span className="text-white font-bold text-2xl leading-none">J</span>
       </div>
-      <h1 className="text-2xl font-bold text-[#1a1a2e] mb-2">JuaKazi</h1>
-      <p className="text-base text-[#475569] mb-8 max-w-sm leading-relaxed">
+      <h1 className="text-xl font-bold text-[#1a1a2e] mb-1.5">JuaKazi</h1>
+      <p className="text-sm text-[#475569] mb-7 max-w-xs leading-relaxed">
         Gender bias detection and correction across 6 African languages.
         {!lang && " Select a language to begin."}
       </p>
 
       {lang && examples.length > 0 && (
-        <div className="w-full max-w-lg">
+        <div className="w-full max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-3">
             Try an example in {langMeta?.label}
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {examples.map((ex, i) => (
               <button
                 key={i}
                 onClick={() => onExample(ex)}
-                className="text-left text-sm text-[#1a1a2e] bg-white border border-slate-200
-                           rounded-xl px-4 py-3 hover:border-[#00a651] hover:shadow-sm
-                           transition-all duration-150 leading-relaxed"
+                className="text-left bg-white border border-slate-200 rounded-xl px-3.5 py-3
+                           hover:border-[#00a651] hover:shadow-sm transition-all duration-150
+                           flex flex-col gap-1"
               >
-                {langMeta?.flag} {ex}
+                <span className="text-xs font-semibold text-[#00a651] uppercase tracking-wide">
+                  {cats[i] ?? "Example"}
+                </span>
+                <span className="text-sm text-[#1a1a2e] leading-snug">
+                  {langMeta?.flag} {ex}
+                </span>
               </button>
             ))}
           </div>
@@ -82,6 +98,7 @@ export default function Home() {
   const [metrics, setMetrics]     = useState<Record<string, LanguageMetrics>>({});
   const [pdfName, setPdfName]     = useState<string | null>(null);
   const [exportRows, setExportRows] = useState<ExportRow[]>([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const recognitionRef  = useRef<any>(null);
   const fileInputRef    = useRef<HTMLInputElement>(null);
@@ -248,6 +265,8 @@ export default function Home() {
           onHistoryClick={handleHistoryClick}
           metrics={metrics}
           historyVersion={historyVersion}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(c => !c)}
         />
 
         {/* Main area */}
@@ -296,16 +315,29 @@ export default function Home() {
           {/* Thread */}
           <div className="flex-1 overflow-y-auto">
             {thread.length === 0 ? (
-              <EmptyState lang={lang} onExample={(ex) => { setText(ex); textareaRef.current?.focus(); }} />
+              <EmptyState lang={lang} onExample={async (ex) => {
+                if (!lang) return;
+                setText("");
+                setLoading(true);
+                setError(null);
+                try {
+                  const res = await analyse({ id: crypto.randomUUID(), lang, text: ex });
+                  addToThread(ex, res, lang);
+                } catch (e: unknown) {
+                  setError(e instanceof Error ? e.message : "Analysis failed");
+                } finally {
+                  setLoading(false);
+                }
+              }} />
             ) : (
               <div className="max-w-3xl mx-auto px-5 py-6 flex flex-col gap-5">
                 {thread.map((item) => (
                   <div key={item.id} className="flex flex-col gap-3">
-                    {/* User bubble */}
+                    {/* User bubble — light ghost style, doesn't compete with result card */}
                     <div className="flex justify-end">
-                      <div className="max-w-xl bg-[#00a651] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
-                        <p className="text-base leading-relaxed">{item.input}</p>
-                        <p className="text-xs text-white/60 mt-1 text-right">
+                      <div className="max-w-xl bg-white border border-slate-200 rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+                        <p className="text-sm text-[#1a1a2e] leading-relaxed">{item.input}</p>
+                        <p className="text-xs text-slate-400 mt-1 text-right">
                           {LANGUAGES.find(l => l.code === item.lang)?.flag} {item.lang.toUpperCase()}
                         </p>
                       </div>
@@ -332,10 +364,15 @@ export default function Home() {
 
                 {loading && (
                   <div className="flex justify-start">
-                    <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm">
-                      <div className="flex items-center gap-2 text-[#475569]">
-                        <span className="inline-block w-4 h-4 border-2 border-[#00a651] border-t-transparent rounded-full animate-spin" />
-                        <span className="text-sm">Analysing…</span>
+                    <div className="bg-white/80 border border-slate-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                      <div className="flex items-center gap-2.5 text-[#475569]">
+                        <span className="flex gap-0.5">
+                          {[0,1,2].map(i => (
+                            <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#00a651]"
+                              style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+                          ))}
+                        </span>
+                        <span className="text-sm text-slate-500">Analysing…</span>
                       </div>
                     </div>
                   </div>

@@ -44,3 +44,8 @@ body {
   text-decoration: underline wavy #ef4444;
   text-underline-offset: 3px;
 }
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+  50%       { opacity: 1;   transform: scaleY(1.2); }
+}

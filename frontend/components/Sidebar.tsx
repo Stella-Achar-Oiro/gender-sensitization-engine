@@ -6,12 +6,12 @@ import { loadHistory, deleteFromHistory, clearHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
 
 export const LANGUAGES = [
-  { code: "en", label: "English", flag: "🇬🇧" },
-  { code: "sw", label: "Swahili", flag: "🇹🇿" },
-  { code: "fr", label: "French",  flag: "🇫🇷" },
-  { code: "ki", label: "Gikuyu",  flag: "🇰🇪" },
-  { code: "ha", label: "Hausa",   flag: "🇳🇬" },
-  { code: "zu", label: "Zulu",    flag: "🇿🇦" },
+  { code: "en", label: "English", flag: "🇬🇧", threshold: 0.70 },
+  { code: "sw", label: "Swahili", flag: "🇹🇿", threshold: 0.85 },
+  { code: "fr", label: "French",  flag: "🇫🇷", threshold: 0.75 },
+  { code: "ki", label: "Gikuyu",  flag: "🇰🇪", threshold: 0.70 },
+  { code: "ha", label: "Hausa",   flag: "🇳🇬", threshold: 0.70 },
+  { code: "zu", label: "Zulu",    flag: "🇿🇦", threshold: 0.68 },
 ];
 
 export const EXAMPLES: Record<string, string[]> = {
@@ -44,12 +44,20 @@ export const EXAMPLES: Record<string, string[]> = {
   ],
 };
 
+function f1Color(f1: number, threshold: number) {
+  if (f1 >= threshold)         return { dot: "bg-emerald-400", text: "text-emerald-400" };
+  if (f1 >= threshold - 0.10)  return { dot: "bg-amber-400",   text: "text-amber-400"   };
+  return                              { dot: "bg-red-400",     text: "text-red-400"     };
+}
+
 interface Props {
   activeLang: string;
   onLangChange: (code: string) => void;
   onHistoryClick: (entry: HistoryEntry) => void;
   metrics: Record<string, LanguageMetrics>;
   historyVersion: number;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 function relativeTime(ts: number): string {
@@ -57,40 +65,98 @@ function relativeTime(ts: number): string {
   const m = Math.floor(diff / 60000);
   const h = Math.floor(diff / 3600000);
   const d = Math.floor(diff / 86400000);
-  if (m < 1)  return "just now";
-  if (m < 60) return `${m}m ago`;
-  if (h < 24) return `${h}h ago`;
-  return `${d}d ago`;
+  if (m < 1)  return "now";
+  if (m < 60) return `${m}m`;
+  if (h < 24) return `${h}h`;
+  return `${d}d`;
 }
 
-export default function Sidebar({ activeLang, onLangChange, onHistoryClick, metrics, historyVersion }: Props) {
+export default function Sidebar({
+  activeLang, onLangChange, onHistoryClick, metrics, historyVersion,
+  collapsed = false, onToggleCollapse,
+}: Props) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
-  useEffect(() => {
-    setHistory(loadHistory());
-  }, [historyVersion]);
+  useEffect(() => { setHistory(loadHistory()); }, [historyVersion]);
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setHistory(deleteFromHistory(id));
   };
 
+  /* ── Collapsed (icon-rail) mode ── */
+  if (collapsed) {
+    return (
+      <aside
+        style={{ width: "64px", minWidth: "64px" }}
+        className="h-screen bg-[#0f172a] flex flex-col flex-shrink-0 overflow-hidden border-r border-white/[0.06]"
+      >
+        <div className="flex items-center justify-center py-5 border-b border-white/[0.07]">
+          <div className="w-8 h-8 rounded-lg bg-[#00a651] flex items-center justify-center">
+            <span className="text-white font-bold text-base leading-none">J</span>
+          </div>
+        </div>
+
+        <button
+          onClick={onToggleCollapse}
+          title="Expand sidebar"
+          className="flex items-center justify-center py-3 text-white/30 hover:text-white/60 transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+
+        <div className="flex flex-col items-center gap-1 px-2 pt-1">
+          {LANGUAGES.map((l) => {
+            const m = metrics[l.code];
+            const isActive = l.code === activeLang;
+            const color = m ? f1Color(m.f1, l.threshold) : { dot: "bg-white/20", text: "" };
+            return (
+              <button
+                key={l.code}
+                onClick={() => onLangChange(l.code)}
+                title={`${l.label}${m ? ` · F1 ${m.f1.toFixed(2)}` : ""}`}
+                className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all ${
+                  isActive ? "bg-white/10" : "hover:bg-white/[0.06]"
+                }`}
+              >
+                <span className="text-base leading-none">{l.flag}</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${color.dot}`} />
+              </button>
+            );
+          })}
+        </div>
+      </aside>
+    );
+  }
+
+  /* ── Expanded mode ── */
   return (
     <aside
       style={{ width: "var(--sw)", minWidth: "var(--sw)" }}
       className="h-screen bg-[#0f172a] flex flex-col flex-shrink-0 overflow-hidden"
     >
-      {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/[0.07]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#00a651] flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold text-base leading-none">J</span>
-          </div>
-          <div>
-            <div className="font-bold text-white text-base tracking-tight">JuaKazi</div>
-            <div className="text-white/40 text-xs mt-0.5">Gender Bias Engine</div>
-          </div>
+      {/* Logo + collapse toggle */}
+      <div className="px-5 py-5 border-b border-white/[0.07] flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-[#00a651] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-bold text-base leading-none">J</span>
         </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-bold text-white text-base tracking-tight">JuaKazi</div>
+          <div className="text-white/40 text-xs mt-0.5">Gender Bias Engine</div>
+        </div>
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            title="Collapse sidebar"
+            className="text-white/25 hover:text-white/60 transition-colors flex-shrink-0"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Languages */}
@@ -102,26 +168,26 @@ export default function Sidebar({ activeLang, onLangChange, onHistoryClick, metr
           {LANGUAGES.map((l) => {
             const m = metrics[l.code];
             const isActive = l.code === activeLang;
+            const color = m ? f1Color(m.f1, l.threshold) : { dot: "bg-white/20", text: "text-white/25" };
             return (
               <button
                 key={l.code}
                 onClick={() => onLangChange(l.code)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-left w-full transition-all duration-150 ${
-                  isActive
-                    ? "bg-[#00a651]/20 text-white"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.06]"
+                  isActive ? "bg-[#00a651]/20 text-white" : "text-white/60 hover:text-white hover:bg-white/[0.06]"
                 }`}
               >
                 <span className="text-xl leading-none">{l.flag}</span>
                 <span className="flex-1 text-sm font-medium">{l.label}</span>
                 {m && (
-                  <span className={`text-xs font-mono tabular-nums ${isActive ? "text-[#00a651]" : "text-white/25"}`}>
+                  <span className={`text-xs font-mono tabular-nums ${isActive ? color.text : "text-white/30"}`}>
                     {m.f1.toFixed(2)}
                   </span>
                 )}
-                {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00a651] flex-shrink-0" />
-                )}
+                {/* Threshold status dot */}
+                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  m ? color.dot : (isActive ? "bg-[#00a651]" : "bg-white/10")
+                }`} />
               </button>
             );
           })}
@@ -177,9 +243,7 @@ export default function Sidebar({ activeLang, onLangChange, onHistoryClick, metr
                     className="group flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left
                                hover:bg-white/[0.05] transition-all duration-150"
                   >
-                    <span className={`flex-shrink-0 mt-1.5 w-2 h-2 rounded-full ${
-                      biased ? "bg-red-400" : "bg-emerald-400"
-                    }`} />
+                    <span className={`flex-shrink-0 mt-1.5 w-2 h-2 rounded-full ${biased ? "bg-red-400" : "bg-emerald-400"}`} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white/65 group-hover:text-white/90 truncate leading-snug transition-colors">
                         {entry.text.length > 38 ? entry.text.slice(0, 38) + "…" : entry.text}

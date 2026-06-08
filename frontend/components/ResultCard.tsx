@@ -107,6 +107,39 @@ const glassOverlay: Record<ReviewAction, string> = {
   flagged:  "from-amber-50/60 to-white/80",
 };
 
+// Small SVG arc showing confidence (0–1) as a partial circle
+function ConfidenceArc({ value }: { value: number }) {
+  const r = 10, cx = 13, cy = 13, stroke = 2.2;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.max(0, Math.min(1, value));
+  const dash = pct * circ;
+  const color = pct >= 0.75 ? "#10b981" : pct >= 0.50 ? "#f59e0b" : "#ef4444";
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" className="flex-shrink-0">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={stroke} />
+      <circle
+        cx={cx} cy={cy} r={r} fill="none"
+        stroke={color} strokeWidth={stroke}
+        strokeDasharray={`${dash} ${circ}`}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${cx} ${cy})`}
+      />
+      <text x={cx} y={cy + 3.5} textAnchor="middle" fontSize="6.5" fontWeight="600"
+            fill={color} fontFamily="ui-monospace,monospace">
+        {Math.round(pct * 100)}
+      </text>
+    </svg>
+  );
+}
+
+const STATUS_PILL: Record<ReviewAction, { label: string; cls: string }> = {
+  pending:  { label: "",               cls: "" },
+  accepted: { label: "Accepted",       cls: "bg-emerald-100 text-emerald-700" },
+  edited:   { label: "Edited",         cls: "bg-emerald-100 text-emerald-700" },
+  rejected: { label: "Rejected",       cls: "bg-slate-100 text-slate-500" },
+  flagged:  { label: "Flagged",        cls: "bg-amber-100 text-amber-700" },
+};
+
 export default function ResultCard({ result, onExportData }: Props) {
   const { original_text, rewrite, edits, has_bias_detected, confidence, source, reason } = result;
   const corrected = rewrite !== original_text;
@@ -181,67 +214,44 @@ export default function ResultCard({ result, onExportData }: Props) {
          style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05)" }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${glassOverlay[action]} pointer-events-none rounded-2xl`} />
 
-      {/* Header */}
-      <div className={`relative px-5 py-3 flex items-center gap-3 border-b ${
-        action === "accepted" || action === "edited" ? "border-emerald-100/70 bg-emerald-50/30" :
-        action === "rejected" ? "border-slate-100/70 bg-slate-50/30" :
-        action === "flagged"  ? "border-amber-100/70 bg-amber-50/30" :
-        "border-red-100/70 bg-red-50/30"
-      }`}>
-        {action === "pending" && (
-          <>
-            <span className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 mt-0.5" />
-            <span className="text-base font-semibold text-red-700">
-              {mlOnly ? "Possible bias detected" : "Gender bias detected"}
-            </span>
-          </>
-        )}
-        {(action === "accepted" || action === "edited") && (
-          <>
-            <span className="text-emerald-600">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
-              </svg>
-            </span>
-            <span className="text-base font-semibold text-emerald-700">
-              {action === "edited" ? "Correction edited & accepted" : "Correction accepted"}
-            </span>
-          </>
-        )}
-        {action === "rejected" && (
-          <>
-            <span className="text-slate-400">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </span>
-            <span className="text-base font-semibold text-slate-500">Correction rejected — original kept</span>
-          </>
-        )}
-        {action === "flagged" && (
-          <>
-            <span className="text-amber-500">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>
-              </svg>
-            </span>
-            <span className="text-base font-semibold text-amber-700">Flagged for human review</span>
-          </>
-        )}
+      {/* Compact header — status pill + source tag + confidence arc */}
+      <div className="relative px-4 py-2.5 flex items-center gap-2 border-b border-slate-100/50">
+        {/* Status indicator dot + label */}
+        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+          action === "pending"  ? (mlOnly ? "bg-amber-400" : "bg-red-500") :
+          action === "accepted" || action === "edited" ? "bg-emerald-500" :
+          action === "rejected" ? "bg-slate-400" : "bg-amber-500"
+        }`} />
+        <span className={`text-sm font-semibold ${
+          action === "pending"  ? (mlOnly ? "text-amber-700" : "text-red-700") :
+          action === "accepted" || action === "edited" ? "text-emerald-700" :
+          action === "rejected" ? "text-slate-500" : "text-amber-700"
+        }`}>
+          {action === "pending"
+            ? (mlOnly ? "Possible bias" : "Gender bias detected")
+            : STATUS_PILL[action].label}
+        </span>
 
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-            {SOURCE_LABEL[source ?? ""] ?? source}
-          </span>
-          <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-            {Math.round(confidence * 100)}%
-          </span>
-          {action !== "pending" && (
-            <button onClick={doReset} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
-              Reset
-            </button>
-          )}
-        </div>
+        {/* Source tag */}
+        <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full ml-1">
+          {SOURCE_LABEL[source ?? ""] ?? source}
+        </span>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Confidence arc */}
+        <ConfidenceArc value={confidence} />
+
+        {/* Reset */}
+        {action !== "pending" && (
+          <button
+            onClick={doReset}
+            className="text-xs text-slate-400 hover:text-slate-600 transition-colors ml-1"
+          >
+            Reset
+          </button>
+        )}
       </div>
 
       {/* Original */}
@@ -304,27 +314,48 @@ export default function ResultCard({ result, onExportData }: Props) {
         </div>
       )}
 
-      {/* ML-only — no correction available */}
+      {/* ML-only — flagged for human review */}
       {mlOnly && (
-        <div className="relative px-5 py-4 border-b border-amber-100/50 bg-amber-50/30">
-          <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
-            ML Detection — No auto-correction
+        <div className="relative border-b border-amber-100/50">
+          {/* Original sentence with bias signal */}
+          <div className="px-5 py-4 border-b border-amber-100/40 bg-amber-50/20">
+            <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Original</div>
+            <p className="text-base leading-relaxed text-[#1a1a2e]">{original_text}</p>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-amber-50 border border-amber-200
+                               text-amber-700 rounded-full px-2.5 py-1">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+                Bias detected — auto-correction unavailable
+              </span>
+            </div>
           </div>
-          {isEditing ? (
-            <textarea
-              autoFocus
-              className="w-full text-base border-2 border-indigo-300 rounded-lg px-3 py-2.5 bg-white
-                         focus:outline-none focus:border-indigo-400 resize-none text-[#1a1a2e] leading-relaxed"
-              rows={3}
-              value={editedText}
-              onChange={(e) => setEditedText(e.target.value)}
-              placeholder="Write a corrected version…"
-            />
-          ) : (
-            <p className="text-sm text-amber-800 leading-relaxed">
-              {reason ?? "Bias pattern identified but automatic correction unavailable. Please rewrite manually."}
-            </p>
-          )}
+          {/* Write correction */}
+          <div className="px-5 py-4 bg-amber-50/20">
+            <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
+              Human correction needed
+            </div>
+            {isEditing ? (
+              <textarea
+                autoFocus
+                className="w-full text-base border-2 border-amber-300 rounded-xl px-3 py-2.5 bg-white
+                           focus:outline-none focus:border-amber-400 resize-none text-[#1a1a2e] leading-relaxed"
+                rows={3}
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                placeholder="Write a gender-neutral version…"
+              />
+            ) : (
+              <button
+                onClick={doEdit}
+                className="w-full text-left text-sm text-amber-700/60 bg-white border border-dashed border-amber-300
+                           rounded-xl px-4 py-3 hover:border-amber-400 hover:text-amber-800 transition-all"
+              >
+                + Write a gender-neutral correction…
+              </button>
+            )}
+          </div>
         </div>
       )}
 
