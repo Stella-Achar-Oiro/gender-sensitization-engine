@@ -141,7 +141,8 @@ const STATUS_PILL: Record<ReviewAction, { label: string; cls: string }> = {
 };
 
 export default function ResultCard({ result, onExportData }: Props) {
-  const { original_text, rewrite, edits, has_bias_detected, confidence, source, reason } = result;
+  const { original_text, rewrite, edits, has_bias_detected, confidence, source, reason,
+          aibridge_detected, aibridge_confidence } = result;
   const corrected = rewrite !== original_text;
   const replaceEdits = edits.filter((e) => e.severity === "replace");
   const mlOnly = !corrected && has_bias_detected;
@@ -319,17 +320,23 @@ export default function ResultCard({ result, onExportData }: Props) {
         const flaggedEdit = edits[0];
         const flaggedTerm = flaggedEdit?.from;
         const category = flaggedEdit?.stereotype_category;
-        const editReason = flaggedEdit?.reason ?? reason;
+        const mlConfidence = aibridge_confidence ?? confidence;
+        const mlPct = Math.round(mlConfidence * 100);
         return (
           <div className="relative border-b border-amber-100/50">
             {/* What bias was detected */}
             <div className="px-5 py-3.5 border-b border-amber-100/40 bg-amber-50/25">
               <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">What was detected</div>
-              <div className="flex flex-wrap gap-2">
-                {flaggedTerm && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {flaggedTerm ? (
                   <span className="inline-flex items-center gap-1.5 text-sm bg-red-50 border border-red-200
                                    text-red-700 rounded-lg px-3 py-1.5 font-mono font-semibold">
                     &ldquo;{flaggedTerm}&rdquo;
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 text-sm bg-red-50 border border-red-200
+                                   text-red-700 rounded-lg px-3 py-1.5">
+                    <span className="bias-underline font-medium">{original_text}</span>
                   </span>
                 )}
                 {category && (
@@ -338,10 +345,15 @@ export default function ResultCard({ result, onExportData }: Props) {
                     {category.replace(/_/g, " ")}
                   </span>
                 )}
+                <span className="inline-flex items-center text-xs bg-slate-50 border border-slate-200
+                                 text-slate-500 rounded-lg px-2.5 py-1.5">
+                  ML confidence {mlPct}%
+                </span>
               </div>
-              {editReason && (
-                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{editReason}</p>
-              )}
+              <p className="text-sm text-slate-500 leading-relaxed">
+                No specific term isolated — the full sentence was flagged as likely containing gender bias.
+                Please rewrite with gender-neutral language.
+              </p>
             </div>
             {/* Write correction */}
             <div className="px-5 py-4 bg-amber-50/20">
