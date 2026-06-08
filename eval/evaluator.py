@@ -171,7 +171,9 @@ class BiasEvaluationOrchestrator:
             csv_path = self.results_writer.write_csv_report(csv_data, csv_filename)
             print(f"Report saved to: {csv_path}")
 
-            # Write metrics.json for gradio_app.py to load at startup
+            # Write metrics_local.json — local GT eval results (NOT metrics.json).
+            # metrics.json holds authoritative Kaggle val-set numbers and must not be overwritten
+            # by local runs (local GT for HA/KI/ZU doesn't match training distribution).
             lang_map = {
                 Language.ENGLISH: "en",
                 Language.SWAHILI: "sw",
@@ -190,7 +192,7 @@ class BiasEvaluationOrchestrator:
                     "recall": round(m.recall, 3),
                     "samples": m.true_positives + m.false_positives + m.false_negatives + m.true_negatives,
                 }
-            metrics_path = Path(__file__).resolve().parent / "metrics.json"
+            metrics_path = Path(__file__).resolve().parent / "metrics_local.json"
             metrics_path.write_text(json.dumps(metrics_out, indent=2))
             print(f"Metrics saved to: {metrics_path}")
 

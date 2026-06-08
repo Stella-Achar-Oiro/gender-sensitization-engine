@@ -1,38 +1,50 @@
 {
   "en": {
-    "f1": 1.0,
-    "precision": 1.0,
-    "recall": 1.0,
-    "samples": 66
+    "f1": 0.855,
+    "precision": 0.920,
+    "recall": 0.986,
+    "samples": 349,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   },
   "sw": {
-    "f1": 0.851,
-    "precision": 0.822,
-    "recall": 0.881,
-    "samples": 67290
+    "f1": 0.951,
+    "precision": 0.878,
+    "recall": 0.948,
+    "samples": 6629,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   },
   "fr": {
-    "f1": 0.959,
-    "precision": 0.979,
-    "recall": 0.94,
-    "samples": 165
+    "f1": 0.891,
+    "precision": 0.770,
+    "recall": 0.941,
+    "samples": 761,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   },
   "ki": {
-    "f1": 0.493,
-    "precision": 0.631,
-    "recall": 0.405,
-    "samples": 11622
+    "f1": 0.865,
+    "precision": 0.728,
+    "recall": 0.791,
+    "samples": 1154,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   },
   "ha": {
-    "f1": 0.043,
-    "precision": 1.0,
-    "recall": 0.022,
-    "samples": 10054
+    "f1": 0.800,
+    "precision": 0.705,
+    "recall": 0.887,
+    "samples": 2380,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   },
   "zu": {
-    "f1": 0.733,
-    "precision": 1.0,
-    "recall": 0.579,
-    "samples": 4978
+    "f1": 0.996,
+    "precision": 0.995,
+    "recall": 1.000,
+    "samples": 1655,
+    "source": "kaggle-val",
+    "model": "juakazike/multilingual-bias-classifier-v1"
   }
 }
