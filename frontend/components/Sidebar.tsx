@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { LanguageMetrics } from "../lib/api";
 import { loadHistory, deleteFromHistory, clearHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
@@ -58,6 +57,7 @@ interface Props {
   historyVersion: number;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  onShowMetrics?: () => void;
 }
 
 function relativeTime(ts: number): string {
@@ -73,7 +73,7 @@ function relativeTime(ts: number): string {
 
 export default function Sidebar({
   activeLang, onLangChange, onHistoryClick, metrics, historyVersion,
-  collapsed = false, onToggleCollapse,
+  collapsed = false, onToggleCollapse, onShowMetrics,
 }: Props) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
@@ -205,12 +205,14 @@ export default function Sidebar({
           <span className="text-white/40">Corrector</span>
           <span className="text-white/70 font-mono">afriteva-v2</span>
         </div>
-        <Link
-          href="/languages"
-          className="block text-center text-xs text-[#00a651] hover:text-[#00c060] font-medium transition-colors mt-1"
-        >
-          All metrics →
-        </Link>
+        {onShowMetrics && (
+          <button
+            onClick={onShowMetrics}
+            className="block w-full text-center text-xs text-[#00a651] hover:text-[#00c060] font-medium transition-colors mt-1"
+          >
+            All metrics →
+          </button>
+        )}
       </div>
 
       {/* Recent history */}

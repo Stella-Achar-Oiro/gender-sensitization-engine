@@ -8,6 +8,73 @@ import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
 import { saveToHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
 
+function MetricsPanel({ metrics, onClose }: { metrics: Record<string, LanguageMetrics>; onClose: () => void }) {
+  function tier(f1: number) {
+    if (f1 >= 0.85) return { label: "Gold",       cls: "text-yellow-700 bg-yellow-50 border-yellow-200" };
+    if (f1 >= 0.70) return { label: "Silver",     cls: "text-slate-600  bg-slate-50  border-slate-200" };
+    if (f1 >= 0.50) return { label: "Bronze",     cls: "text-orange-600 bg-orange-50 border-orange-200" };
+    return           { label: "Pre-Bronze",        cls: "text-red-600   bg-red-50    border-red-200" };
+  }
+  function Bar({ value }: { value: number }) {
+    const pct = Math.round(value * 100);
+    return (
+      <div className="flex items-center gap-2">
+        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-full rounded-full bg-[#00a651] transition-all duration-500" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="text-sm font-mono text-slate-500 w-12 text-right">{value.toFixed(3)}</span>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-200 bg-white flex-shrink-0">
+        <button onClick={onClose} className="text-slate-400 hover:text-slate-700 transition-colors">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+        </button>
+        <h2 className="text-lg font-bold text-[#1a1a2e]">Language Metrics</h2>
+        <span className="text-sm text-slate-400">live from API</span>
+      </div>
+      <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="max-w-2xl mx-auto flex flex-col gap-4">
+          {LANGUAGES.map((lang) => {
+            const m = metrics[lang.code];
+            const t = m ? tier(m.f1) : null;
+            return (
+              <div key={lang.code} className="bg-white rounded-xl border border-slate-200 shadow-sm px-5 py-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-2xl">{lang.flag}</span>
+                  <div>
+                    <div className="text-base font-semibold text-slate-800">{lang.label}</div>
+                    <div className="text-xs text-slate-400">{lang.code} · threshold F1 ≥ {lang.threshold.toFixed(2)}</div>
+                  </div>
+                  {t ? (
+                    <span className={`ml-auto text-xs font-semibold border px-2.5 py-1 rounded-full ${t.cls}`}>{t.label}</span>
+                  ) : (
+                    <span className="ml-auto text-xs text-slate-400 border border-slate-200 px-2.5 py-1 rounded-full">No data</span>
+                  )}
+                </div>
+                {m ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-3"><span className="text-xs text-slate-400 w-20">F1</span><Bar value={m.f1} /></div>
+                    <div className="flex items-center gap-3"><span className="text-xs text-slate-400 w-20">Precision</span><Bar value={m.precision} /></div>
+                    <div className="flex items-center gap-3"><span className="text-xs text-slate-400 w-20">Recall</span><Bar value={m.recall} /></div>
+                    <div className="text-xs text-slate-400 mt-1">{m.samples.toLocaleString()} validation samples</div>
+                  </div>
+                ) : (
+                  <div className="text-sm text-slate-400">No metrics — check API connection.</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 type Mode = "text" | "pdf" | "csv";
 
 const LANG_LOCALES: Record<string, string> = {
@@ -99,6 +166,7 @@ export default function Home() {
   const [pdfName, setPdfName]     = useState<string | null>(null);
   const [exportRows, setExportRows] = useState<ExportRow[]>([]);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showMetrics, setShowMetrics] = useState(false);
 
   const recognitionRef  = useRef<any>(null);
   const fileInputRef    = useRef<HTMLInputElement>(null);
@@ -267,6 +335,7 @@ export default function Home() {
           historyVersion={historyVersion}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(c => !c)}
+          onShowMetrics={() => setShowMetrics(true)}
         />
 
         {/* Main area */}
@@ -312,9 +381,11 @@ export default function Home() {
             )}
           </div>
 
-          {/* Thread */}
+          {/* Thread / Metrics panel */}
           <div className="flex-1 overflow-y-auto">
-            {thread.length === 0 ? (
+            {showMetrics ? (
+              <MetricsPanel metrics={metrics} onClose={() => setShowMetrics(false)} />
+            ) : thread.length === 0 ? (
               <EmptyState lang={lang} onExample={async (ex) => {
                 if (!lang) return;
                 setText("");
