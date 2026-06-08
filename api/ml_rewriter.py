@@ -29,6 +29,33 @@ _tokenizer = None
 _model = None
 
 
+def _clean_output(corrected: str, original: str) -> str:
+    """Remove common seq2seq repetition artifacts without altering content."""
+    import re
+    # Truncate at first occurrence of .. or multiple punctuation-fillers
+    corrected = re.split(r'\.{2,}|\[\.+\]', corrected)[0].strip().rstrip(".,;")
+    # Detect token-level repetition: if any 1-3 word phrase repeats ≥3 times, truncate before it
+    words = corrected.split()
+    for n in (1, 2, 3):
+        for i in range(len(words) - n * 3):
+            phrase = tuple(words[i:i + n])
+            # Count occurrences of this phrase after position i
+            count = sum(
+                1 for j in range(i + n, len(words) - n + 1, n)
+                if tuple(words[j:j + n]) == phrase
+            )
+            if count >= 3:
+                corrected = " ".join(words[:i + n]).strip().rstrip(".,;")
+                break
+        else:
+            continue
+        break
+    # If output is way longer than input (>2.5×), likely hallucination — return original
+    if len(corrected.split()) > len(original.split()) * 2.5:
+        return original
+    return corrected
+
+
 def _ensure_model() -> None:
     global _tokenizer, _model
     if _tokenizer is not None:
@@ -69,8 +96,12 @@ def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
                 max_new_tokens=128,
                 num_beams=4,
                 early_stopping=True,
+                decoder_start_token_id=0,
+                forced_eos_token_id=1,
             )
         corrected = _tokenizer.decode(out[0], skip_special_tokens=True)
+        # Strip beam-search repetition artifacts
+        corrected = _clean_output(corrected, text)
         return {
             "best": corrected,
             "candidates": [corrected],
