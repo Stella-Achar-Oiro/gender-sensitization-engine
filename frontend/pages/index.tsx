@@ -35,7 +35,6 @@ function MetricsPanel({ metrics, onClose }: { metrics: Record<string, LanguageMe
           </svg>
         </button>
         <h2 className="text-lg font-bold text-[#1a1a2e]">Language Metrics</h2>
-        <span className="text-sm text-slate-400">live from API</span>
       </div>
       <div className="flex-1 overflow-y-auto px-6 py-5">
         <div className="max-w-2xl mx-auto flex flex-col gap-4">
