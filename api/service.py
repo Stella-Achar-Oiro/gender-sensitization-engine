@@ -1,5 +1,6 @@
 """JuaKazi rewrite service — core correction logic (no HTTP)."""
 
+import os
 import time
 from typing import Optional
 
@@ -16,6 +17,9 @@ from .disambiguator import disambiguate
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import RewriteResponse
+
+_ML_DETECTOR_THRESHOLD = float(os.environ.get("JUAKAZI_ML_THRESHOLD", "0.56"))
+_ML_DETECTOR_ENABLED   = bool(os.environ.get("JUAKAZI_ML_MODEL", ""))
 
 semantic_metrics = SemanticPreservationMetrics()
 
@@ -73,6 +77,34 @@ def rewrite_text(
         semantic_score = score["composite_score"]
         if semantic_score < effective_threshold:
             rewritten, edits, source, semantic_score = text, [], "preserved", 1.0
+
+    # Stage 1: ML detector — fires when lexicon found nothing.
+    # Uses juakazike/multilingual-bias-classifier-v1 (afro-xlmr-base, all 6 languages).
+    # Adds a warn-severity edit so Stage 3 corrector can fire downstream.
+    ml_detector_score: Optional[float] = None
+    if _ML_DETECTOR_ENABLED and not edits:
+        try:
+            from eval.ml_classifier import classify as ml_classify
+            from eval.models import Language as _Lang
+            _lang_map = {
+                "sw": _Lang.SWAHILI, "ha": _Lang.HAUSA, "zu": _Lang.ZULU,
+                "ki": _Lang.GIKUYU, "en": _Lang.ENGLISH, "fr": _Lang.FRENCH,
+            }
+            _lang_enum = _lang_map.get(lang)
+            if _lang_enum:
+                ml_detector_score = ml_classify(text, _lang_enum)
+                if ml_detector_score >= _ML_DETECTOR_THRESHOLD:
+                    edits = [{
+                        "from": "",
+                        "to": "",
+                        "severity": "warn",
+                        "bias_type": "ml-detected",
+                        "stereotype_category": "",
+                        "reason": f"ML detector: gender bias likely (confidence {ml_detector_score:.0%})",
+                        "source": "ml",
+                    }]
+        except Exception:
+            pass  # ML unavailable — lexicon result stands
 
     # Stage 2.5: LLM disambiguation for borderline warn-only matches (SW).
     # Only fires when rules found warn-severity terms but no replace-severity terms.
