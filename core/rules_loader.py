@@ -30,4 +30,6 @@ def load_rules(lang: str, rules_dir: Optional[Path] = None) -> list[dict]:
         reader = csv.DictReader(f)
         for row in reader:
             rows.append({k: str(v or "") for k, v in row.items()})
+    # Longest biased phrase first so multi-word entries match before single-word suffixes
+    rows.sort(key=lambda r: len(r.get("biased", "")), reverse=True)
     return rows

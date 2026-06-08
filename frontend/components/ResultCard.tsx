@@ -99,12 +99,12 @@ const SOURCE_LABEL: Record<string, string> = {
   preserved: "Rules",
 };
 
-const borderColor: Record<ReviewAction, string> = {
-  pending:  "border-l-red-400",
-  accepted: "border-l-emerald-400",
-  edited:   "border-l-emerald-400",
-  rejected: "border-l-slate-300",
-  flagged:  "border-l-amber-400",
+const glassOverlay: Record<ReviewAction, string> = {
+  pending:  "from-red-50/60 to-white/80",
+  accepted: "from-emerald-50/60 to-white/80",
+  edited:   "from-emerald-50/60 to-white/80",
+  rejected: "from-slate-50/60 to-white/80",
+  flagged:  "from-amber-50/60 to-white/80",
 };
 
 export default function ResultCard({ result, onExportData }: Props) {
@@ -157,30 +157,36 @@ export default function ResultCard({ result, onExportData }: Props) {
   // No bias card
   if (!has_bias_detected) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 border-l-4 border-l-emerald-400 shadow-sm px-5 py-4">
-        <div className="flex items-center gap-2.5">
-          <span className="text-emerald-500">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </span>
-          <span className="text-base font-semibold text-slate-800">No bias detected</span>
-          <span className="ml-auto text-sm text-slate-400">Passes all checks</span>
+      <div className="relative rounded-2xl overflow-hidden shadow-sm"
+           style={{ background: "rgba(255,255,255,0.72)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.6)", boxShadow: "0 4px 24px rgba(0,166,81,0.06), 0 1px 3px rgba(0,0,0,0.06)" }}>
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent pointer-events-none rounded-2xl" />
+        <div className="relative px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <span className="text-emerald-500">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </span>
+            <span className="text-base font-semibold text-slate-800">No bias detected</span>
+            <span className="ml-auto text-sm text-slate-400">Passes all checks</span>
+          </div>
+          <p className="mt-2 text-sm text-[#1a1a2e] leading-relaxed pl-7">{original_text}</p>
         </div>
-        <p className="mt-2 text-sm text-[#1a1a2e] leading-relaxed pl-7">{original_text}</p>
       </div>
     );
   }
 
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 border-l-4 ${borderColor[action]} shadow-sm overflow-hidden`}>
+    <div className="relative rounded-2xl overflow-hidden"
+         style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.6)", boxShadow: "0 4px 24px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05)" }}>
+      <div className={`absolute inset-0 bg-gradient-to-br ${glassOverlay[action]} pointer-events-none rounded-2xl`} />
 
       {/* Header */}
-      <div className={`px-5 py-3 flex items-center gap-3 border-b ${
-        action === "accepted" || action === "edited" ? "border-emerald-100 bg-emerald-50/50" :
-        action === "rejected" ? "border-slate-100 bg-slate-50/50" :
-        action === "flagged"  ? "border-amber-100 bg-amber-50/50" :
-        "border-red-100 bg-red-50/40"
+      <div className={`relative px-5 py-3 flex items-center gap-3 border-b ${
+        action === "accepted" || action === "edited" ? "border-emerald-100/70 bg-emerald-50/30" :
+        action === "rejected" ? "border-slate-100/70 bg-slate-50/30" :
+        action === "flagged"  ? "border-amber-100/70 bg-amber-50/30" :
+        "border-red-100/70 bg-red-50/30"
       }`}>
         {action === "pending" && (
           <>
@@ -214,7 +220,11 @@ export default function ResultCard({ result, onExportData }: Props) {
         )}
         {action === "flagged" && (
           <>
-            <span className="text-amber-500">🚩</span>
+            <span className="text-amber-500">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>
+              </svg>
+            </span>
             <span className="text-base font-semibold text-amber-700">Flagged for human review</span>
           </>
         )}
@@ -235,7 +245,7 @@ export default function ResultCard({ result, onExportData }: Props) {
       </div>
 
       {/* Original */}
-      <div className="px-5 py-4 border-b border-slate-100">
+      <div className="relative px-5 py-4 border-b border-slate-100/60">
         <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Original</div>
         <p className="text-base leading-relaxed">
           <OriginalHighlight text={original_text} edits={edits} />
@@ -257,7 +267,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* Corrected / ML-only */}
       {corrected && (
-        <div className={`px-5 py-4 border-b border-slate-100 ${
+        <div className={`relative px-5 py-4 border-b border-slate-100/60 ${
           action === "rejected" ? "opacity-50" : ""
         }`}>
           <div className="text-xs font-semibold uppercase tracking-widest text-emerald-600 mb-2">
@@ -296,7 +306,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* ML-only — no correction available */}
       {mlOnly && (
-        <div className="px-5 py-4 border-b border-slate-100 bg-amber-50/40">
+        <div className="relative px-5 py-4 border-b border-amber-100/50 bg-amber-50/30">
           <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
             ML Detection — No auto-correction
           </div>
@@ -320,7 +330,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* Reason */}
       {replaceEdits.some(e => e.reason) && action === "pending" && !isEditing && (
-        <div className="px-5 py-3 border-b border-slate-100 bg-slate-50/60">
+        <div className="relative px-5 py-3 border-b border-slate-100/60 bg-slate-50/40">
           <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1.5">Reason</div>
           {replaceEdits.filter(e => e.reason).map((edit, i) => (
             <p key={i} className="text-sm text-[#475569] leading-relaxed">{edit.reason}</p>
@@ -330,7 +340,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* Flag note */}
       {action === "flagged" && savedFlag && (
-        <div className="px-5 py-3 border-b border-amber-100 bg-amber-50/40">
+        <div className="relative px-5 py-3 border-b border-amber-100/50 bg-amber-50/30">
           <div className="text-xs font-semibold uppercase tracking-widest text-amber-500 mb-1">Review note</div>
           <p className="text-sm text-amber-800">{savedFlag}</p>
         </div>
@@ -338,9 +348,9 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* Flag input */}
       {isFlagging && (
-        <div className="px-5 py-4 border-b border-amber-200 bg-amber-50/50">
+        <div className="relative px-5 py-4 border-b border-amber-200/50 bg-amber-50/30">
           <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
-            🚩 Flag for review — add a note (optional)
+            Flag for review — add a note (optional)
           </div>
           <textarea
             autoFocus
@@ -371,7 +381,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
       {/* Actions */}
       {action === "pending" && !isFlagging && (
-        <div className="px-5 py-3.5 flex items-center gap-2 flex-wrap">
+        <div className="relative px-5 py-3.5 flex items-center gap-2 flex-wrap">
           {isEditing ? (
             <>
               <button
@@ -417,7 +427,10 @@ export default function ResultCard({ result, onExportData }: Props) {
                 className="flex items-center gap-1.5 text-sm bg-amber-50 hover:bg-amber-100
                            text-amber-700 border border-amber-200 font-semibold px-4 py-2 rounded-lg transition-colors"
               >
-                🚩 Flag
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/>
+                </svg>
+                Flag
               </button>
               <button
                 onClick={doReject}

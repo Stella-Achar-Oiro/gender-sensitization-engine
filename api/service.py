@@ -67,11 +67,17 @@ def rewrite_text(
 
     threshold = get_semantic_threshold()
     if rewritten != text:
-        # Lexicon replace-severity rules are high precision — use a lower threshold (0.40)
-        # so paraphrase-style corrections (hawafai→wanaweza) are not suppressed.
-        # Only apply strict threshold to ML-generated corrections.
+        # Lexicon replace-severity rules are hand-crafted and high-precision.
+        # For languages where the semantic model has poor coverage (ZU, HA), the
+        # embedding similarity score is unreliable — bypass the threshold entirely.
+        # For other languages use 0.40 (lower than ML threshold) to allow paraphrases.
         has_replace_edits = any(e.get("severity") == "replace" for e in edits)
-        effective_threshold = 0.40 if has_replace_edits else threshold
+        if has_replace_edits and lang in ("zu", "ha"):
+            effective_threshold = 0.0  # semantic model not reliable for these languages
+        elif has_replace_edits:
+            effective_threshold = 0.40
+        else:
+            effective_threshold = threshold
         score = semantic_metrics.calculate_composite_preservation_score(text, rewritten)
         semantic_score = score["composite_score"]
         if semantic_score < effective_threshold:
@@ -112,28 +118,36 @@ def rewrite_text(
     # Stage 3: ML corrector — fires only when bias is detected AND lexicon found no match.
     # Uses juakazike/multilingual-bias-corrector-v2 (AfriTeVa fine-tuned on 10K pairs).
     # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
+    # ZU and HA corrector output is not yet reliable (insufficient training pairs) — for those
+    # languages we suppress the ML corrector and flag for human review instead of showing
+    # hallucinated or truncated output.
+    _ML_CORRECTOR_LANGS = {"sw", "en", "fr", "ki"}
     lexicon_corrected = lexicon_replaced
     has_any_bias_signal = bool(edits) or (aibridge_result is not None and aibridge_result.has_bias)
     ml_unavailable = False
     if not lexicon_corrected and has_any_bias_signal:
-        ml_result = ml_rewrite(text, lang=lang)
-        if ml_result["model"] != "unavailable":
-            candidate = ml_result["best"]
-            if candidate and candidate.strip() and candidate != text:
-                rewritten = candidate
-                source = "ml"
-                ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
-                edits = [{
-                    "from": text,
-                    "to": rewritten,
-                    "severity": "warn",
-                    "tags": "ml-correction",
-                    "bias_type": "ml-detected",
-                    "stereotype_category": "",
-                    "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
-                }]
-        else:
+        if lang not in _ML_CORRECTOR_LANGS:
+            # Corrector not reliable for this language — flag for human review
             ml_unavailable = True
+        else:
+            ml_result = ml_rewrite(text, lang=lang)
+            if ml_result["model"] != "unavailable":
+                candidate = ml_result["best"]
+                if candidate and candidate.strip() and candidate != text:
+                    rewritten = candidate
+                    source = "ml"
+                    ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
+                    edits = [{
+                        "from": text,
+                        "to": rewritten,
+                        "severity": "warn",
+                        "tags": "ml-correction",
+                        "bias_type": "ml-detected",
+                        "stereotype_category": "",
+                        "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
+                    }]
+            else:
+                ml_unavailable = True
 
     # When the external gate detected bias but neither lexicon nor ML could correct it,
     # return an honest "low confidence, flagged for review" signal instead of a confident

@@ -16,8 +16,8 @@ class DataVersions:
 
     # Per-language lexicon file versions (Hausa/Zulu initial packs use v1 filenames)
     LEXICON_BY_LANG: dict = {
-        "ha": "v2",
-        "zu": "v2",
+        "ha": "v3",
+        "zu": "v3",
         "fr": "v4",
         "ki": "v4",
     }
