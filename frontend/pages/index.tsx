@@ -324,7 +324,7 @@ export default function Home() {
 
   return (
     <>
-      <Head><title>JuaKazi · Gender Bias Detection</title></Head>
+      <Head><title>JuaKazi · Gender Bias Detection & Correction</title></Head>
 
       <div className="flex h-screen overflow-hidden">
         <Sidebar
@@ -351,7 +351,7 @@ export default function Home() {
                 <span className="text-sm text-[#475569]">afro-xlmr-base + afriteva-v2</span>
               </>
             ) : (
-              <span className="text-base font-semibold text-[#1a1a2e]">JuaKazi — Gender Bias Detection</span>
+              <span className="text-base font-semibold text-[#1a1a2e]">JuaKazi — Gender Bias Detection & Correction</span>
             )}
 
             {thread.length > 0 && (

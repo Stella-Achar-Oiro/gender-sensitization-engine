@@ -144,7 +144,7 @@ export default function Sidebar({
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-bold text-white text-base tracking-tight">JuaKazi</div>
-          <div className="text-white/40 text-xs mt-0.5">Gender Bias Engine</div>
+          <div className="text-white/40 text-xs mt-0.5">Gender Bias Detection & Correction</div>
         </div>
         {onToggleCollapse && (
           <button
