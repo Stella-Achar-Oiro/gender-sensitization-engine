@@ -13,7 +13,6 @@ from config import (
 from core.semantic_preservation import SemanticPreservationMetrics
 
 from .bias_detection_client import LANG_CODE_MAP, AibridgeResult, detect_bias
-from .disambiguator import disambiguate
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import RewriteResponse
@@ -78,11 +77,13 @@ def rewrite_text(
         if semantic_score < effective_threshold:
             rewritten, edits, source, semantic_score = text, [], "preserved", 1.0
 
-    # Stage 1: ML detector — fires when lexicon found nothing.
+    # Stage 1: ML detector — fires when lexicon found no replace-severity correction.
+    # Covers sentences the lexicon misses entirely, and reinforces warn-only lexicon hits.
     # Uses juakazike/multilingual-bias-classifier-v1 (afro-xlmr-base, all 6 languages).
     # Adds a warn-severity edit so Stage 3 corrector can fire downstream.
+    lexicon_replaced = any(e.get("severity") == "replace" for e in edits)
     ml_detector_score: Optional[float] = None
-    if _ML_DETECTOR_ENABLED and not edits:
+    if _ML_DETECTOR_ENABLED and not lexicon_replaced:
         try:
             from eval.ml_classifier import classify as ml_classify
             from eval.models import Language as _Lang
@@ -103,33 +104,15 @@ def rewrite_text(
                         "reason": f"ML detector: gender bias likely (confidence {ml_detector_score:.0%})",
                         "source": "ml",
                     }]
+                elif not edits:
+                    pass  # ML below threshold and lexicon silent — no bias signal
         except Exception:
             pass  # ML unavailable — lexicon result stands
 
-    # Stage 2.5: LLM disambiguation for borderline warn-only matches (SW).
-    # Only fires when rules found warn-severity terms but no replace-severity terms.
-    warn_only = matched_rules > 0 and not any(
-        e.get("severity") == "replace" for e in edits
-    )
-    if warn_only and lang == "sw":
-        llm_result = disambiguate(text)
-        if llm_result is True:
-            # LLM confirmed bias — promote the warn edits to replace
-            for e in edits:
-                if e.get("severity") == "warn":
-                    e["severity"] = "replace"
-                    e["reason"] = (e.get("reason") or "") + " [LLM confirmed]"
-            source = "disambiguated"
-        elif llm_result is False:
-            # LLM says not bias — suppress the warn edits
-            edits = []
-            rewritten = text
-            source = "preserved"
-
     # Stage 3: ML corrector — fires only when bias is detected AND lexicon found no match.
-    # Uses juakazike/multilingual-bias-corrector-v1 (AfriTeVa fine-tuned on 7K pairs).
+    # Uses juakazike/multilingual-bias-corrector-v2 (AfriTeVa fine-tuned on 10K pairs).
     # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
-    lexicon_corrected = any(e.get("severity") == "replace" for e in edits)
+    lexicon_corrected = lexicon_replaced
     has_any_bias_signal = bool(edits) or (aibridge_result is not None and aibridge_result.has_bias)
     ml_unavailable = False
     if not lexicon_corrected and has_any_bias_signal:
