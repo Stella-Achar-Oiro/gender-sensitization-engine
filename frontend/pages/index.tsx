@@ -1,18 +1,19 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useLayoutEffect } from "react";
 import Head from "next/head";
-import Sidebar from "../components/Sidebar";
-import { LANGUAGES, EXAMPLES } from "../components/Sidebar";
-import VerdictBadge from "../components/VerdictBadge";
-import DiffView from "../components/DiffView";
-import BatchView from "../components/BatchView";
-import MetricsBar from "../components/MetricsBar";
-import MetricsPanel from "../components/MetricsPanel";
+import Sidebar, { LANGUAGES, EXAMPLES } from "../components/Sidebar";
+import ResultCard from "../components/ResultCard";
+import type { ExportRow } from "../components/ResultCard";
 import { analyse, analyseBatch, fetchMetrics } from "../lib/api";
 import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
 import { saveToHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
 
-type Mode = "single" | "paragraph" | "pdf";
+type Mode = "single" | "paragraph" | "pdf" | "csv";
+
+const LANG_LOCALES: Record<string, string> = {
+  sw: "sw-TZ", ha: "ha-NG", zu: "zu-ZA",
+  ki: "ki-KE", fr: "fr-FR", en: "en-US",
+};
 
 function splitSentences(text: string): string[] {
   const raw = text
@@ -22,57 +23,111 @@ function splitSentences(text: string): string[] {
   return raw.length ? raw : [text.trim()];
 }
 
-const LANG_LOCALES: Record<string, string> = {
-  sw: "sw-TZ", ha: "ha-NG", zu: "zu-ZA",
-  ki: "ki-KE", fr: "fr-FR", en: "en-US",
-};
+interface ThreadItem {
+  id: string;
+  input: string;
+  result: AnalyseResponse;
+  lang: string;
+  exportRow?: ExportRow;
+}
+
+function EmptyState({ lang, onExample }: { lang: string | null; onExample: (t: string) => void }) {
+  const examples = lang ? (EXAMPLES[lang] ?? []) : [];
+  const langMeta = lang ? LANGUAGES.find(l => l.code === lang) : null;
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full px-6 text-center">
+      <div className="w-16 h-16 rounded-2xl bg-[#00a651] flex items-center justify-center mb-5 shadow-lg">
+        <span className="text-white font-bold text-3xl leading-none">J</span>
+      </div>
+      <h1 className="text-2xl font-bold text-[#1a1a2e] mb-2">JuaKazi</h1>
+      <p className="text-base text-[#475569] mb-8 max-w-sm leading-relaxed">
+        Gender bias detection and correction across 6 African languages.
+        {!lang && " Select a language to begin."}
+      </p>
+
+      {lang && examples.length > 0 && (
+        <div className="w-full max-w-lg">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-3">
+            Try an example in {langMeta?.label}
+          </p>
+          <div className="flex flex-col gap-2">
+            {examples.map((ex, i) => (
+              <button
+                key={i}
+                onClick={() => onExample(ex)}
+                className="text-left text-sm text-[#1a1a2e] bg-white border border-slate-200
+                           rounded-xl px-4 py-3 hover:border-[#00a651] hover:shadow-sm
+                           transition-all duration-150 leading-relaxed"
+              >
+                {langMeta?.flag} {ex}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
-  const [lang, setLang]               = useState<string | null>(null);
-  const [metricsOpen, setMetricsOpen] = useState(false);
-  const [text, setText]               = useState("");
-  const [mode, setMode]               = useState<Mode>("single");
-  const [loading, setLoading]         = useState(false);
-  const [error, setError]             = useState<string | null>(null);
-  const [result, setResult]           = useState<AnalyseResponse | null>(null);
-  const [batchResults, setBatchResults] = useState<AnalyseResponse[]>([]);
-  const [pdfName, setPdfName]         = useState<string | null>(null);
-  const [listening, setListening]     = useState(false);
+  const [lang, setLang]           = useState<string | null>(null);
+  const [text, setText]           = useState("");
+  const [mode, setMode]           = useState<Mode>("single");
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState<string | null>(null);
+  const [thread, setThread]       = useState<ThreadItem[]>([]);
+  const [listening, setListening] = useState(false);
   const [historyVersion, setHistoryVersion] = useState(0);
-  const [metrics, setMetrics]         = useState<Record<string, LanguageMetrics>>({});
-  const recognitionRef                = useRef<any>(null);
-  const fileInputRef                  = useRef<HTMLInputElement>(null);
+  const [metrics, setMetrics]     = useState<Record<string, LanguageMetrics>>({});
+  const [pdfName, setPdfName]     = useState<string | null>(null);
+  const [exportRows, setExportRows] = useState<ExportRow[]>([]);
 
-  // Fetch live metrics from API on mount — no rebuild needed when model updates
+  const recognitionRef  = useRef<any>(null);
+  const fileInputRef    = useRef<HTMLInputElement>(null);
+  const csvInputRef     = useRef<HTMLInputElement>(null);
+  const threadEndRef    = useRef<HTMLDivElement>(null);
+  const textareaRef     = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
     fetchMetrics().then(setMetrics).catch(() => {});
   }, []);
 
-  const resetResults = useCallback(() => {
-    setResult(null); setBatchResults([]); setError(null);
-  }, []);
+  useLayoutEffect(() => {
+    threadEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [thread]);
 
-  const handleMetricsClick = useCallback(() => {
-    setMetricsOpen((v) => !v);
-    if (!metricsOpen) resetResults();
-  }, [metricsOpen, resetResults]);
+  const langMeta = lang ? LANGUAGES.find(l => l.code === lang) : null;
+  const noLang   = lang === null;
 
   const handleLangChange = useCallback((code: string) => {
-    setLang(code); resetResults(); setText("");
-  }, [resetResults]);
+    setLang(code); setThread([]); setText(""); setError(null);
+  }, []);
+
+  const handleHistoryClick = useCallback((entry: HistoryEntry) => {
+    setLang(entry.lang);
+    setThread([{ id: entry.id, input: entry.text, result: entry.result, lang: entry.lang }]);
+    setMode("single");
+  }, []);
+
+  const addToThread = useCallback((input: string, result: AnalyseResponse, langCode: string) => {
+    const id = crypto.randomUUID();
+    setThread(prev => [...prev, { id, input, result, lang: langCode }]);
+    saveToHistory({ id, lang: langCode, text: input, result, ts: Date.now() });
+    setHistoryVersion(v => v + 1);
+  }, []);
 
   const handleAnalyse = useCallback(async () => {
     if (!text.trim() || !lang) return;
+    const input = text.trim();
+    setText("");
     setLoading(true);
-    resetResults();
+    setError(null);
 
     if (mode === "single") {
       try {
-        const id = crypto.randomUUID();
-        const res = await analyse({ id, lang, text: text.trim() });
-        setResult(res);
-        saveToHistory({ id, lang, text: text.trim(), result: res, ts: Date.now() });
-        setHistoryVersion((v) => v + 1);
+        const res = await analyse({ id: crypto.randomUUID(), lang, text: input });
+        addToThread(input, res, lang);
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : "Analysis failed");
       } finally {
@@ -81,23 +136,25 @@ export default function Home() {
       return;
     }
 
-    try {
-      const sentences = splitSentences(text.trim());
-      const items = sentences.map((s) => ({ id: crypto.randomUUID(), lang, text: s }));
-      const res = await analyseBatch(items);
-      setBatchResults(res);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Batch analysis failed");
-    } finally {
-      setLoading(false);
+    if (mode === "paragraph") {
+      try {
+        const sentences = splitSentences(input);
+        const items = sentences.map(s => ({ id: crypto.randomUUID(), lang, text: s }));
+        const results = await analyseBatch(items);
+        results.forEach((res, i) => addToThread(sentences[i], res, lang));
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Batch analysis failed");
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [lang, text, mode, resetResults]);
+  }, [lang, text, mode, addToThread]);
 
   const handlePdfUpload = useCallback(async (file: File) => {
     if (!lang) return;
     setPdfName(file.name);
     setLoading(true);
-    resetResults();
+    setError(null);
     setMode("pdf");
     try {
       const form = new FormData();
@@ -109,29 +166,43 @@ export default function Home() {
       );
       if (!res.ok) throw new Error(`PDF upload failed (${res.status})`);
       const data: AnalyseResponse[] = await res.json();
-      setBatchResults(data);
+      data.forEach((r, i) => addToThread(`[PDF] sentence ${i + 1}`, r, lang));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "PDF processing failed");
     } finally {
       setLoading(false);
     }
-  }, [lang, resetResults]);
+  }, [lang, addToThread]);
 
-  const handleHistoryClick = useCallback((entry: HistoryEntry) => {
-    setLang(entry.lang);
-    setText(entry.text);
-    setResult(entry.result);
-    setMode("single");
-    setBatchResults([]);
+  const handleCsvUpload = useCallback(async (file: File) => {
+    if (!lang) return;
+    setLoading(true);
     setError(null);
-  }, []);
+    try {
+      const text = await file.text();
+      const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+      const header = lines[0].toLowerCase().split(",");
+      const textIdx = header.findIndex(h => h === "text" || h === "sentence" || h === "content");
+      const rows = lines.slice(1).map(l => {
+        const cols = l.split(",");
+        return textIdx >= 0 ? cols[textIdx]?.replace(/^"|"$/g, "").trim() : cols[0]?.replace(/^"|"$/g, "").trim();
+      }).filter(Boolean) as string[];
+      const items = rows.map(s => ({ id: crypto.randomUUID(), lang: lang!, text: s }));
+      const results = await analyseBatch(items);
+      results.forEach((res, i) => addToThread(rows[i], res, lang!));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "CSV processing failed");
+    } finally {
+      setLoading(false);
+    }
+  }, [lang, addToThread]);
 
   const handleVoice = useCallback(() => {
     if (!lang) return;
     const SR = typeof window !== "undefined"
       ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition)
       : null;
-    if (!SR) { setError("Voice input not supported in this browser. Try Chrome or Edge."); return; }
+    if (!SR) { setError("Voice input not supported. Try Chrome or Edge."); return; }
     if (listening) { recognitionRef.current?.stop(); setListening(false); return; }
     const recognition = new SR();
     recognition.lang = LANG_LOCALES[lang] ?? "en-US";
@@ -145,17 +216,36 @@ export default function Home() {
     setListening(true);
   }, [lang, listening]);
 
-  const showBatch = mode === "paragraph" || mode === "pdf";
-  const langMeta  = lang ? LANGUAGES.find((l) => l.code === lang) : null;
-  const noLang    = lang === null;
+  const handleExport = useCallback(() => {
+    if (!exportRows.length && !thread.length) return;
+    const rows = thread.map(item => ({
+      original_text: item.input,
+      corrected_text: item.result.rewrite ?? item.input,
+      reviewer_action: item.exportRow?.reviewer_action ?? "pending",
+      flag_note: item.exportRow?.flag_note ?? "",
+      qa_status: item.exportRow?.qa_status ?? "pending",
+      source: item.result.source ?? "",
+      confidence: item.result.confidence ?? 0,
+      lang: item.lang,
+    }));
+    const header = ["original_text","corrected_text","reviewer_action","flag_note","qa_status","source","confidence","lang"];
+    const csv = [header.join(","), ...rows.map(r =>
+      header.map(k => `"${String((r as any)[k]).replace(/"/g, '""')}"`).join(",")
+    )].join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    a.download = `juakazi_review_${lang}_${Date.now()}.csv`;
+    a.click();
+  }, [thread, exportRows, lang]);
 
-  // Placeholder rotates through examples for the chosen language
-  const examples  = lang ? (EXAMPLES[lang] ?? []) : [];
   const placeholder = noLang
-    ? "Choose a language above to get started…"
+    ? "Select a language from the sidebar to begin…"
     : mode === "paragraph"
-    ? `Paste a paragraph in ${langMeta?.label ?? ""}…`
-    : examples[0] ?? `Type a ${langMeta?.label ?? ""} sentence…`;
+    ? `Paste a paragraph in ${langMeta?.label}…`
+    : `Type a ${langMeta?.label} sentence… (⌘+Enter to analyse)`;
+
+  const biasCount   = thread.filter(t => t.result.has_bias_detected).length;
+  const reviewedCount = exportRows.length;
 
   return (
     <>
@@ -166,202 +256,234 @@ export default function Home() {
           activeLang={lang ?? ""}
           onLangChange={handleLangChange}
           onHistoryClick={handleHistoryClick}
-          onMetricsClick={handleMetricsClick}
           metrics={metrics}
           historyVersion={historyVersion}
-          metricsOpen={metricsOpen}
         />
 
-        <main className="flex-1 overflow-y-auto bg-[#f8fafc]">
+        {/* Main area */}
+        <div className="flex-1 flex flex-col overflow-hidden bg-[#f5f5f0]">
+
           {/* Top bar */}
-          <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-slate-200 px-6 py-3 flex items-center gap-3">
-            {metricsOpen ? (
-              <span className="font-semibold text-slate-800 text-sm">All Metrics</span>
-            ) : langMeta ? (
+          <div className="flex-shrink-0 bg-white border-b border-slate-200 px-6 py-3.5 flex items-center gap-3">
+            {langMeta ? (
               <>
-                <span className="text-base leading-none">{langMeta.flag}</span>
-                <span className="font-semibold text-slate-800 text-sm">{langMeta.label}</span>
-                <span className="text-slate-300 text-xs">·</span>
-                <span className="text-xs text-muted">afro-xlmr-base</span>
+                <span className="text-xl leading-none">{langMeta.flag}</span>
+                <span className="font-bold text-lg text-[#1a1a2e]">{langMeta.label}</span>
+                <span className="text-slate-300">·</span>
+                <span className="text-sm text-[#475569]">afro-xlmr-base + afriteva-v2</span>
               </>
             ) : (
-              <span className="text-sm text-muted">Select a language to begin</span>
+              <span className="text-base font-semibold text-[#1a1a2e]">JuaKazi — Gender Bias Detection</span>
+            )}
+
+            {thread.length > 0 && (
+              <div className="ml-auto flex items-center gap-3">
+                <span className="text-sm text-[#475569]">
+                  {thread.length} analysed · {biasCount} bias detected
+                </span>
+                <button
+                  onClick={handleExport}
+                  className="flex items-center gap-1.5 text-sm bg-[#1a1a2e] hover:bg-[#0f172a]
+                             text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                  </svg>
+                  Export CSV
+                </button>
+                <button
+                  onClick={() => setThread([])}
+                  className="text-sm text-[#475569] hover:text-[#1a1a2e] border border-slate-200
+                             hover:border-slate-300 px-3 py-2 rounded-lg transition-colors"
+                >
+                  Clear
+                </button>
+              </div>
             )}
           </div>
 
-          {metricsOpen ? (
-            <MetricsPanel metrics={metrics} />
-          ) : (
-            <div className="max-w-2xl mx-auto px-5 py-7">
-
-              {/* Language pills */}
-              <div className="flex flex-wrap gap-2 mb-5">
-                {LANGUAGES.map((l) => {
-                  const m = metrics[l.code];
-                  const isActive = l.code === lang;
-                  return (
-                    <button
-                      key={l.code}
-                      onClick={() => handleLangChange(l.code)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold
-                                  border transition-all duration-150 ${
-                        isActive
-                          ? "bg-[#00a651] text-white border-[#00a651] shadow-sm"
-                          : "bg-white text-slate-600 border-slate-200 hover:border-[#00a651] hover:text-[#00a651]"
-                      }`}
-                    >
-                      <span>{l.flag}</span>
-                      <span>{l.label}</span>
-                      {m && (
-                        <span className={`text-xs font-mono ${isActive ? "opacity-75" : "opacity-50"}`}>
-                          {m.f1.toFixed(2)}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Input card */}
-              <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-colors ${
-                noLang ? "border-slate-100 opacity-60" : "border-slate-200"
-              }`}>
-                {/* Mode tabs */}
-                <div className="flex border-b border-slate-100">
-                  {([["single","Sentence"],["paragraph","Paragraph"],["pdf","PDF"]] as [Mode,string][]).map(([m, label]) => (
-                    <button
-                      key={m}
-                      onClick={() => { if (!noLang) { setMode(m); resetResults(); setPdfName(null); }}}
-                      disabled={noLang}
-                      className={`flex-1 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed ${
-                        mode === m && !noLang
-                          ? "text-[#00a651] border-b-2 border-[#00a651] bg-emerald-50/40"
-                          : "text-slate-400 hover:text-slate-600"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* PDF drop zone */}
-                {mode === "pdf" && !noLang ? (
-                  <div
-                    className="flex flex-col items-center justify-center gap-3 py-10 px-6 cursor-pointer
-                               hover:bg-emerald-50/30 transition-colors"
-                    onClick={() => fileInputRef.current?.click()}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      const f = e.dataTransfer.files[0];
-                      if (f?.type === "application/pdf") handlePdfUpload(f);
-                    }}
-                  >
-                    <input ref={fileInputRef} type="file" accept="application/pdf" className="hidden"
-                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePdfUpload(f); }} />
-                    <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </div>
-                    {pdfName ? (
-                      <p className="text-sm font-semibold text-slate-700">{pdfName}</p>
-                    ) : (
-                      <>
-                        <p className="text-sm font-semibold text-slate-700">Drop a PDF here</p>
-                        <p className="text-xs text-muted">or click to browse · max 10 MB</p>
-                      </>
-                    )}
-                    {loading && (
-                      <div className="flex items-center gap-2 text-xs text-[#00a651]">
-                        <span className="inline-block w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        Analysing document…
+          {/* Thread */}
+          <div className="flex-1 overflow-y-auto">
+            {thread.length === 0 ? (
+              <EmptyState lang={lang} onExample={(ex) => { setText(ex); textareaRef.current?.focus(); }} />
+            ) : (
+              <div className="max-w-3xl mx-auto px-5 py-6 flex flex-col gap-5">
+                {thread.map((item) => (
+                  <div key={item.id} className="flex flex-col gap-3">
+                    {/* User bubble */}
+                    <div className="flex justify-end">
+                      <div className="max-w-xl bg-[#00a651] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
+                        <p className="text-base leading-relaxed">{item.input}</p>
+                        <p className="text-xs text-white/60 mt-1 text-right">
+                          {LANGUAGES.find(l => l.code === item.lang)?.flag} {item.lang.toUpperCase()}
+                        </p>
                       </div>
-                    )}
+                    </div>
+                    {/* Result card */}
+                    <div className="flex justify-start">
+                      <div className="w-full max-w-2xl">
+                        <ResultCard
+                          result={item.result}
+                          onExportData={(row) => {
+                            setThread(prev => prev.map(t =>
+                              t.id === item.id ? { ...t, exportRow: row } : t
+                            ));
+                            setExportRows(prev => {
+                              const filtered = prev.filter(r => r.original_text !== row.original_text);
+                              return [...filtered, row];
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  /* Text input */
-                  <>
-                    <div className="relative">
-                      <textarea
-                        disabled={noLang}
-                        className="w-full px-4 pt-4 pb-3 text-base text-slate-800 resize-none outline-none
-                                   placeholder-slate-300 leading-relaxed disabled:cursor-not-allowed
-                                   disabled:bg-transparent"
-                        rows={mode === "paragraph" ? 6 : 4}
-                        placeholder={placeholder}
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAnalyse();
-                        }}
-                      />
-                      {/* Voice mic — only when lang chosen */}
-                      {!noLang && (
-                        <button
-                          onClick={handleVoice}
-                          title={listening ? "Stop" : "Speak"}
-                          className={`absolute top-3 right-3 p-2 rounded-full transition-all ${
-                            listening
-                              ? "bg-red-100 text-red-500 animate-pulse shadow-sm"
-                              : "text-slate-300 hover:text-slate-500 hover:bg-slate-100"
-                          }`}
-                        >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V22h2v-1.06A9 9 0 0 0 21 12v-2h-2z"/>
-                          </svg>
-                        </button>
-                      )}
-                    </div>
+                ))}
 
-                    <div className="px-4 pb-3 flex items-center justify-between border-t border-slate-50">
-                      <span className="text-xs text-muted">
-                        {listening ? "🔴 Listening…" : noLang ? "Pick a language first" : "⌘ + Enter to analyse"}
-                      </span>
-                      <button
-                        onClick={handleAnalyse}
-                        disabled={loading || !text.trim() || noLang}
-                        className="bg-[#00a651] text-white text-sm font-semibold px-5 py-2.5 rounded-lg
-                                   hover:bg-[#009448] active:bg-[#007a3a] transition-colors
-                                   disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-                      >
-                        {loading && (
-                          <span className="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        )}
-                        {loading ? "Analysing…" : "Analyse"}
-                      </button>
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm">
+                      <div className="flex items-center gap-2 text-[#475569]">
+                        <span className="inline-block w-4 h-4 border-2 border-[#00a651] border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm">Analysing…</span>
+                      </div>
                     </div>
-                  </>
+                  </div>
+                )}
+
+                <div ref={threadEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* Fixed bottom input */}
+          <div className="flex-shrink-0 bg-white border-t border-slate-200 px-5 py-4">
+            <div className="max-w-3xl mx-auto">
+
+              {/* Mode + upload pills */}
+              <div className="flex items-center gap-2 mb-3">
+                {(["single","paragraph"] as Mode[]).map(m => (
+                  <button
+                    key={m}
+                    onClick={() => !noLang && setMode(m)}
+                    disabled={noLang}
+                    className={`text-sm px-3 py-1 rounded-full font-medium transition-colors disabled:opacity-40 ${
+                      mode === m
+                        ? "bg-[#1a1a2e] text-white"
+                        : "text-[#475569] hover:text-[#1a1a2e] hover:bg-slate-100"
+                    }`}
+                  >
+                    {m === "single" ? "Sentence" : "Paragraph"}
+                  </button>
+                ))}
+
+                {/* PDF upload */}
+                <button
+                  onClick={() => !noLang && fileInputRef.current?.click()}
+                  disabled={noLang}
+                  className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium
+                             text-[#475569] hover:text-[#1a1a2e] hover:bg-slate-100 transition-colors
+                             disabled:opacity-40"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  PDF
+                  {pdfName && <span className="text-xs text-[#00a651]">· {pdfName.slice(0, 16)}</span>}
+                </button>
+                <input ref={fileInputRef} type="file" accept="application/pdf" className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handlePdfUpload(f); e.target.value = ""; }} />
+
+                {/* CSV upload */}
+                <button
+                  onClick={() => !noLang && csvInputRef.current?.click()}
+                  disabled={noLang}
+                  className="flex items-center gap-1.5 text-sm px-3 py-1 rounded-full font-medium
+                             text-[#475569] hover:text-[#1a1a2e] hover:bg-slate-100 transition-colors
+                             disabled:opacity-40"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M3 10h18M3 14h18M10 3v18M14 3v18M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"/>
+                  </svg>
+                  CSV
+                </button>
+                <input ref={csvInputRef} type="file" accept=".csv,text/csv" className="hidden"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleCsvUpload(f); e.target.value = ""; }} />
+
+                {reviewedCount > 0 && (
+                  <span className="ml-auto text-xs text-[#475569] bg-slate-100 px-2.5 py-1 rounded-full">
+                    {reviewedCount} reviewed
+                  </span>
                 )}
               </div>
 
-              {/* Error */}
-              {error && (
-                <div className="mt-3 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-                  {error}
-                </div>
-              )}
+              {/* Text input row */}
+              <div className={`flex items-end gap-3 bg-[#f5f5f0] rounded-2xl border-2 transition-colors px-4 py-3 ${
+                noLang ? "border-slate-200 opacity-60" : "border-slate-300 focus-within:border-[#00a651]"
+              }`}>
+                <textarea
+                  ref={textareaRef}
+                  disabled={noLang || loading}
+                  className="flex-1 text-base text-[#1a1a2e] resize-none outline-none bg-transparent
+                             placeholder-[#94a3b8] leading-relaxed min-h-[24px] max-h-40 disabled:cursor-not-allowed"
+                  rows={1}
+                  placeholder={placeholder}
+                  value={text}
+                  onChange={e => {
+                    setText(e.target.value);
+                    e.target.style.height = "auto";
+                    e.target.style.height = Math.min(e.target.scrollHeight, 160) + "px";
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAnalyse();
+                  }}
+                />
 
-              {/* Single results */}
-              {mode === "single" && result && (
-                <div className="mt-5 flex flex-col gap-3">
-                  <VerdictBadge result={result} />
-                  {(result.edits.length > 0 || result.has_bias_detected) && (
-                    <DiffView result={result} />
+                {/* Voice */}
+                <button
+                  onClick={handleVoice}
+                  disabled={noLang}
+                  title={listening ? "Stop" : "Voice input"}
+                  className={`flex-shrink-0 p-2 rounded-full transition-all disabled:opacity-30 ${
+                    listening
+                      ? "bg-red-100 text-red-500 animate-pulse"
+                      : "text-[#94a3b8] hover:text-[#475569] hover:bg-slate-200"
+                  }`}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V22h2v-1.06A9 9 0 0 0 21 12v-2h-2z"/>
+                  </svg>
+                </button>
+
+                {/* Analyse button */}
+                <button
+                  onClick={handleAnalyse}
+                  disabled={loading || !text.trim() || noLang}
+                  className="flex-shrink-0 bg-[#00a651] hover:bg-[#008f45] active:bg-[#007a3a]
+                             text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-colors
+                             disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {loading && (
+                    <span className="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   )}
-                  <MetricsBar lang={lang!} metrics={lang ? metrics[lang] : undefined} />
-                </div>
+                  {loading ? "Analysing…" : "Analyse"}
+                </button>
+              </div>
+
+              {error && (
+                <p className="mt-2 text-sm text-red-600 px-1">{error}</p>
               )}
 
-              {/* Batch results */}
-              {showBatch && <BatchView results={batchResults} loading={loading} />}
+              <p className="mt-2 text-xs text-[#94a3b8] text-center">
+                {noLang ? "Select a language from the sidebar" : "⌘ + Enter to analyse · results stay on screen for review"}
+              </p>
             </div>
-          )}
-        </main>
+          </div>
+        </div>
       </div>
     </>
   );
 }
-
