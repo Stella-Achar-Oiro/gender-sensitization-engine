@@ -35,7 +35,7 @@ class BiasEvaluationOrchestrator:
         rules_dir: Path = Path("rules"),
         results_dir: Path = Path("eval/results"),
         enable_ml: bool = None,
-        ml_threshold: float = 0.56,
+        ml_threshold: float = 0.56,  # matches JUAKAZI_ML_THRESHOLD default in service.py
     ):
         """
         Initialize the evaluation orchestrator.
@@ -45,15 +45,19 @@ class BiasEvaluationOrchestrator:
             rules_dir: Directory containing bias detection rules
             results_dir: Directory for writing results
             enable_ml: Run ML fallback when rules find nothing (slow — downloads model)
-            ml_threshold: ML confidence threshold (default 0.56, tuned on v2)
+            ml_threshold: ML confidence threshold (default 0.56, tuned on v2; overridden by JUAKAZI_ML_THRESHOLD env var)
         """
         if enable_ml is None:
             enable_ml = bool(os.environ.get("JUAKAZI_ML_MODEL", ""))
         self.ground_truth_loader = GroundTruthLoader(data_dir)
+        # Use env-var threshold if set, otherwise use the passed argument.
+        # Keeps evaluator aligned with API threshold (JUAKAZI_ML_THRESHOLD=0.56).
+        env_threshold = os.environ.get("JUAKAZI_ML_THRESHOLD", "")
+        effective_threshold = float(env_threshold) if env_threshold else ml_threshold
         self.bias_detector = BiasDetector(
             rules_dir,
             enable_ml_fallback=enable_ml,
-            ml_threshold=ml_threshold,
+            ml_threshold=effective_threshold,
         )
         self.metrics_calculator = MetricsCalculator()
         self.metrics_formatter = MetricsFormatter()
