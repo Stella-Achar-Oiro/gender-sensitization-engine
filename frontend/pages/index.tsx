@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Head from "next/head";
 import Sidebar from "../components/Sidebar";
 import { LANGUAGES, EXAMPLES } from "../components/Sidebar";
@@ -7,15 +7,10 @@ import DiffView from "../components/DiffView";
 import BatchView from "../components/BatchView";
 import MetricsBar from "../components/MetricsBar";
 import MetricsPanel from "../components/MetricsPanel";
-import { analyse, analyseBatch } from "../lib/api";
+import { analyse, analyseBatch, fetchMetrics } from "../lib/api";
 import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
 import { saveToHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
-import type { GetStaticProps } from "next";
-
-interface Props {
-  initialMetrics: Record<string, LanguageMetrics>;
-}
 
 type Mode = "single" | "paragraph" | "pdf";
 
@@ -32,7 +27,7 @@ const LANG_LOCALES: Record<string, string> = {
   ki: "ki-KE", fr: "fr-FR", en: "en-US",
 };
 
-export default function Home({ initialMetrics }: Props) {
+export default function Home() {
   const [lang, setLang]               = useState<string | null>(null);
   const [metricsOpen, setMetricsOpen] = useState(false);
   const [text, setText]               = useState("");
@@ -44,9 +39,14 @@ export default function Home({ initialMetrics }: Props) {
   const [pdfName, setPdfName]         = useState<string | null>(null);
   const [listening, setListening]     = useState(false);
   const [historyVersion, setHistoryVersion] = useState(0);
+  const [metrics, setMetrics]         = useState<Record<string, LanguageMetrics>>({});
   const recognitionRef                = useRef<any>(null);
   const fileInputRef                  = useRef<HTMLInputElement>(null);
-  const metrics = initialMetrics;
+
+  // Fetch live metrics from API on mount — no rebuild needed when model updates
+  useEffect(() => {
+    fetchMetrics().then(setMetrics).catch(() => {});
+  }, []);
 
   const resetResults = useCallback(() => {
     setResult(null); setBatchResults([]); setError(null);
@@ -365,14 +365,3 @@ export default function Home({ initialMetrics }: Props) {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const fs = await import("fs");
-    const path = await import("path");
-    const p = path.join(process.cwd(), "..", "eval", "metrics.json");
-    const initialMetrics = JSON.parse(fs.readFileSync(p, "utf-8"));
-    return { props: { initialMetrics } };
-  } catch {
-    return { props: { initialMetrics: {} } };
-  }
-};

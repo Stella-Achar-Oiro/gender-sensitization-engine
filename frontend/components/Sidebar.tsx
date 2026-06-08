@@ -100,8 +100,8 @@ export default function Sidebar({
             <span className="text-white font-bold text-sm leading-none">J</span>
           </div>
           <div>
-            <div className="font-bold text-white text-sm tracking-tight">JuaKazi</div>
-            <div className="text-white/35 text-[10px]">Gender Bias Engine</div>
+            <div className="font-bold text-white text-base tracking-tight">JuaKazi</div>
+            <div className="text-white/35 text-xs">Gender Bias Engine</div>
           </div>
         </div>
       </div>
@@ -116,14 +116,14 @@ export default function Sidebar({
           <div className="grid grid-cols-3 gap-1.5">
             {([["F1", m.f1], ["Prec.", m.precision], ["Rec.", m.recall]] as [string, number][]).map(([label, val]) => (
               <div key={label} className="bg-white/[0.07] rounded-lg px-2 py-2 text-center">
-                <div className="text-[11px] text-white/45 uppercase tracking-wide">{label}</div>
-                <div className="text-white/90 text-sm font-bold mt-0.5">{val.toFixed(3)}</div>
+                <div className="text-xs text-white/45 uppercase tracking-wide">{label}</div>
+                <div className="text-white/90 text-base font-bold mt-0.5">{val.toFixed(3)}</div>
               </div>
             ))}
           </div>
           <button
             onClick={onMetricsClick}
-            className={`mt-2 w-full text-center text-xs font-medium transition-colors rounded-md py-1.5 ${
+            className={`mt-2 w-full text-center text-sm font-medium transition-colors rounded-md py-1.5 ${
               metricsOpen
                 ? "text-white/70 bg-white/[0.07]"
                 : "text-[#00a651] hover:text-[#00c060]"
@@ -137,11 +137,11 @@ export default function Sidebar({
       {/* Recent sessions */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
-          <span className="text-xs font-semibold uppercase tracking-widest text-white/40">
+          <span className="text-sm font-semibold uppercase tracking-widest text-white/40">
             Recent
           </span>
           {history.length > 0 && (
-            <button onClick={handleClear} className="text-xs text-white/30 hover:text-white/60 transition-colors">
+            <button onClick={handleClear} className="text-sm text-white/30 hover:text-white/60 transition-colors">
               Clear
             </button>
           )}
@@ -167,10 +167,10 @@ export default function Sidebar({
                       biased ? "bg-red-400" : "bg-emerald-400"
                     }`} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-white/70 group-hover:text-white/90 truncate leading-snug transition-colors">
+                      <p className="text-sm text-white/70 group-hover:text-white/90 truncate leading-snug transition-colors">
                         {entry.text.length > 42 ? entry.text.slice(0, 42) + "…" : entry.text}
                       </p>
-                      <p className="text-[11px] text-white/35 mt-0.5">
+                      <p className="text-xs text-white/35 mt-0.5">
                         {entryLang?.flag} {relativeTime(entry.ts)}
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export default function Sidebar({
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-white/[0.06] px-4 py-3 text-xs text-white/40 space-y-1">
+      <div className="border-t border-white/[0.06] px-4 py-3 text-sm text-white/40 space-y-1">
         <div className="flex justify-between">
           <span>Languages</span><span className="text-white/60">6</span>
         </div>
