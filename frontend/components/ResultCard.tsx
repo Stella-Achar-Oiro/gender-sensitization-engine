@@ -315,49 +315,62 @@ export default function ResultCard({ result, onExportData }: Props) {
       )}
 
       {/* ML-only — flagged for human review */}
-      {mlOnly && (
-        <div className="relative border-b border-amber-100/50">
-          {/* Original sentence with bias signal */}
-          <div className="px-5 py-4 border-b border-amber-100/40 bg-amber-50/20">
-            <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Original</div>
-            <p className="text-base leading-relaxed text-[#1a1a2e]">{original_text}</p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 text-xs bg-amber-50 border border-amber-200
-                               text-amber-700 rounded-full px-2.5 py-1">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                </svg>
-                Bias detected — auto-correction unavailable
-              </span>
+      {mlOnly && (() => {
+        const flaggedEdit = edits[0];
+        const flaggedTerm = flaggedEdit?.from;
+        const category = flaggedEdit?.stereotype_category;
+        const editReason = flaggedEdit?.reason ?? reason;
+        return (
+          <div className="relative border-b border-amber-100/50">
+            {/* What bias was detected */}
+            <div className="px-5 py-3.5 border-b border-amber-100/40 bg-amber-50/25">
+              <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">What was detected</div>
+              <div className="flex flex-wrap gap-2">
+                {flaggedTerm && (
+                  <span className="inline-flex items-center gap-1.5 text-sm bg-red-50 border border-red-200
+                                   text-red-700 rounded-lg px-3 py-1.5 font-mono font-semibold">
+                    &ldquo;{flaggedTerm}&rdquo;
+                  </span>
+                )}
+                {category && (
+                  <span className="inline-flex items-center text-xs bg-amber-50 border border-amber-200
+                                   text-amber-700 rounded-lg px-2.5 py-1.5 font-semibold uppercase tracking-wide">
+                    {category.replace(/_/g, " ")}
+                  </span>
+                )}
+              </div>
+              {editReason && (
+                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{editReason}</p>
+              )}
+            </div>
+            {/* Write correction */}
+            <div className="px-5 py-4 bg-amber-50/20">
+              <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
+                Human correction needed
+              </div>
+              {isEditing ? (
+                <textarea
+                  autoFocus
+                  className="w-full text-base border-2 border-amber-300 rounded-xl px-3 py-2.5 bg-white
+                             focus:outline-none focus:border-amber-400 resize-none text-[#1a1a2e] leading-relaxed"
+                  rows={3}
+                  value={editedText}
+                  onChange={(e) => setEditedText(e.target.value)}
+                  placeholder="Write a gender-neutral version…"
+                />
+              ) : (
+                <button
+                  onClick={doEdit}
+                  className="w-full text-left text-sm text-amber-700/60 bg-white border border-dashed border-amber-300
+                             rounded-xl px-4 py-3 hover:border-amber-400 hover:text-amber-800 transition-all"
+                >
+                  + Write a gender-neutral correction…
+                </button>
+              )}
             </div>
           </div>
-          {/* Write correction */}
-          <div className="px-5 py-4 bg-amber-50/20">
-            <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
-              Human correction needed
-            </div>
-            {isEditing ? (
-              <textarea
-                autoFocus
-                className="w-full text-base border-2 border-amber-300 rounded-xl px-3 py-2.5 bg-white
-                           focus:outline-none focus:border-amber-400 resize-none text-[#1a1a2e] leading-relaxed"
-                rows={3}
-                value={editedText}
-                onChange={(e) => setEditedText(e.target.value)}
-                placeholder="Write a gender-neutral version…"
-              />
-            ) : (
-              <button
-                onClick={doEdit}
-                className="w-full text-left text-sm text-amber-700/60 bg-white border border-dashed border-amber-300
-                           rounded-xl px-4 py-3 hover:border-amber-400 hover:text-amber-800 transition-all"
-              >
-                + Write a gender-neutral correction…
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Reason */}
       {replaceEdits.some(e => e.reason) && action === "pending" && !isEditing && (
