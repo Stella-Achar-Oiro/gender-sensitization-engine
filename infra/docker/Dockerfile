@@ -26,7 +26,8 @@ RUN python3 -c "from transformers import pipeline; pipeline('text-classification
 FROM python:3.11-slim
 COPY --from=python-builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=python-builder /usr/local/bin /usr/local/bin
-COPY --from=model-downloader /root/.cache/huggingface /root/.cache/huggingface
+RUN useradd -m juakazi
+COPY --from=model-downloader /root/.cache/huggingface /home/juakazi/.cache/huggingface
 WORKDIR /app
 COPY api/ api/
 COPY eval/ eval/
@@ -34,7 +35,8 @@ COPY core/ core/
 COPY rules/ rules/
 COPY config.py .
 COPY --from=node-builder /frontend/out ./static
-RUN useradd -m juakazi && chown -R juakazi /app && chown -R juakazi /root/.cache/huggingface
+RUN chown -R juakazi /app && chown -R juakazi /home/juakazi/.cache
 USER juakazi
+ENV HF_HOME=/home/juakazi/.cache/huggingface
 EXPOSE 8000
 CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
