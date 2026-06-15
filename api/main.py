@@ -173,3 +173,26 @@ async def rewrite_pdf(
         for i, s in enumerate(sentences)
     ]
     return [rewrite(item) for item in items]
+
+
+@app.post("/rewrite/pdf/extract", response_model=list[str])
+async def extract_pdf_sentences(
+    file: UploadFile = File(...),
+    lang: str = "sw",
+):
+    """Extract sentences from a PDF without running inference — used by frontend for parallel analysis."""
+    if file.content_type not in ("application/pdf", "application/octet-stream"):
+        raise HTTPException(status_code=415, detail="Only PDF files are accepted.")
+    data = await file.read()
+    if len(data) > _MAX_PDF_BYTES:
+        raise HTTPException(status_code=413, detail="PDF exceeds 10 MB limit.")
+    try:
+        from pypdf import PdfReader
+        reader = PdfReader(io.BytesIO(data))
+        full_text = " ".join(page.extract_text() or "" for page in reader.pages)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Could not read PDF: {e}") from e
+    sentences = _split_sentences(full_text)
+    if not sentences:
+        raise HTTPException(status_code=422, detail="No text found in PDF.")
+    return sentences[:200]

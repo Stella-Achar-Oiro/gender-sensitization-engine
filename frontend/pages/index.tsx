@@ -233,16 +233,19 @@ export default function Home() {
     setError(null);
     setMode("pdf");
     try {
+      // Extract sentences from PDF via API, then analyse each individually in parallel
       const form = new FormData();
       form.append("file", file);
       form.append("lang", lang);
-      const res = await fetch(
-        `${(process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "")}/rewrite/pdf`,
+      const extractRes = await fetch(
+        `${(process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "")}/rewrite/pdf/extract`,
         { method: "POST", body: form }
       );
-      if (!res.ok) throw new Error(`PDF upload failed (${res.status})`);
-      const data: AnalyseResponse[] = await res.json();
-      data.forEach((r, i) => addToThread(`[PDF] sentence ${i + 1}`, r, lang));
+      if (!extractRes.ok) throw new Error(`PDF extraction failed (${extractRes.status})`);
+      const sentences: string[] = await extractRes.json();
+      const items = sentences.map(s => ({ id: crypto.randomUUID(), lang: lang!, text: s }));
+      const results = await analyseBatch(items);
+      results.forEach((r, i) => addToThread(sentences[i], r, lang!));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "PDF processing failed");
     } finally {
