@@ -2,11 +2,7 @@
 
 import os
 import time
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from typing import Optional
-
-_INFER_EXECUTOR = ThreadPoolExecutor(max_workers=4)
-_INFER_TIMEOUT  = 20  # seconds — leave headroom under App Runner's 30s proxy timeout
 
 from config import (
     AIBRIDGE_ENABLED,
@@ -103,12 +99,8 @@ def rewrite_text(
             }
             _lang_enum = _lang_map.get(lang)
             if _lang_enum:
-                try:
-                    future = _INFER_EXECUTOR.submit(ml_classify, text, _lang_enum)
-                    ml_detector_score = future.result(timeout=_INFER_TIMEOUT)
-                except FuturesTimeoutError:
-                    ml_detector_score = None
-                if ml_detector_score is not None and ml_detector_score >= _ML_DETECTOR_THRESHOLD:
+                ml_detector_score = ml_classify(text, _lang_enum)
+                if ml_detector_score >= _ML_DETECTOR_THRESHOLD:
                     edits = [{
                         "from": "",
                         "to": "",
