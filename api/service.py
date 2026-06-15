@@ -5,14 +5,13 @@ import time
 from typing import Optional
 
 from config import (
-    AIBRIDGE_ENABLED,
     DEFAULT_REWRITE_CONFIDENCE,
     REWRITE_CONFIDENCE_BY_SOURCE,
     get_semantic_threshold,
 )
 from core.semantic_preservation import SemanticPreservationMetrics
 
-from .bias_detection_client import LANG_CODE_MAP, AibridgeResult, detect_bias
+from .bias_detection_client import LANG_CODE_MAP, AibridgeResult
 from .ml_rewriter import ml_rewrite
 from .rules_engine import apply_rules_on_spans, build_reason
 from .schemas import RewriteResponse
@@ -23,7 +22,6 @@ _ML_DETECTOR_ENABLED   = bool(os.environ.get("JUAKAZI_ML_MODEL", ""))
 semantic_metrics = SemanticPreservationMetrics()
 
 # Callers that already ran bias detection upstream — skip Stage 0 external /detect gate.
-# StudyLabs (and similar) detect; we only correct when they hit POST /rewrite with this set.
 _SKIP_EXTERNAL_BIAS_GATE_CALLERS = frozenset({"aibridge", "studylabs"})
 
 
@@ -37,26 +35,15 @@ def rewrite_text(
 ) -> tuple[RewriteResponse, dict]:
     """
     Run bias detection + correction. Returns (response, audit_info).
-    audit_info has model_info, latency_ms for logging.
-
-    caller 'studylabs' or 'aibridge': skip Stage 0 external /detect — partner already
-    detected bias; we only run lexicon (and later stages) to correct.
+    AIBRIDGE external call is NOT made here — caller fires it as a background task.
     """
     t0 = time.time()
 
-    # Stage 0: optional external bias detection gate (haus | swahili | zulu when enabled).
-    # Skipped when the integration partner already flagged bias (StudyLabs, AIBRIDGE pipeline).
-    # If the external model says no bias, skip correction entirely and return immediately.
-    # On any network/auth error, aibridge_result.error is set and we fall through silently.
+    # Stage 0 AIBRIDGE gate removed from this path.
+    # AIBRIDGE is called asynchronously in main.py after the response is returned,
+    # so it never blocks the user. aibridge_* fields in the response are always None
+    # on the initial return; the background task appends to the audit log separately.
     aibridge_result: Optional[AibridgeResult] = None
-    caller_norm = (caller or "").strip().lower()
-    skip_gate = caller_norm in _SKIP_EXTERNAL_BIAS_GATE_CALLERS
-    ext_lang = LANG_CODE_MAP.get(lang) if (AIBRIDGE_ENABLED and not skip_gate) else None
-    if ext_lang:
-        aibridge_result = detect_bias(text, ext_lang)
-        # Do NOT return early — always run our lexicon rules regardless of AIBRIDGE result.
-        # AIBRIDGE has low recall and misses real bias; our lexicon rules have higher precision.
-        # AIBRIDGE result is used as an additional signal in the final response only.
 
     rewritten, edits, matched_rules, skipped = apply_rules_on_spans(
         text, lang, flags=flags
@@ -149,18 +136,13 @@ def rewrite_text(
             else:
                 ml_unavailable = True
 
-    # When the external gate detected bias but neither lexicon nor ML could correct it,
-    # return an honest "low confidence, flagged for review" signal instead of a confident
-    # false negative ("No gender bias detected").
-    aibridge_ok = aibridge_result is not None and aibridge_result.error is None
-    aibridge_detected = aibridge_result.has_bias if aibridge_ok else None
-    if not edits and (aibridge_detected or ml_unavailable):
+    if not edits and ml_unavailable:
         source = "low_confidence"
 
     latency_ms = int((time.time() - t0) * 1000)
     confidence = REWRITE_CONFIDENCE_BY_SOURCE.get(source, DEFAULT_REWRITE_CONFIDENCE)
     needs_review = source in ("ml", "low_confidence") or len(edits) == 0
-    reason = build_reason(source, edits, skipped, aibridge_detected=bool(aibridge_detected))
+    reason = build_reason(source, edits, skipped, aibridge_detected=False)
     has_bias_detected = (
         any(e.get("severity") in ("replace", "warn") for e in edits)
         or source == "low_confidence"
@@ -178,13 +160,12 @@ def rewrite_text(
         semantic_score=semantic_score,
         skipped_context=skipped or None,
         has_bias_detected=has_bias_detected,
-        aibridge_confidence=aibridge_result.confidence if aibridge_ok else None,
-        aibridge_detected=aibridge_detected,
+        aibridge_confidence=None,   # populated async by background task in main.py
+        aibridge_detected=None,
     )
     audit_info = {
         "model_info": ml_info or {"model": "rulepack-v0.3"},
         "latency_ms": latency_ms,
         "region_dialect": region_dialect or "unknown",
-        "aibridge_error": aibridge_result.error if aibridge_result else None,
     }
     return response, audit_info

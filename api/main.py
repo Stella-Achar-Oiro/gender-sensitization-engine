@@ -6,7 +6,7 @@ import logging
 import re
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -111,9 +111,31 @@ def health():
     return {"status": "ok", "version": "0.3", "lexicon_entries": lexicon_counts}
 
 
+def _aibridge_background(req_dump: dict, resp_dump: dict, audit_info: dict) -> None:
+    """Fire AIBRIDGE /detect after the response is already sent — never blocks the user."""
+    from config import AIBRIDGE_ENABLED
+    from .bias_detection_client import LANG_CODE_MAP, detect_bias
+    lang = req_dump.get("lang", "")
+    ext_lang = LANG_CODE_MAP.get(lang) if AIBRIDGE_ENABLED else None
+    if not ext_lang:
+        return
+    caller = (req_dump.get("caller") or "").strip().lower()
+    if caller in ("aibridge", "studylabs"):
+        return
+    result = detect_bias(req_dump["text"], ext_lang)
+    log_audit({
+        **audit_info,
+        "request": req_dump,
+        "response": resp_dump,
+        "aibridge_has_bias": result.has_bias,
+        "aibridge_confidence": result.confidence,
+        "aibridge_error": result.error,
+    })
+
+
 @app.post("/rewrite", response_model=RewriteResponse)
-def rewrite(req: RewriteRequest):
-    """Validate, run rewrite service, log, return."""
+def rewrite(req: RewriteRequest, background_tasks: BackgroundTasks):
+    """Validate, run rewrite service, return immediately. AIBRIDGE fires in background."""
     try:
         response, audit_info = service_rewrite(
             id=req.id,
@@ -123,11 +145,15 @@ def rewrite(req: RewriteRequest):
             region_dialect=req.region_dialect,
             caller=req.caller,
         )
+        # Log core audit now; AIBRIDGE result appended asynchronously below.
         log_audit({
             "request": req.model_dump(),
             "response": response.model_dump(),
             **audit_info,
         })
+        background_tasks.add_task(
+            _aibridge_background, req.model_dump(), response.model_dump(), audit_info
+        )
         return response
     except HTTPException:
         raise
@@ -140,8 +166,8 @@ def rewrite(req: RewriteRequest):
 
 
 @app.post("/rewrite/batch", response_model=list[RewriteResponse])
-def rewrite_batch(body: BatchRewriteRequest):
-    return [rewrite(item) for item in body.items]
+def rewrite_batch(body: BatchRewriteRequest, background_tasks: BackgroundTasks):
+    return [rewrite(item, background_tasks) for item in body.items]
 
 
 _SENT_SPLIT = re.compile(r"(?<=[.!?؟。？！])\s+")
