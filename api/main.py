@@ -19,7 +19,27 @@ logger = logging.getLogger(__name__)
 
 _STATIC = Path(__file__).parent.parent / "static"
 
-app = FastAPI(title="JuaKazi Correction Engine", version="0.4")
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Preload ML models at startup so first request doesn't timeout."""
+    try:
+        from eval.ml_classifier import classify, Language
+        logger.info("Preloading ML classifier for all languages...")
+        for lang in Language:
+            try:
+                classify("test", lang)
+                logger.info("Loaded model for %s", lang.value)
+            except Exception as e:
+                logger.warning("Could not preload model for %s: %s", lang.value, e)
+    except Exception as e:
+        logger.warning("ML preload skipped: %s", e)
+    yield
+
+
+app = FastAPI(title="JuaKazi Correction Engine", version="0.4", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
