@@ -38,27 +38,30 @@ _THRESHOLDS: dict[Language, float] = {
 }
 
 
-# ── Lazy-loaded pipelines per language ──────────────────────────────────────
+# ── Shared pipeline cache — same model for all languages, load once ──────────
 _pipes:       dict[Language, object]          = {}
 _load_errors: dict[Language, Optional[str]]   = {}
+_shared_pipes: dict[str, object]              = {}  # model_id -> pipeline
 
 
 def _ensure_loaded(language: Language) -> None:
     if language in _pipes or language in _load_errors:
         return
-    model_id = _MODEL_IDS.get(language)
-    if not model_id:
+    mid = _MODEL_IDS.get(language)
+    if not mid:
         _load_errors[language] = f"No model configured for {language}"
         return
     try:
-        from transformers import pipeline as hf_pipeline
-        _pipes[language] = hf_pipeline(
-            "text-classification",
-            model=model_id,
-            device=-1,
-            truncation=True,
-            max_length=128,
-        )
+        if mid not in _shared_pipes:
+            from transformers import pipeline as hf_pipeline
+            _shared_pipes[mid] = hf_pipeline(
+                "text-classification",
+                model=mid,
+                device=-1,
+                truncation=True,
+                max_length=128,
+            )
+        _pipes[language] = _shared_pipes[mid]
     except Exception as exc:
         _load_errors[language] = str(exc)
 

@@ -27,13 +27,9 @@ async def lifespan(app: FastAPI):
     """Preload ML models at startup so first request doesn't timeout."""
     try:
         from eval.ml_classifier import classify, Language
-        logger.info("Preloading ML classifier for all languages...")
-        for lang in Language:
-            try:
-                classify("test", lang)
-                logger.info("Loaded model for %s", lang.value)
-            except Exception as e:
-                logger.warning("Could not preload model for %s: %s", lang.value, e)
+        logger.info("Preloading ML classifier (single shared model)...")
+        classify("test", Language.SWAHILI)  # loads once, shared across all languages
+        logger.info("ML classifier ready")
     except Exception as e:
         logger.warning("ML preload skipped: %s", e)
     yield
