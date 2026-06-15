@@ -96,16 +96,21 @@ jobs:
 
       - name: Smoke test
         run: |
-          sleep 30
           SERVICE_URL=$(aws apprunner list-services \
             --query "ServiceSummaryList[?ServiceName=='juakazi'].ServiceUrl" \
             --output text)
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${SERVICE_URL}/health)
-          if [ "$STATUS" != "200" ]; then
-            echo "Smoke test FAILED — /health returned $STATUS"
-            exit 1
-          fi
-          echo "Smoke test PASSED — https://${SERVICE_URL}/health returned 200"
+          echo "Waiting for /health to return 200 (ML model load takes ~90s)..."
+          for i in $(seq 1 24); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${SERVICE_URL}/health)
+            echo "Attempt $i: /health returned $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "Smoke test PASSED — https://${SERVICE_URL}/health returned 200"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Smoke test FAILED — /health did not return 200 after 6 minutes"
+          exit 1
 
       - name: Deployment summary
         if: always()
