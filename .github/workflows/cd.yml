@@ -57,6 +57,7 @@ jobs:
         run: |
           docker build \
             --platform linux/amd64 \
+            --network=host \
             --build-arg NEXT_PUBLIC_API_URL=/ \
             -f infra/docker/Dockerfile \
             -t ${{ env.IMAGE_TAG }} .
