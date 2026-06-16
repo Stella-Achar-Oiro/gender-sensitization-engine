@@ -1,7 +1,7 @@
 """
 Stage 3 ML corrector — seq2seq bias correction.
 
-Model: juakazike/multilingual-bias-corrector-v1
+Model: juakazike/multilingual-bias-corrector-v3
 Base:  castorini/afriteva_v2_base
 Input: "correct bias {lang}: {biased sentence}"
 Output: corrected/neutral sentence
@@ -14,7 +14,7 @@ from typing import Any, Literal
 
 _CORRECTOR_MODEL = os.environ.get(
     "JUAKAZI_CORRECTOR_MODEL",
-    "juakazike/multilingual-bias-corrector-v2",
+    "juakazike/multilingual-bias-corrector-v3",
 )
 
 try:

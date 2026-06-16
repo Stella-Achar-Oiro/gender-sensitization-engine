@@ -85,7 +85,7 @@ jobs:
                 \"ImageRepositoryType\": \"ECR\",
                 \"ImageConfiguration\": {
                   \"Port\": \"8000\",
-                  \"RuntimeEnvironmentVariables\": {\"ENVIRONMENT\": \"production\", \"JUAKAZI_CORRECTOR_MODEL\": \"juakazike/multilingual-bias-corrector-v2\", \"JUAKAZI_ML_MODEL\": \"juakazike/multilingual-bias-classifier-v1\"}
+                  \"RuntimeEnvironmentVariables\": {\"ENVIRONMENT\": \"production\", \"JUAKAZI_CORRECTOR_MODEL\": \"juakazike/multilingual-bias-corrector-v3\", \"JUAKAZI_ML_MODEL\": \"juakazike/multilingual-bias-classifier-v1\"}
                 }
               },
               \"AuthenticationConfiguration\": {

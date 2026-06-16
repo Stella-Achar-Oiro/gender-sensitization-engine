@@ -11,7 +11,7 @@ class MT5BiasCorrector:
     
     def __init__(self):
         self.model_id = os.environ.get(
-            "JUAKAZI_CORRECTOR_MODEL", "juakazike/multilingual-bias-corrector-v2"
+            "JUAKAZI_CORRECTOR_MODEL", "juakazike/multilingual-bias-corrector-v3"
         )
         self._tokenizer = None
         self._model = None

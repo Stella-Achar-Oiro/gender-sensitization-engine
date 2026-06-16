@@ -103,7 +103,7 @@ def rewrite_text(
             pass  # ML unavailable — lexicon result stands
 
     # Stage 3: ML corrector — fires only when bias is detected AND lexicon found no match.
-    # Uses juakazike/multilingual-bias-corrector-v2 (AfriTeVa fine-tuned on 10K pairs).
+    # Uses juakazike/multilingual-bias-corrector-v3 (AfriTeVa fine-tuned on 10K clean pairs, guardrails added).
     # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
     # ZU and HA corrector output is not yet reliable (insufficient training pairs) — for those
     # languages we suppress the ML corrector and flag for human review instead of showing
