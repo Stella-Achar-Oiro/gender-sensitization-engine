@@ -29,7 +29,7 @@ _tokenizer = None
 _model = None
 
 
-def _clean_output(corrected: str, original: str) -> str:
+def _clean_output(corrected: str, original: str, lang: str = "") -> str:
     """Remove common seq2seq repetition artifacts without altering content."""
     import re
     # Truncate at first occurrence of .. or multiple punctuation-fillers
@@ -39,7 +39,6 @@ def _clean_output(corrected: str, original: str) -> str:
     for n in (1, 2, 3):
         for i in range(len(words) - n * 3):
             phrase = tuple(words[i:i + n])
-            # Count occurrences of this phrase after position i
             count = sum(
                 1 for j in range(i + n, len(words) - n + 1, n)
                 if tuple(words[j:j + n]) == phrase
@@ -53,6 +52,13 @@ def _clean_output(corrected: str, original: str) -> str:
     # If output is way longer than input (>2.5×), likely hallucination — return original
     if len(corrected.split()) > len(original.split()) * 2.5:
         return original
+    # Language sanity check: detect if output switched to English for a non-English input.
+    # Common English function words that would not appear in SW/HA/ZU/KI/FR sentences.
+    _EN_MARKERS = {"the", "is", "are", "was", "were", "has", "have", "company", "women", "men"}
+    if lang and lang != "en":
+        out_words_lower = {w.lower().strip(".,;") for w in corrected.split()}
+        if len(out_words_lower & _EN_MARKERS) >= 2:
+            return original  # output switched language — reject
     return corrected
 
 
@@ -100,8 +106,7 @@ def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
                 forced_eos_token_id=1,
             )
         corrected = _tokenizer.decode(out[0], skip_special_tokens=True)
-        # Strip beam-search repetition artifacts
-        corrected = _clean_output(corrected, text)
+        corrected = _clean_output(corrected, text, lang=lang)
         return {
             "best": corrected,
             "candidates": [corrected],
