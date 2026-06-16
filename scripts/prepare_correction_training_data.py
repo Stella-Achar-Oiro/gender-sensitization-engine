@@ -22,6 +22,7 @@ Sources per language:
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -42,6 +43,13 @@ def _clean(text: str) -> str:
     return " ".join(text.split())
 
 
+_ANNOTATION_NOISE = re.compile(
+    r'This sentence|If you meant|corrected version|The bias would|'
+    r'already neutral|neutral—|\(This|\bNote:\b|\bNOTE:\b|Corrected version',
+    re.IGNORECASE,
+)
+
+
 def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float = 0.30) -> bool:
     inp, tgt = _clean(inp), _clean(tgt)
     if not inp or not tgt:
@@ -49,6 +57,8 @@ def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float =
     if inp == tgt:
         return False
     if len(inp) < 5 or len(tgt) < 5:
+        return False
+    if _ANNOTATION_NOISE.search(tgt):
         return False
     inp_words = set(inp.split())
     tgt_words = set(tgt.split())
@@ -134,11 +144,12 @@ def load_ha() -> pd.DataFrame:
 def load_zu() -> pd.DataFrame:
     rows = []
 
-    # Source 1: retraining file — apply strict overlap filter (most are full rewrites)
+    # Source 1: retraining file — strict overlap=0.50 (pairs are mostly full rewrites,
+    # only those with >=50% shared tokens are minimal enough to be useful)
     rt = pd.read_csv(ROOT / "zulu_retraining - zulu_retraining.csv.csv")
     for _, r in rt.iterrows():
         inp, tgt = _clean(r["input"]), _clean(r["output"])
-        if _is_valid_pair(inp, tgt):  # min_overlap=0.30 filters ~84% of bad pairs
+        if _is_valid_pair(inp, tgt, min_overlap=0.50):
             rows.append({
                 "language": "zu", "input_text": inp, "target_text": tgt,
                 "source": "zu_retraining",
@@ -242,7 +253,23 @@ def load_fr() -> pd.DataFrame:
     # Lexicon example pairs
     rows.extend(_lexicon_example_pairs("fr"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Fix grammatical gender agreement errors introduced by lexicon substitution:
+    # "homme"/"femme" are masculine/feminine — "personne" is always feminine.
+    df["target_text"] = (
+        df["target_text"]
+        .str.replace(r"\bun personne\b", "une personne", regex=True)
+        .str.replace(r"\bcet personne\b", "cette personne", regex=True)
+        .str.replace(r"\bUn personne\b", "Une personne", regex=True)
+        .str.replace(r"\bCet personne\b", "Cette personne", regex=True)
+    )
+    # Drop "jeune homme" -> "jeune personne" pairs — grammatically broken and not bias
+    bad_jeune = (
+        df.input_text.str.contains("jeune homme", case=False, na=False)
+        & df.target_text.str.contains("jeune personne", case=False, na=False)
+    )
+    df = df[~bad_jeune].reset_index(drop=True)
+    return df
 
 
 def _expand_partial_correction(original: str, correction: str) -> str:
