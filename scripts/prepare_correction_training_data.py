@@ -45,7 +45,8 @@ def _clean(text: str) -> str:
 
 _ANNOTATION_NOISE = re.compile(
     r'This sentence|If you meant|corrected version|The bias would|'
-    r'already neutral|neutral—|\(This|\bNote:\b|\bNOTE:\b|Corrected version',
+    r'already neutral|neutral—|\(This|\bNote:\b|\bNOTE:\b|Corrected version|'
+    r'\[needs_review|Consider:|reinforcing gendered|traditionally coded',
     re.IGNORECASE,
 )
 
@@ -138,7 +139,16 @@ def load_ha() -> pd.DataFrame:
     # Lexicon example pairs
     rows.extend(_lexicon_example_pairs("ha"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Drop heavy rewrites: low overlap AND large word change = model learns wrong pattern
+    df["_overlap"] = df.apply(
+        lambda r: len(set(r.input_text.split()) & set(r.target_text.split())) / max(len(set(r.input_text.split())), 1),
+        axis=1,
+    )
+    df["_wdiff"] = (df.input_text.str.split().str.len() - df.target_text.str.split().str.len()).abs()
+    heavy_rewrite = (df["_overlap"] < 0.65) & (df["_wdiff"] > 5)
+    df = df[~heavy_rewrite].drop(columns=["_overlap", "_wdiff"]).reset_index(drop=True)
+    return df
 
 
 def load_zu() -> pd.DataFrame:
