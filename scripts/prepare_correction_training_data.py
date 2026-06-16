@@ -32,8 +32,8 @@ sys.path.insert(0, str(ROOT))
 
 from api.rules_engine import apply_rules_on_spans
 
-OUT_PATH = ROOT / "data" / "training_data_correction.csv"
-STATS_PATH = ROOT / "data" / "training_data_correction_stats.txt"
+OUT_PATH = ROOT / "data" / "training_data_correction_v2.csv"
+STATS_PATH = ROOT / "data" / "training_data_correction_v2_stats.txt"
 
 
 def _clean(text: str) -> str:
@@ -42,7 +42,7 @@ def _clean(text: str) -> str:
     return " ".join(text.split())
 
 
-def _is_valid_pair(inp: str, tgt: str) -> bool:
+def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float = 0.30) -> bool:
     inp, tgt = _clean(inp), _clean(tgt)
     if not inp or not tgt:
         return False
@@ -50,13 +50,41 @@ def _is_valid_pair(inp: str, tgt: str) -> bool:
         return False
     if len(inp) < 5 or len(tgt) < 5:
         return False
+    inp_words = set(inp.split())
+    tgt_words = set(tgt.split())
+    overlap = len(inp_words & tgt_words) / max(len(inp_words), 1)
+    if overlap < min_overlap:
+        return False
+    if len(inp.split()) > max_words:
+        return False
     return True
+
+
+def _lexicon_example_pairs(lang: str) -> list[dict]:
+    """Generate pairs from lexicon example_biased/example_neutral columns."""
+    try:
+        lex = pd.read_csv(ROOT / f"rules/lexicon_{lang}_v3.csv")
+    except Exception:
+        return []
+    pairs = []
+    for _, r in lex.iterrows():
+        inp = _clean(str(r.get("example_biased", "") or ""))
+        tgt = _clean(str(r.get("example_neutral", "") or ""))
+        if _is_valid_pair(inp, tgt):
+            pairs.append({
+                "language": lang,
+                "input_text": inp,
+                "target_text": tgt,
+                "source": f"{lang}_lexicon_examples",
+                "stereotype_category": str(r.get("stereotype_category", "") or ""),
+            })
+    return pairs
 
 
 def load_sw() -> pd.DataFrame:
     rows = []
 
-    # Source 1: correction pairs file
+    # Source 1: correction pairs file (filter: ≤40 words, ≥30% overlap)
     df = pd.read_csv(ROOT / "juakazi_sw_correction_pairs_v1.csv")
     for _, r in df.iterrows():
         inp, tgt = _clean(r["original_text"]), _clean(r["expected_correction"])
@@ -79,6 +107,9 @@ def load_sw() -> pd.DataFrame:
                 "stereotype_category": r.get("stereotype_category", ""),
             })
 
+    # Source 3: lexicon example pairs (short, minimal edits)
+    rows.extend(_lexicon_example_pairs("sw"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
@@ -93,17 +124,21 @@ def load_ha() -> pd.DataFrame:
                 "source": "ha_pairs_v1",
                 "stereotype_category": r.get("stereotype_category", ""),
             })
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("ha"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
 def load_zu() -> pd.DataFrame:
     rows = []
 
-    # Source 1: retraining file (instruction-tuning format, clean)
+    # Source 1: retraining file — apply strict overlap filter (most are full rewrites)
     rt = pd.read_csv(ROOT / "zulu_retraining - zulu_retraining.csv.csv")
     for _, r in rt.iterrows():
         inp, tgt = _clean(r["input"]), _clean(r["output"])
-        if _is_valid_pair(inp, tgt):
+        if _is_valid_pair(inp, tgt):  # min_overlap=0.30 filters ~84% of bad pairs
             rows.append({
                 "language": "zu", "input_text": inp, "target_text": tgt,
                 "source": "zu_retraining",
@@ -125,6 +160,9 @@ def load_zu() -> pd.DataFrame:
     gt = pd.read_csv(ROOT / "eval" / "ground_truth_zu_v1.csv")
     zu_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("zu", zu_texts, "zu_gt_lexicon"))
+
+    # Source 4: lexicon example pairs (clean minimal edits)
+    rows.extend(_lexicon_example_pairs("zu"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
@@ -150,6 +188,9 @@ def load_ki() -> pd.DataFrame:
     # Also generate pairs via lexicon for KI biased rows missing real corrections
     ki_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("ki", ki_texts, "ki_gt_lexicon"))
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("ki"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
@@ -198,6 +239,9 @@ def load_fr() -> pd.DataFrame:
     ]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("fr", gold_biased, "fr_annotated_lexicon"))
 
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("fr"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
@@ -244,6 +288,9 @@ def load_en() -> pd.DataFrame:
     # Source 2: lexicon-generated from all EN biased rows
     en_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("en", en_texts, "en_gt_lexicon"))
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("en"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
