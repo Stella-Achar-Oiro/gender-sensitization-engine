@@ -156,6 +156,14 @@ def load_sw() -> pd.DataFrame:
     # Source 4: v1 dataset pairs not already covered above
     rows.extend(_load_v1_pairs("sw", "sw_v1_extra"))
 
+    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows, no pre-made corrections,
+    # generate via lexicon (wa kike/wa kiume removal, mwanamke→mtu etc.)
+    umunthu = ROOT / "Umunthu Data - Swahili Annotated (3).csv"
+    if umunthu.exists():
+        u = pd.read_csv(umunthu)
+        u_texts = u[u["bias_label"] == "stereotype"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("sw", u_texts, "sw_umunthu"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
