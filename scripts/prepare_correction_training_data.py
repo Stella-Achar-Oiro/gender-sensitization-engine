@@ -61,6 +61,9 @@ def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float =
         return False
     if _ANNOTATION_NOISE.search(tgt):
         return False
+    # Drop list-literal artifacts from old annotation pipeline
+    if inp.startswith("['") or tgt.startswith("['"):
+        return False
     inp_words = set(inp.split())
     tgt_words = set(tgt.split())
     overlap = len(inp_words & tgt_words) / max(len(inp_words), 1)
@@ -92,6 +95,35 @@ def _lexicon_example_pairs(lang: str) -> list[dict]:
     return pairs
 
 
+def _load_v1_pairs(lang: str, source_tag: str) -> list[dict]:
+    """
+    Pull clean pairs from the old training_data_correction.csv (v1) that
+    aren't already covered by the primary per-language sources.
+    Applies standard quality filters: noise, overlap, length, list artifacts.
+    """
+    v1_path = ROOT / "data" / "training_data_correction.csv"
+    if not v1_path.exists():
+        return []
+    v1 = pd.read_csv(v1_path)
+    g = v1[v1["language"] == lang].copy()
+    rows = []
+    for _, r in g.iterrows():
+        inp = _clean(str(r.get("input_text", "") or ""))
+        tgt = _clean(str(r.get("target_text", "") or ""))
+        # Drop list-literal artifacts from old annotation pipeline
+        if inp.startswith("['") or tgt.startswith("['"):
+            continue
+        if _is_valid_pair(inp, tgt):
+            rows.append({
+                "language": lang,
+                "input_text": inp,
+                "target_text": tgt,
+                "source": source_tag,
+                "stereotype_category": str(r.get("stereotype_category", "") or ""),
+            })
+    return rows
+
+
 def load_sw() -> pd.DataFrame:
     rows = []
 
@@ -120,6 +152,9 @@ def load_sw() -> pd.DataFrame:
 
     # Source 3: lexicon example pairs (short, minimal edits)
     rows.extend(_lexicon_example_pairs("sw"))
+
+    # Source 4: v1 dataset pairs not already covered above
+    rows.extend(_load_v1_pairs("sw", "sw_v1_extra"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
@@ -213,6 +248,9 @@ def load_ki() -> pd.DataFrame:
     # Lexicon example pairs
     rows.extend(_lexicon_example_pairs("ki"))
 
+    # v1 dataset extras (mũthamaki→mũtongoria single-word swaps, etc.)
+    rows.extend(_load_v1_pairs("ki", "ki_v1_extra"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
@@ -262,6 +300,9 @@ def load_fr() -> pd.DataFrame:
 
     # Lexicon example pairs
     rows.extend(_lexicon_example_pairs("fr"))
+
+    # v1 title-template pairs (directeur→directeur ou la directrice, etc.) — 344 unique pairs
+    rows.extend(_load_v1_pairs("fr", "fr_v1_titles"))
 
     df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
     # Fix grammatical gender agreement errors introduced by lexicon substitution:
@@ -328,6 +369,20 @@ def load_en() -> pd.DataFrame:
 
     # Lexicon example pairs
     rows.extend(_lexicon_example_pairs("en"))
+
+    # Source 3: WinoBias — 3,162 high-quality occupation pronoun-swap pairs.
+    # These are the single best EN source: consistent minimal edits (he/she → they),
+    # short sentences, verified bias patterns across 40 occupation types.
+    wb_path = ROOT / "data" / "clean" / "winobias_clean.csv"
+    if wb_path.exists():
+        wb = pd.read_csv(wb_path)
+        # WinoBias is detection-only — no pre-made corrections.
+        # Generate corrections via lexicon rules (pronoun neutralization).
+        wb_texts = wb[wb["bias_label"] != "neutral"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("en", wb_texts, "winobias"))
+
+    # Source 4: v1 dataset extras (title expansion, generated pairs, templates)
+    rows.extend(_load_v1_pairs("en", "en_v1_extra"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
