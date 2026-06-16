@@ -10,7 +10,7 @@ Falls back gracefully when model unavailable (local dev, unit tests).
 """
 import os
 import time
-from typing import Any
+from typing import Any, Literal
 
 _CORRECTOR_MODEL = os.environ.get(
     "JUAKAZI_CORRECTOR_MODEL",
@@ -72,6 +72,60 @@ def _ensure_model() -> None:
     _model = AutoModelForSeq2SeqLM.from_pretrained(_CORRECTOR_MODEL)
     _model.to(_DEVICE)
     _model.eval()
+
+
+def validate_correction(
+    original: str,
+    corrected: str,
+    lang: str,
+) -> tuple[Literal["accept", "review"], str]:
+    """
+    Run guardrails on a candidate ML correction.
+
+    Returns ("accept", reason) if the correction looks trustworthy,
+    or ("review", reason) if any guardrail fails — caller should flag
+    for human review instead of showing the bad correction.
+
+    Checks:
+      1. Not identical to original (corrector did something)
+      2. Token overlap >= 0.30 (didn't rewrite everything / hallucinate)
+      3. Composite preservation score >= 0.45 (meaning still intact)
+      4. ML detector score on corrected output is lower than on original
+         (bias was actually reduced, not just rephrased)
+    """
+    from core.semantic_preservation import SemanticPreservationMetrics
+
+    if not corrected or corrected.strip() == original.strip():
+        return "review", "correction identical to input"
+
+    overlap = SemanticPreservationMetrics.calculate_token_overlap(original, corrected)
+    if overlap < 0.30:
+        return "review", f"low token overlap ({overlap:.2f}) — likely hallucination"
+
+    scores = SemanticPreservationMetrics.calculate_composite_preservation_score(original, corrected)
+    if scores["composite_score"] < 0.45:
+        return "review", f"low preservation score ({scores['composite_score']:.2f}) — meaning may have changed"
+
+    # Check bias was actually reduced: re-run detector on corrected output
+    try:
+        from eval.ml_classifier import classify as ml_classify, threshold as ml_threshold
+        from eval.models import Language as _Lang
+        _lang_map = {
+            "sw": _Lang.SWAHILI, "ha": _Lang.HAUSA, "zu": _Lang.ZULU,
+            "ki": _Lang.GIKUYU, "en": _Lang.ENGLISH, "fr": _Lang.FRENCH,
+        }
+        lang_enum = _lang_map.get(lang)
+        if lang_enum:
+            original_score = ml_classify(original, lang_enum)
+            corrected_score = ml_classify(corrected, lang_enum)
+            thresh = ml_threshold(lang_enum)
+            # Corrected output should score lower than original, or drop below threshold
+            if corrected_score >= original_score and corrected_score >= thresh:
+                return "review", f"bias not reduced (original={original_score:.2f} corrected={corrected_score:.2f})"
+    except Exception:
+        pass  # detector unavailable — skip this check, don't fail
+
+    return "accept", "all guardrails passed"
 
 
 def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:

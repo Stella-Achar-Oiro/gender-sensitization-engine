@@ -120,23 +120,32 @@ def rewrite_text(
             ml_result = ml_rewrite(text, lang=lang)
             if ml_result["model"] != "unavailable":
                 candidate = ml_result["best"]
-                if candidate and candidate.strip() and candidate != text:
-                    rewritten = candidate
-                    source = "ml"
-                    ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
-                    edits = [{
-                        "from": text,
-                        "to": rewritten,
-                        "severity": "warn",
-                        "tags": "ml-correction",
-                        "bias_type": "ml-detected",
-                        "stereotype_category": "",
-                        "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
-                    }]
+                if candidate and candidate.strip():
+                    from .ml_rewriter import validate_correction
+                    verdict, verdict_reason = validate_correction(text, candidate, lang)
+                    if verdict == "accept":
+                        rewritten = candidate
+                        source = "ml"
+                        ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
+                        edits = [{
+                            "from": text,
+                            "to": rewritten,
+                            "severity": "warn",
+                            "tags": "ml-correction",
+                            "bias_type": "ml-detected",
+                            "stereotype_category": "",
+                            "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
+                        }]
+                    else:
+                        # Correction failed guardrails — flag for human review, don't show bad output
+                        ml_unavailable = True
             else:
                 ml_unavailable = True
 
-    if not edits and ml_unavailable:
+    # If corrector was unavailable or failed guardrails, and no replace-severity lexicon
+    # correction exists, flag as low_confidence so UI shows "human review needed"
+    has_replace = any(e.get("severity") == "replace" for e in edits)
+    if ml_unavailable and not has_replace:
         source = "low_confidence"
 
     latency_ms = int((time.time() - t0) * 1000)
