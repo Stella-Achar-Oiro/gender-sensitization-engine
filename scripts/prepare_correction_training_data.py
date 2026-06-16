@@ -22,6 +22,7 @@ Sources per language:
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -32,8 +33,8 @@ sys.path.insert(0, str(ROOT))
 
 from api.rules_engine import apply_rules_on_spans
 
-OUT_PATH = ROOT / "data" / "training_data_correction.csv"
-STATS_PATH = ROOT / "data" / "training_data_correction_stats.txt"
+OUT_PATH = ROOT / "data" / "training_data_correction_v2.csv"
+STATS_PATH = ROOT / "data" / "training_data_correction_v2_stats.txt"
 
 
 def _clean(text: str) -> str:
@@ -42,7 +43,15 @@ def _clean(text: str) -> str:
     return " ".join(text.split())
 
 
-def _is_valid_pair(inp: str, tgt: str) -> bool:
+_ANNOTATION_NOISE = re.compile(
+    r'This sentence|If you meant|corrected version|The bias would|'
+    r'already neutral|neutral—|\(This|\bNote:\b|\bNOTE:\b|Corrected version|'
+    r'\[needs_review|Consider:|reinforcing gendered|traditionally coded',
+    re.IGNORECASE,
+)
+
+
+def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float = 0.30) -> bool:
     inp, tgt = _clean(inp), _clean(tgt)
     if not inp or not tgt:
         return False
@@ -50,13 +59,75 @@ def _is_valid_pair(inp: str, tgt: str) -> bool:
         return False
     if len(inp) < 5 or len(tgt) < 5:
         return False
+    if _ANNOTATION_NOISE.search(tgt):
+        return False
+    # Drop list-literal artifacts from old annotation pipeline
+    if inp.startswith("['") or tgt.startswith("['"):
+        return False
+    inp_words = set(inp.split())
+    tgt_words = set(tgt.split())
+    overlap = len(inp_words & tgt_words) / max(len(inp_words), 1)
+    if overlap < min_overlap:
+        return False
+    if len(inp.split()) > max_words:
+        return False
     return True
+
+
+def _lexicon_example_pairs(lang: str) -> list[dict]:
+    """Generate pairs from lexicon example_biased/example_neutral columns."""
+    try:
+        lex = pd.read_csv(ROOT / f"rules/lexicon_{lang}_v3.csv")
+    except Exception:
+        return []
+    pairs = []
+    for _, r in lex.iterrows():
+        inp = _clean(str(r.get("example_biased", "") or ""))
+        tgt = _clean(str(r.get("example_neutral", "") or ""))
+        if _is_valid_pair(inp, tgt):
+            pairs.append({
+                "language": lang,
+                "input_text": inp,
+                "target_text": tgt,
+                "source": f"{lang}_lexicon_examples",
+                "stereotype_category": str(r.get("stereotype_category", "") or ""),
+            })
+    return pairs
+
+
+def _load_v1_pairs(lang: str, source_tag: str) -> list[dict]:
+    """
+    Pull clean pairs from the old training_data_correction.csv (v1) that
+    aren't already covered by the primary per-language sources.
+    Applies standard quality filters: noise, overlap, length, list artifacts.
+    """
+    v1_path = ROOT / "data" / "training_data_correction.csv"
+    if not v1_path.exists():
+        return []
+    v1 = pd.read_csv(v1_path)
+    g = v1[v1["language"] == lang].copy()
+    rows = []
+    for _, r in g.iterrows():
+        inp = _clean(str(r.get("input_text", "") or ""))
+        tgt = _clean(str(r.get("target_text", "") or ""))
+        # Drop list-literal artifacts from old annotation pipeline
+        if inp.startswith("['") or tgt.startswith("['"):
+            continue
+        if _is_valid_pair(inp, tgt):
+            rows.append({
+                "language": lang,
+                "input_text": inp,
+                "target_text": tgt,
+                "source": source_tag,
+                "stereotype_category": str(r.get("stereotype_category", "") or ""),
+            })
+    return rows
 
 
 def load_sw() -> pd.DataFrame:
     rows = []
 
-    # Source 1: correction pairs file
+    # Source 1: correction pairs file (filter: ≤40 words, ≥30% overlap)
     df = pd.read_csv(ROOT / "juakazi_sw_correction_pairs_v1.csv")
     for _, r in df.iterrows():
         inp, tgt = _clean(r["original_text"]), _clean(r["expected_correction"])
@@ -79,6 +150,20 @@ def load_sw() -> pd.DataFrame:
                 "stereotype_category": r.get("stereotype_category", ""),
             })
 
+    # Source 3: lexicon example pairs (short, minimal edits)
+    rows.extend(_lexicon_example_pairs("sw"))
+
+    # Source 4: v1 dataset pairs not already covered above
+    rows.extend(_load_v1_pairs("sw", "sw_v1_extra"))
+
+    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows, no pre-made corrections,
+    # generate via lexicon (wa kike/wa kiume removal, mwanamke→mtu etc.)
+    umunthu = ROOT / "Umunthu Data - Swahili Annotated (3).csv"
+    if umunthu.exists():
+        u = pd.read_csv(umunthu)
+        u_texts = u[u["bias_label"] == "stereotype"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("sw", u_texts, "sw_umunthu"))
+
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
 
@@ -93,17 +178,31 @@ def load_ha() -> pd.DataFrame:
                 "source": "ha_pairs_v1",
                 "stereotype_category": r.get("stereotype_category", ""),
             })
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("ha"))
+
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Drop heavy rewrites: low overlap AND large word change = model learns wrong pattern
+    df["_overlap"] = df.apply(
+        lambda r: len(set(r.input_text.split()) & set(r.target_text.split())) / max(len(set(r.input_text.split())), 1),
+        axis=1,
+    )
+    df["_wdiff"] = (df.input_text.str.split().str.len() - df.target_text.str.split().str.len()).abs()
+    heavy_rewrite = (df["_overlap"] < 0.65) & (df["_wdiff"] > 5)
+    df = df[~heavy_rewrite].drop(columns=["_overlap", "_wdiff"]).reset_index(drop=True)
+    return df
 
 
 def load_zu() -> pd.DataFrame:
     rows = []
 
-    # Source 1: retraining file (instruction-tuning format, clean)
+    # Source 1: retraining file — strict overlap=0.50 (pairs are mostly full rewrites,
+    # only those with >=50% shared tokens are minimal enough to be useful)
     rt = pd.read_csv(ROOT / "zulu_retraining - zulu_retraining.csv.csv")
     for _, r in rt.iterrows():
         inp, tgt = _clean(r["input"]), _clean(r["output"])
-        if _is_valid_pair(inp, tgt):
+        if _is_valid_pair(inp, tgt, min_overlap=0.50):
             rows.append({
                 "language": "zu", "input_text": inp, "target_text": tgt,
                 "source": "zu_retraining",
@@ -125,6 +224,9 @@ def load_zu() -> pd.DataFrame:
     gt = pd.read_csv(ROOT / "eval" / "ground_truth_zu_v1.csv")
     zu_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("zu", zu_texts, "zu_gt_lexicon"))
+
+    # Source 4: lexicon example pairs (clean minimal edits)
+    rows.extend(_lexicon_example_pairs("zu"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
@@ -150,6 +252,12 @@ def load_ki() -> pd.DataFrame:
     # Also generate pairs via lexicon for KI biased rows missing real corrections
     ki_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("ki", ki_texts, "ki_gt_lexicon"))
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("ki"))
+
+    # v1 dataset extras (mũthamaki→mũtongoria single-word swaps, etc.)
+    rows.extend(_load_v1_pairs("ki", "ki_v1_extra"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 
@@ -198,7 +306,29 @@ def load_fr() -> pd.DataFrame:
     ]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("fr", gold_biased, "fr_annotated_lexicon"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("fr"))
+
+    # v1 title-template pairs (directeur→directeur ou la directrice, etc.) — 344 unique pairs
+    rows.extend(_load_v1_pairs("fr", "fr_v1_titles"))
+
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Fix grammatical gender agreement errors introduced by lexicon substitution:
+    # "homme"/"femme" are masculine/feminine — "personne" is always feminine.
+    df["target_text"] = (
+        df["target_text"]
+        .str.replace(r"\bun personne\b", "une personne", regex=True)
+        .str.replace(r"\bcet personne\b", "cette personne", regex=True)
+        .str.replace(r"\bUn personne\b", "Une personne", regex=True)
+        .str.replace(r"\bCet personne\b", "Cette personne", regex=True)
+    )
+    # Drop "jeune homme" -> "jeune personne" pairs — grammatically broken and not bias
+    bad_jeune = (
+        df.input_text.str.contains("jeune homme", case=False, na=False)
+        & df.target_text.str.contains("jeune personne", case=False, na=False)
+    )
+    df = df[~bad_jeune].reset_index(drop=True)
+    return df
 
 
 def _expand_partial_correction(original: str, correction: str) -> str:
@@ -244,6 +374,23 @@ def load_en() -> pd.DataFrame:
     # Source 2: lexicon-generated from all EN biased rows
     en_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
     rows.extend(_lexicon_pairs("en", en_texts, "en_gt_lexicon"))
+
+    # Lexicon example pairs
+    rows.extend(_lexicon_example_pairs("en"))
+
+    # Source 3: WinoBias — 3,162 high-quality occupation pronoun-swap pairs.
+    # These are the single best EN source: consistent minimal edits (he/she → they),
+    # short sentences, verified bias patterns across 40 occupation types.
+    wb_path = ROOT / "data" / "clean" / "winobias_clean.csv"
+    if wb_path.exists():
+        wb = pd.read_csv(wb_path)
+        # WinoBias is detection-only — no pre-made corrections.
+        # Generate corrections via lexicon rules (pronoun neutralization).
+        wb_texts = wb[wb["bias_label"] != "neutral"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("en", wb_texts, "winobias"))
+
+    # Source 4: v1 dataset extras (title expansion, generated pairs, templates)
+    rows.extend(_load_v1_pairs("en", "en_v1_extra"))
 
     return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
 

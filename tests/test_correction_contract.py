@@ -221,3 +221,69 @@ def test_zu_correction():
         f"ZU avg BLEU {metrics['avg_bleu']} < threshold {BLEU_THRESHOLDS['zu']}"
     assert metrics["change_rate"] >= 0.70, \
         f"ZU change rate {metrics['change_rate']} too low — corrector not making changes"
+
+
+def test_guardrails_all_languages():
+    """
+    Guardrails (validate_correction) must catch bad ML corrections and accept good ones
+    for all 6 languages. This is the safety net that ensures Baluku never sees
+    hallucinated output — bad corrections flag for human review instead.
+
+    Four cases per language:
+      1. Identical output  → review  (corrector did nothing)
+      2. EN hallucination  → review  (corrector switched language)
+      3. Good minimal swap → accept  (real minimal-edit correction)
+      4. Different sentence → review (corrector hallucinated unrelated text)
+    """
+    from api.ml_rewriter import validate_correction
+
+    cases = {
+        "sw": [
+            ("Mwanamke hawezi kuwa kiongozi", "Mwanamke hawezi kuwa kiongozi", "review"),
+            ("Mwanamke hawezi kuwa kiongozi", "The company women are not leaders", "review"),
+            ("Mwanamke hawezi kuwa kiongozi", "Mtu hawezi kuwa kiongozi", "accept"),
+            ("Mwanamke hawezi kuwa kiongozi", "Chakula ni kizuri sana leo usiku", "review"),
+        ],
+        "ha": [
+            ("Mace ba su iya tuka mota ba", "Mace ba su iya tuka mota ba", "review"),
+            ("Mace ba su iya tuka mota ba", "The women are not able to drive cars", "review"),
+            ("Mace ba su iya tuka mota ba", "Kowa ba su iya tuka mota ba", "accept"),
+            ("Mace ba su iya tuka mota ba", "Abinci yana da kyau a yau", "review"),
+        ],
+        "zu": [
+            ("Umfazi kumele ahlale ekhaya", "Umfazi kumele ahlale ekhaya", "review"),
+            ("Umfazi kumele ahlale ekhaya", "The women should stay at home always", "review"),
+            ("Umfazi kumele ahlale ekhaya", "Umuntu kumele ahlale ekhaya", "accept"),
+            ("Umfazi kumele ahlale ekhaya", "Izulu liyeza namhlanje emini", "review"),
+        ],
+        "ki": [
+            ("Mũtumia ndanyitwo mũtongoria", "Mũtumia ndanyitwo mũtongoria", "review"),
+            ("Mũtumia ndanyitwo mũtongoria", "The woman was appointed leader", "review"),
+            ("Mũtumia ndanyitwo mũtongoria", "Mũndũ ndanyitwo mũtongoria", "accept"),
+            ("Mũtumia ndanyitwo mũtongoria", "Ndũrũiri ĩrĩa nene nĩ njega", "review"),
+        ],
+        "fr": [
+            ("Un homme dirige l'équipe", "Un homme dirige l'équipe", "review"),
+            ("Un homme dirige l'équipe", "The man is leading the company team", "review"),
+            ("Un homme dirige l'équipe", "Une personne dirige l'équipe", "accept"),
+            ("Un homme dirige l'équipe", "Le marché est ouvert aujourd'hui matin", "review"),
+        ],
+        "en": [
+            ("The nurse helped him with his report", "The nurse helped him with his report", "review"),
+            ("The nurse helped him with his report", "Die Krankenschwester hat ihm geholfen", "review"),
+            ("The nurse helped him with his report", "The nurse helped them with their report", "accept"),
+            ("The nurse helped him with his report", "Yesterday the weather was very nice outside", "review"),
+        ],
+    }
+
+    failures = []
+    for lang, lang_cases in cases.items():
+        for original, candidate, expected in lang_cases:
+            verdict, reason = validate_correction(original, candidate, lang)
+            if verdict != expected:
+                failures.append(
+                    f"[{lang}] original={original!r} candidate={candidate!r} "
+                    f"expected={expected!r} got={verdict!r} reason={reason!r}"
+                )
+
+    assert not failures, "Guardrail failures:\n" + "\n".join(failures)

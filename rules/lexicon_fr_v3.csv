@@ -25,8 +25,12 @@ fr,Ingénieur,Ingénieur·e,Personne ingénieure|Membre de l'ingénierie,gender|
 fr,l'ingénieur,l'ingénieur·e,personne ingénieure|membre de l'ingénierie,gender|occupation,noun,technology,neutral,replace,stereotype,profession,explicit,,,,,,,,L'ingénieur conçoit le système.,L'ingénieur·e conçoit le système.
 fr,la secrétaire,le personnel administratif,assistant·e|personnel administratif,gender|occupation,phrase,administrative,neutral,replace,stereotype,profession,explicit,,,,,,,,La secrétaire organise les dossiers.,Le personnel administratif organise les dossiers.
 fr,une secrétaire femme,une secrétaire,assistant·e|personnel administratif,gender|occupation,phrase,administrative,neutral,replace,stereotype,profession,explicit,,,,,,,,Une secrétaire femme organise les dossiers.,Une secrétaire organise les dossiers.
-fr,homme,personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
-fr,Homme,Personne,Individu|Être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
+fr,un homme,une personne,individu|être humain,gender|pronoun,phrase,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
+fr,Un homme,Une personne,Individu|Être humain,gender|pronoun,phrase,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Un homme peut réussir.,Une personne peut réussir.
+fr,cet homme,cette personne,individu|être humain,gender|pronoun,phrase,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Cet homme est compétent.,Cette personne est compétente.
+fr,Cet homme,Cette personne,individu|être humain,gender|pronoun,phrase,general,neutral,replace,stereotype,profession,explicit,,,,,,,,Cet homme est compétent.,Cette personne est compétente.
+fr,homme,personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,(?<!un )(?<!cet )(?<!l')\bhomme\b,,,L'homme peut réussir.,La personne peut réussir.
+fr,Homme,Personne,Individu|Être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,(?<!un )(?<!cet )(?<!l')\bHomme\b,,,L'homme peut réussir.,La personne peut réussir.
 fr,l'homme,la personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,,L'homme peut réussir.,La personne peut réussir.
 fr,femme,personne,individu|être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,artistic|biographical|proper_noun,Une femme peut réussir.,Une personne peut réussir.
 fr,Femme,Personne,Individu|Être humain,gender|pronoun,noun,general,neutral,replace,stereotype,profession,explicit,,,,,,,artistic|biographical|proper_noun,Une femme peut réussir.,Une personne peut réussir.
