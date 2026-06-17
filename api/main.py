@@ -32,7 +32,11 @@ async def lifespan(app: FastAPI):
         logger.info("ML classifier ready")
     except Exception as e:
         logger.warning("ML preload skipped: %s", e)
+    from .job_queue import start_worker
+    start_worker()
     yield
+    from .job_queue import stop_worker
+    stop_worker()
 
 
 app = FastAPI(title="JuaKazi Correction Engine", version="0.4", lifespan=lifespan)
@@ -168,6 +172,32 @@ def rewrite(req: RewriteRequest, background_tasks: BackgroundTasks):
 @app.post("/rewrite/batch", response_model=list[RewriteResponse])
 def rewrite_batch(body: BatchRewriteRequest, background_tasks: BackgroundTasks):
     return [rewrite(item, background_tasks) for item in body.items]
+
+
+# ── Async inference endpoints ─────────────────────────────────────────────────
+# Use these instead of /rewrite when latency matters (paragraphs, PDFs, batch).
+# Client submits a job, gets job_id back immediately, then polls /rewrite/status/{job_id}.
+
+@app.post("/rewrite/async", status_code=202)
+async def rewrite_async(req: RewriteRequest):
+    """Enqueue a rewrite job. Returns immediately with job_id. Poll /rewrite/status/{job_id}."""
+    from .job_queue import enqueue
+    job = enqueue(req.model_dump())
+    return {"job_id": job.id, "status": "queued"}
+
+
+@app.get("/rewrite/status/{job_id}")
+async def rewrite_status(job_id: str):
+    """Poll job status. Returns status=queued|processing|done|error + result when done."""
+    from .job_queue import get_job
+    job = get_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found or expired (TTL 5 min)")
+    if job.status in ("queued", "processing"):
+        return {"job_id": job.id, "status": job.status}
+    if job.status == "error":
+        return {"job_id": job.id, "status": "error", "error": job.error}
+    return {"job_id": job.id, "status": "done", "result": job.result["response"]}
 
 
 _SENT_SPLIT = re.compile(r"(?<=[.!?؟。？！])\s+")

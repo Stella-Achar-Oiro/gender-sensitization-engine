@@ -57,3 +57,44 @@ export async function analyseBatch(
 ): Promise<AnalyseResponse[]> {
   return Promise.all(items.map((item) => analyse(item)));
 }
+
+// ── Async inference (paragraph / PDF mode) ──────────────────────────────────
+// Submits job, polls until done. Each sentence gets its own job so results
+// stream in one by one as they complete — no waiting for the slowest sentence.
+
+const _POLL_INTERVAL_MS = 800;
+const _POLL_TIMEOUT_MS  = 90_000; // 90s max per sentence
+
+async function _submitAndPoll(req: AnalyseRequest): Promise<AnalyseResponse> {
+  const submitRes = await fetch(`${API_BASE}/rewrite/async`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!submitRes.ok) throw new Error(`Submit error ${submitRes.status}`);
+  const { job_id } = await submitRes.json();
+
+  const deadline = Date.now() + _POLL_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    await new Promise(r => setTimeout(r, _POLL_INTERVAL_MS));
+    const pollRes = await fetch(`${API_BASE}/rewrite/status/${job_id}`);
+    if (!pollRes.ok) throw new Error(`Poll error ${pollRes.status}`);
+    const data = await pollRes.json();
+    if (data.status === "done")   return data.result as AnalyseResponse;
+    if (data.status === "error")  throw new Error(data.error ?? "Job failed");
+    // status === "queued" | "processing" — keep polling
+  }
+  throw new Error("Timed out waiting for result");
+}
+
+// Submit all sentences in parallel, resolve in order, call onResult as each arrives.
+export async function analyseStream(
+  items: AnalyseRequest[],
+  onResult: (index: number, result: AnalyseResponse) => void,
+): Promise<void> {
+  await Promise.all(
+    items.map((item, i) =>
+      _submitAndPoll(item).then(result => onResult(i, result))
+    )
+  );
+}
