@@ -98,8 +98,8 @@ def validate_correction(
 
     Structural guardrails (all languages) — catch genuine model failures:
       1. Output is garbage (empty)
-      2. Length explosion > 2.5x input (hallucination)
-      3. Token repetition loops (already caught in _clean_output)
+      2. Identical to input (corrector did nothing)
+      3. Length explosion > 2.5x input (hallucination)
       4. Foreign-language word injection
 
     Relaxed for HA/ZU — semantic model has poor coverage for these languages
@@ -107,7 +107,7 @@ def validate_correction(
     not reliable quality signals. All HA/ZU corrections are shown to reviewers
     with a "Needs review" badge regardless.
 
-    SW/EN/FR apply the full numeric checks.
+    SW/EN/FR/KI apply the full numeric checks.
     """
     from core.semantic_preservation import SemanticPreservationMetrics
 
@@ -136,7 +136,11 @@ def validate_correction(
     if lang in ("ha", "zu"):
         return "review", "HA/ZU correction — please verify"
 
+<<<<<<< HEAD
     # SW / EN / FR: apply full numeric checks
+=======
+    # SW / EN / FR / KI: apply full numeric checks
+>>>>>>> 1180158 (fix(guardrails): restore HA/ZU bypass and identical-input check after linter revert)
     overlap = SemanticPreservationMetrics.calculate_token_overlap(original, corrected)
     if overlap < 0.30:
         return "review", f"low token overlap ({overlap:.2f})"
