@@ -4,14 +4,19 @@ import type { LanguageMetrics } from "../lib/api";
 import { loadHistory, deleteFromHistory, clearHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
 
-export const LANGUAGES = [
-  { code: "en", label: "English", flag: "🇬🇧", threshold: 0.70 },
+const _ALL_LANGUAGES = [
   { code: "sw", label: "Swahili", flag: "🇹🇿", threshold: 0.85 },
-  { code: "fr", label: "French",  flag: "🇫🇷", threshold: 0.75 },
-  { code: "ki", label: "Gikuyu",  flag: "🇰🇪", threshold: 0.70 },
   { code: "ha", label: "Hausa",   flag: "🇳🇬", threshold: 0.70 },
   { code: "zu", label: "Zulu",    flag: "🇿🇦", threshold: 0.68 },
+  // hidden for demo — re-enable by adding codes below
+  { code: "en", label: "English", flag: "🇬🇧", threshold: 0.70 },
+  { code: "fr", label: "French",  flag: "🇫🇷", threshold: 0.75 },
+  { code: "ki", label: "Gikuyu",  flag: "🇰🇪", threshold: 0.70 },
 ];
+
+const DEMO_LANGS = ["sw", "ha", "zu"];
+
+export const LANGUAGES = _ALL_LANGUAGES.filter(l => DEMO_LANGS.includes(l.code));
 
 export const EXAMPLES: Record<string, string[]> = {
   en: [
