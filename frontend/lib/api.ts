@@ -63,7 +63,7 @@ export async function analyseBatch(
 // stream in one by one as they complete — no waiting for the slowest sentence.
 
 const _POLL_INTERVAL_MS = 800;
-const _POLL_TIMEOUT_MS  = 90_000; // 90s max per sentence
+const _POLL_TIMEOUT_MS  = 180_000; // 180s max per sentence (corrector cold-start)
 
 async function _submitAndPoll(req: AnalyseRequest): Promise<AnalyseResponse> {
   const submitRes = await fetch(`${API_BASE}/rewrite/async`, {

@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
 import type { AnalyseResponse } from "../lib/api";
+import ResultCard from "./ResultCard";
 
 interface SentenceResult {
   text: string;
@@ -14,56 +14,9 @@ interface Props {
 
 function SentenceSkeleton() {
   return (
-    <div className="animate-pulse flex flex-col gap-1.5 py-3 border-b border-slate-100 last:border-0">
+    <div className="animate-pulse flex flex-col gap-1.5 py-3 px-4 border-b border-slate-100 last:border-0">
       <div className="h-3.5 bg-slate-200 rounded w-3/4" />
       <div className="h-3 bg-slate-100 rounded w-1/2" />
-    </div>
-  );
-}
-
-function SentenceRow({ sentence, result }: { sentence: string; result: AnalyseResponse | null }) {
-  const [expanded, setExpanded] = useState(false);
-
-  if (!result) return <SentenceSkeleton />;
-
-  const biased = result.has_bias_detected;
-  const changed = result.rewrite && result.rewrite !== result.original_text;
-
-  return (
-    <div className="py-3 border-b border-slate-100 last:border-0">
-      <div className="flex items-start gap-2.5">
-        <span className={`flex-shrink-0 mt-1 w-2 h-2 rounded-full ${biased ? "bg-red-400" : "bg-emerald-400"}`} />
-        <div className="flex-1 min-w-0">
-          {/* Original — strikethrough if corrected */}
-          <p className={`text-sm leading-relaxed ${biased && changed ? "line-through text-slate-400" : "text-[#1a1a2e]"}`}>
-            {sentence}
-          </p>
-          {/* Correction */}
-          {biased && changed && (
-            <p className="text-sm leading-relaxed text-[#1a1a2e] mt-1 font-medium">
-              {result.rewrite}
-            </p>
-          )}
-          {/* Reason — expandable */}
-          {biased && result.reason && (
-            <button
-              onClick={() => setExpanded(e => !e)}
-              className="text-xs text-[#00a651] hover:text-[#009040] mt-1 transition-colors"
-            >
-              {expanded ? "Hide reason ↑" : "Why? ↓"}
-            </button>
-          )}
-          {expanded && result.reason && (
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">{result.reason}</p>
-          )}
-        </div>
-        {/* Needs review badge */}
-        {result.needs_review && (
-          <span className="flex-shrink-0 text-xs bg-amber-50 text-amber-600 border border-amber-200 rounded-full px-2 py-0.5">
-            Review
-          </span>
-        )}
-      </div>
     </div>
   );
 }
@@ -99,12 +52,13 @@ export default function ParagraphResultCard({ sentences, total }: Props) {
         )}
       </div>
 
-      {/* Sentence list */}
-      <div className="px-4">
+      {/* Sentence list — each uses the same ResultCard as single-sentence mode */}
+      <div className="flex flex-col gap-3 p-4">
         {sentences.map((s, i) => (
-          <SentenceRow key={i} sentence={s.text} result={s.result} />
+          s.result
+            ? <ResultCard key={i} result={s.result} />
+            : <SentenceSkeleton key={i} />
         ))}
-        {/* Skeleton rows for pending sentences */}
         {pending > 0 && Array.from({ length: pending }).map((_, i) => (
           <SentenceSkeleton key={`pending-${i}`} />
         ))}

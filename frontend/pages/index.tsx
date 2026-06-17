@@ -520,12 +520,12 @@ export default function Home() {
                 noLang ? "border-slate-200 opacity-60" : "border-slate-300 focus-within:border-[#00a651]"
               }`}>
                 {/* Textarea */}
-                <div className="px-4 pt-3.5 pb-2">
+                <div className="px-4 pt-3 pb-1">
                   <textarea
                     ref={textareaRef}
                     disabled={noLang || loading}
                     className="w-full text-base text-[#1a1a2e] resize-none outline-none bg-transparent
-                               placeholder-[#94a3b8] leading-relaxed min-h-[28px] max-h-48
+                               placeholder-[#94a3b8] leading-relaxed min-h-[28px] max-h-28
                                disabled:cursor-not-allowed"
                     rows={1}
                     placeholder={placeholder}
@@ -533,7 +533,7 @@ export default function Home() {
                     onChange={e => {
                       setText(e.target.value);
                       e.target.style.height = "auto";
-                      e.target.style.height = Math.min(e.target.scrollHeight, 192) + "px";
+                      e.target.style.height = Math.min(e.target.scrollHeight, 112) + "px";
                     }}
                     onKeyDown={e => {
                       if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleAnalyse();
