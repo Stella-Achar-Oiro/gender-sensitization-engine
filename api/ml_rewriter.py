@@ -114,6 +114,10 @@ def validate_correction(
     if not corrected or not corrected.strip():
         return "review", "empty output"
 
+    # Identical output — corrector made no change (all languages)
+    if corrected.strip() == original.strip():
+        return "review", "correction identical to input"
+
     # Structural: length explosion (all languages)
     if len(corrected.split()) > len(original.split()) * 2.5:
         return "review", "output too long — likely hallucination"
@@ -130,8 +134,6 @@ def validate_correction(
 
     # HA and ZU: semantic model unreliable — skip numeric checks, flag for human review
     if lang in ("ha", "zu"):
-        if corrected.strip() == original.strip():
-            return "review", "correction identical to input"
         return "review", "HA/ZU correction — please verify"
 
     # SW / EN / FR: apply full numeric checks
