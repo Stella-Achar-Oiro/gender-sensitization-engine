@@ -149,7 +149,7 @@ export default function ResultCard({ result, onExportData }: Props) {
 
   const [action, setAction]       = useState<ReviewAction>("pending");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedText, setEditedText] = useState(rewrite || original_text);
+  const [editedText, setEditedText] = useState(rewrite && rewrite !== original_text ? rewrite : original_text);
   const [isFlagging, setIsFlagging] = useState(false);
   const [flagNote, setFlagNote]   = useState("");
   const [savedFlag, setSavedFlag] = useState("");
@@ -175,7 +175,7 @@ export default function ResultCard({ result, onExportData }: Props) {
   const doReject = () => { setAction("rejected"); setIsEditing(false); setIsFlagging(false); notifyExport("rejected"); };
   const doEdit   = () => { setIsEditing(true); setIsFlagging(false); setAction("pending"); };
   const doSave   = () => { setIsEditing(false); setAction("edited"); notifyExport("edited"); };
-  const doCancel = () => { setIsEditing(false); setEditedText(rewrite || original_text); };
+  const doCancel = () => { setIsEditing(false); setEditedText(rewrite && rewrite !== original_text ? rewrite : original_text); };
   const doFlag   = () => { setIsFlagging(true); setIsEditing(false); };
   const doSaveFlag = () => {
     setSavedFlag(flagNote);
@@ -240,9 +240,6 @@ export default function ResultCard({ result, onExportData }: Props) {
 
         {/* Spacer */}
         <div className="flex-1" />
-
-        {/* Confidence arc */}
-        <ConfidenceArc value={confidence} />
 
         {/* Reset */}
         {action !== "pending" && (
@@ -345,39 +342,43 @@ export default function ResultCard({ result, onExportData }: Props) {
                     {category.replace(/_/g, " ")}
                   </span>
                 )}
-                <span className="inline-flex items-center text-xs bg-slate-50 border border-slate-200
-                                 text-slate-500 rounded-lg px-2.5 py-1.5">
-                  ML confidence {mlPct}%
-                </span>
+
               </div>
               <p className="text-sm text-slate-500 leading-relaxed">
                 No specific term isolated — the full sentence was flagged as likely containing gender bias.
                 Please rewrite with gender-neutral language.
               </p>
             </div>
-            {/* Write correction */}
+            {/* Write correction — always open so reviewers can edit immediately */}
             <div className="px-5 py-4 bg-amber-50/20">
               <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
                 Human correction needed
               </div>
-              {isEditing ? (
-                <textarea
-                  autoFocus
-                  className="w-full text-base border-2 border-amber-300 rounded-xl px-3 py-2.5 bg-white
-                             focus:outline-none focus:border-amber-400 resize-none text-[#1a1a2e] leading-relaxed"
-                  rows={3}
-                  value={editedText}
-                  onChange={(e) => setEditedText(e.target.value)}
-                  placeholder="Write a gender-neutral version…"
-                />
-              ) : (
-                <button
-                  onClick={doEdit}
-                  className="w-full text-left text-sm text-amber-700/60 bg-white border border-dashed border-amber-300
-                             rounded-xl px-4 py-3 hover:border-amber-400 hover:text-amber-800 transition-all"
-                >
-                  + Write a gender-neutral correction…
-                </button>
+              <textarea
+                className="w-full text-base border-2 border-amber-300 rounded-xl px-3 py-2.5 bg-white
+                           focus:outline-none focus:border-amber-400 resize-none text-[#1a1a2e] leading-relaxed"
+                rows={3}
+                value={editedText}
+                onChange={(e) => { setEditedText(e.target.value); setIsEditing(true); }}
+                placeholder="Edit to a gender-neutral version…"
+              />
+              {isEditing && editedText !== original_text && (
+                <div className="flex gap-2 mt-2.5">
+                  <button
+                    onClick={doSave}
+                    disabled={!editedText.trim()}
+                    className="text-sm bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40
+                               text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Save correction
+                  </button>
+                  <button
+                    onClick={() => { setIsEditing(false); setEditedText(original_text); }}
+                    className="text-sm text-slate-500 hover:text-slate-700 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </div>
           </div>

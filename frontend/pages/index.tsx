@@ -211,15 +211,9 @@ export default function Home() {
     // Auto-detect: single sentence vs paragraph — no mode switch needed
     const sentences = splitSentences(input);
     try {
-      if (sentences.length === 1) {
-        const res = await analyse({ id: crypto.randomUUID(), lang, text: input });
-        addToThread(input, res, lang);
-      } else {
-        // Paragraph mode: stream results in as each sentence completes
-        // Results appear one by one instead of waiting for the slowest sentence
-        const items = sentences.map(s => ({ id: crypto.randomUUID(), lang, text: s }));
-        await analyseStream(items, (i, res) => addToThread(sentences[i], res, lang));
-      }
+      // Always use async endpoint — no 8s timeout, corrector runs to completion
+      const items = sentences.map(s => ({ id: crypto.randomUUID(), lang, text: s }));
+      await analyseStream(items, (i, res) => addToThread(sentences[i], res, lang));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Analysis failed");
     } finally {

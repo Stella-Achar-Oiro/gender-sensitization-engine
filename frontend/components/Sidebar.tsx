@@ -210,14 +210,6 @@ export default function Sidebar({
           <span className="text-white/40">Corrector</span>
           <span className="text-white/70 font-mono">afriteva-v2</span>
         </div>
-        {onShowMetrics && (
-          <button
-            onClick={onShowMetrics}
-            className="block w-full text-center text-xs text-[#00a651] hover:text-[#00c060] font-medium transition-colors mt-1"
-          >
-            All metrics →
-          </button>
-        )}
       </div>
 
       {/* Recent history */}
