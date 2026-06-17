@@ -223,8 +223,9 @@ export default function Home() {
     const sentences = splitSentences(input);
     try {
       if (sentences.length === 1) {
-        const res = await analyse({ id: crypto.randomUUID(), lang, text: input });
-        addToThread(input, res, lang);
+        // Use async endpoint — no 8s timeout, corrector runs to completion
+        const items = [{ id: crypto.randomUUID(), lang, text: input }];
+        await analyseStream(items, (_i, res) => addToThread(input, res, lang));
       } else {
         // Paragraph mode: one card, sentences stream in as they complete
         const paragraphId = crypto.randomUUID();

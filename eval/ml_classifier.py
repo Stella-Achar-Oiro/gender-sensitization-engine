@@ -15,7 +15,7 @@ from typing import Optional
 
 from .models import Language
 
-_MULTILINGUAL_MODEL = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/multilingual-bias-classifier-v1")
+_MULTILINGUAL_MODEL = os.environ.get("JUAKAZI_ML_MODEL", "juakazike/multilingual-bias-classifier-v2")
 
 # ── Per-language model IDs (all point to multilingual; override via env vars) ─
 _MODEL_IDS: dict[Language, str] = {
