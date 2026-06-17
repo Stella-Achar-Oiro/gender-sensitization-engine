@@ -30,7 +30,7 @@ _MODEL_IDS: dict[Language, str] = {
 # ── Per-language thresholds ──────────────────────────────────────────────────
 _THRESHOLDS: dict[Language, float] = {
     Language.SWAHILI: float(os.environ.get("JUAKAZI_SW_THRESHOLD", "0.75")),
-    Language.HAUSA:   float(os.environ.get("JUAKAZI_HA_THRESHOLD", "0.30")),  # calibrated: F1=0.748 at 0.30 vs 0.32 at 0.75
+    Language.HAUSA:   float(os.environ.get("JUAKAZI_HA_THRESHOLD", "0.75")),
     Language.ZULU:    float(os.environ.get("JUAKAZI_ZU_THRESHOLD", "0.75")),
     Language.GIKUYU:  float(os.environ.get("JUAKAZI_KI_THRESHOLD", "0.75")),
     Language.ENGLISH: float(os.environ.get("JUAKAZI_EN_THRESHOLD", "0.75")),
