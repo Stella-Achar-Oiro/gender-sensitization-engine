@@ -4,6 +4,7 @@ import Sidebar, { LANGUAGES, EXAMPLES } from "../components/Sidebar";
 import ResultCard from "../components/ResultCard";
 import type { ExportRow } from "../components/ResultCard";
 import { analyse, analyseStream, fetchMetrics } from "../lib/api";
+import ParagraphResultCard from "../components/ParagraphResultCard";
 import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
 import { saveToHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
@@ -97,6 +98,16 @@ interface ThreadItem {
   exportRow?: ExportRow;
 }
 
+interface ParagraphItem {
+  id: string;
+  kind: "paragraph";
+  input: string; // full original paragraph
+  lang: string;
+  sentences: { text: string; result: AnalyseResponse | null }[];
+}
+
+type AnyThreadItem = (ThreadItem & { kind?: undefined }) | ParagraphItem;
+
 // Category labels shown alongside examples to explain what kind of bias each represents
 const EXAMPLE_CATEGORIES: Record<string, string[]> = {
   en: ["Leadership",  "Profession",   "Profession"],
@@ -158,7 +169,7 @@ export default function Home() {
   const [mode, setMode]           = useState<Mode>("text");
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState<string | null>(null);
-  const [thread, setThread]       = useState<ThreadItem[]>([]);
+  const [thread, setThread]       = useState<AnyThreadItem[]>([]);
   const [listening, setListening] = useState(false);
   const [historyVersion, setHistoryVersion] = useState(0);
   const [metrics, setMetrics]     = useState<Record<string, LanguageMetrics>>({});
@@ -215,10 +226,30 @@ export default function Home() {
         const res = await analyse({ id: crypto.randomUUID(), lang, text: input });
         addToThread(input, res, lang);
       } else {
-        // Paragraph mode: stream results in as each sentence completes
-        // Results appear one by one instead of waiting for the slowest sentence
+        // Paragraph mode: one card, sentences stream in as they complete
+        const paragraphId = crypto.randomUUID();
+        const initial: ParagraphItem = {
+          id: paragraphId,
+          kind: "paragraph",
+          input,
+          lang,
+          sentences: sentences.map(t => ({ text: t, result: null })),
+        };
+        setThread(prev => [...prev, initial]);
+
         const items = sentences.map(s => ({ id: crypto.randomUUID(), lang, text: s }));
-        await analyseStream(items, (i, res) => addToThread(sentences[i], res, lang));
+        await analyseStream(items, (i, res) => {
+          setThread(prev => prev.map(item =>
+            item.id === paragraphId && item.kind === "paragraph"
+              ? {
+                  ...item,
+                  sentences: item.sentences.map((s, idx) =>
+                    idx === i ? { ...s, result: res } : s
+                  ),
+                }
+              : item
+          ));
+        });
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Analysis failed");
@@ -296,16 +327,33 @@ export default function Home() {
 
   const handleExport = useCallback(() => {
     if (!exportRows.length && !thread.length) return;
-    const rows = thread.map(item => ({
-      original_text: item.input,
-      corrected_text: item.result.rewrite ?? item.input,
-      reviewer_action: item.exportRow?.reviewer_action ?? "pending",
-      flag_note: item.exportRow?.flag_note ?? "",
-      qa_status: item.exportRow?.qa_status ?? "pending",
-      source: item.result.source ?? "",
-      confidence: item.result.confidence ?? 0,
-      lang: item.lang,
-    }));
+    const rows = thread.flatMap(item => {
+      if (item.kind === "paragraph") {
+        // Export each completed sentence from a paragraph item
+        return item.sentences
+          .filter(s => s.result !== null)
+          .map(s => ({
+            original_text: s.text,
+            corrected_text: s.result!.rewrite ?? s.text,
+            reviewer_action: "pending",
+            flag_note: "",
+            qa_status: "pending",
+            source: s.result!.source ?? "",
+            confidence: s.result!.confidence ?? 0,
+            lang: item.lang,
+          }));
+      }
+      return [{
+        original_text: item.input,
+        corrected_text: item.result.rewrite ?? item.input,
+        reviewer_action: item.exportRow?.reviewer_action ?? "pending",
+        flag_note: item.exportRow?.flag_note ?? "",
+        qa_status: item.exportRow?.qa_status ?? "pending",
+        source: item.result.source ?? "",
+        confidence: item.result.confidence ?? 0,
+        lang: item.lang,
+      }];
+    });
     const header = ["original_text","corrected_text","reviewer_action","flag_note","qa_status","source","confidence","lang"];
     const csv = [header.join(","), ...rows.map(r =>
       header.map(k => `"${String((r as any)[k]).replace(/"/g, '""')}"`).join(",")
@@ -320,7 +368,11 @@ export default function Home() {
     ? "Select a language from the sidebar to begin…"
     : `Type or paste text in ${langMeta?.label}… (⌘+Enter to analyse)`;
 
-  const biasCount   = thread.filter(t => t.result.has_bias_detected).length;
+  const biasCount   = thread.filter(t =>
+    t.kind === "paragraph"
+      ? t.sentences.some(s => s.result?.has_bias_detected)
+      : t.result.has_bias_detected
+  ).length;
   const reviewedCount = exportRows.length;
 
   return (
@@ -403,7 +455,7 @@ export default function Home() {
               <div className="max-w-3xl mx-auto px-5 py-6 flex flex-col gap-5">
                 {thread.map((item) => (
                   <div key={item.id} className="flex flex-col gap-3">
-                    {/* User bubble — light ghost style, doesn't compete with result card */}
+                    {/* User bubble */}
                     <div className="flex justify-end">
                       <div className="max-w-xl bg-white border border-slate-200 rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
                         <p className="text-sm text-[#1a1a2e] leading-relaxed">{item.input}</p>
@@ -412,21 +464,28 @@ export default function Home() {
                         </p>
                       </div>
                     </div>
-                    {/* Result card */}
+                    {/* Result — paragraph or single sentence */}
                     <div className="flex justify-start">
                       <div className="w-full max-w-2xl">
-                        <ResultCard
-                          result={item.result}
-                          onExportData={(row) => {
-                            setThread(prev => prev.map(t =>
-                              t.id === item.id ? { ...t, exportRow: row } : t
-                            ));
-                            setExportRows(prev => {
-                              const filtered = prev.filter(r => r.original_text !== row.original_text);
-                              return [...filtered, row];
-                            });
-                          }}
-                        />
+                        {item.kind === "paragraph" ? (
+                          <ParagraphResultCard
+                            sentences={item.sentences}
+                            total={item.sentences.length}
+                          />
+                        ) : (
+                          <ResultCard
+                            result={item.result}
+                            onExportData={(row) => {
+                              setThread(prev => prev.map(t =>
+                                t.id === item.id ? { ...t, exportRow: row } : t
+                              ));
+                              setExportRows(prev => {
+                                const filtered = prev.filter(r => r.original_text !== row.original_text);
+                                return [...filtered, row];
+                              });
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
