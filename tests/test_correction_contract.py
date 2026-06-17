@@ -247,13 +247,13 @@ def test_guardrails_all_languages():
         "ha": [
             ("Mace ba su iya tuka mota ba", "Mace ba su iya tuka mota ba", "review"),
             ("Mace ba su iya tuka mota ba", "The women are not able to drive cars", "review"),
-            ("Mace ba su iya tuka mota ba", "Kowa ba su iya tuka mota ba", "accept"),
+            ("Mace ba su iya tuka mota ba", "Kowa ba su iya tuka mota ba", "review"),  # HA always needs human review
             ("Mace ba su iya tuka mota ba", "Abinci yana da kyau a yau", "review"),
         ],
         "zu": [
             ("Umfazi kumele ahlale ekhaya", "Umfazi kumele ahlale ekhaya", "review"),
             ("Umfazi kumele ahlale ekhaya", "The women should stay at home always", "review"),
-            ("Umfazi kumele ahlale ekhaya", "Umuntu kumele ahlale ekhaya", "accept"),
+            ("Umfazi kumele ahlale ekhaya", "Umuntu kumele ahlale ekhaya", "review"),  # ZU always needs human review
             ("Umfazi kumele ahlale ekhaya", "Izulu liyeza namhlanje emini", "review"),
         ],
         "ki": [

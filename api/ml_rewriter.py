@@ -94,44 +94,57 @@ def validate_correction(
     Run guardrails on a candidate ML correction.
 
     Returns ("accept", reason) if the correction looks trustworthy,
-    or ("review", reason) if any guardrail fails.
+    or ("review", reason) if a structural guardrail fails.
 
-    Checks:
-      1. Not identical to original
-      2. Token overlap >= 0.30
-      3. Composite preservation score >= 0.45
-      4. No foreign-language words injected (e.g. Swahili in EN output)
-      5. New words introduced <= 20% of output length (minimal-edit check)
-      6. ML detector score reduced (bias actually removed)
+    Structural guardrails (all languages) — catch genuine model failures:
+      1. Output is garbage (empty)
+      2. Length explosion > 2.5x input (hallucination)
+      3. Token repetition loops (already caught in _clean_output)
+      4. Foreign-language word injection
+
+    Relaxed for HA/ZU — semantic model has poor coverage for these languages
+    so numeric thresholds (overlap, preservation score, new-word ratio) are
+    not reliable quality signals. All HA/ZU corrections are shown to reviewers
+    with a "Needs review" badge regardless.
+
+    SW/EN/FR apply the full numeric checks.
     """
     from core.semantic_preservation import SemanticPreservationMetrics
 
-    if not corrected or corrected.strip() == original.strip():
+    if not corrected or not corrected.strip():
+        return "review", "empty output"
+
+    # Identical output — corrector made no change (all languages)
+    if corrected.strip() == original.strip():
         return "review", "correction identical to input"
 
-    overlap = SemanticPreservationMetrics.calculate_token_overlap(original, corrected)
-    if overlap < 0.30:
-        return "review", f"low token overlap ({overlap:.2f}) — likely hallucination"
+    # Structural: length explosion (all languages)
+    if len(corrected.split()) > len(original.split()) * 2.5:
+        return "review", "output too long — likely hallucination"
 
-    scores = SemanticPreservationMetrics.calculate_composite_preservation_score(original, corrected)
-    if scores["composite_score"] < 0.45:
-        return "review", f"low preservation score ({scores['composite_score']:.2f}) — meaning may have changed"
-
-    # Foreign-language injection check: any single unambiguous foreign word is enough.
+    # Foreign-language injection (all languages) — genuine model failure
     out_words_lower = {w.lower().strip(".,;:!?\"'") for w in corrected.split()}
+    _AMBIGUOUS = {"na", "wa", "ni", "ya", "da", "ne", "ba", "su", "ma", "la", "le", "les", "des", "est", "une"}
     for other_lang, markers in _LANG_MARKERS.items():
         if other_lang == lang:
             continue
-        # Exclude short words that appear in multiple languages (e.g. "na", "wa", "ni")
-        _AMBIGUOUS = {"na", "wa", "ni", "ya", "da", "ne", "ba", "su", "ma", "la", "le", "les", "des", "est", "une"}
-        unambiguous_markers = markers - _AMBIGUOUS
-        foreign_hits = out_words_lower & unambiguous_markers
+        foreign_hits = out_words_lower & (markers - _AMBIGUOUS)
         if foreign_hits:
-            return "review", f"foreign language word(s) in output ({other_lang}: {foreign_hits})"
+            return "review", f"foreign language words in output ({other_lang}: {foreign_hits})"
 
-    # Minimal-edit check: only allow known gender-neutral substitutions as new words.
-    # Any other new word (articles, conjunctions, structural changes) means the model
-    # paraphrased instead of doing a minimal edit — flag for human review.
+    # HA and ZU: semantic model unreliable — skip numeric checks, flag for human review
+    if lang in ("ha", "zu"):
+        return "review", "HA/ZU correction — please verify"
+
+    # SW / EN / FR: apply full numeric checks
+    overlap = SemanticPreservationMetrics.calculate_token_overlap(original, corrected)
+    if overlap < 0.30:
+        return "review", f"low token overlap ({overlap:.2f})"
+
+    scores = SemanticPreservationMetrics.calculate_composite_preservation_score(original, corrected)
+    if scores["composite_score"] < 0.45:
+        return "review", f"low preservation score ({scores['composite_score']:.2f})"
+
     orig_words_lower = {w.lower().strip(".,;:!?\"'") for w in original.split()}
     out_words_list = [w.lower().strip(".,;:!?\"'") for w in corrected.split()]
     _ALLOWED_SUBSTITUTIONS: dict[str, set] = {
@@ -147,9 +160,9 @@ def validate_correction(
     new_words = [w for w in out_words_list if w and w not in orig_words_lower and w not in allowed]
     new_ratio = len(new_words) / max(len(out_words_list), 1)
     if new_ratio > 0.10:
-        return "review", f"too many new words ({len(new_words)}/{len(out_words_list)}) — model paraphrased instead of minimal edit"
+        return "review", f"too many new words ({len(new_words)}/{len(out_words_list)})"
 
-    # Check bias was actually reduced: re-run detector on corrected output
+    # Check bias was actually reduced
     try:
         from eval.ml_classifier import classify as ml_classify, threshold as ml_threshold
         from eval.models import Language as _Lang
