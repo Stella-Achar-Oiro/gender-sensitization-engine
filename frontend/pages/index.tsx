@@ -245,8 +245,7 @@ export default function Home() {
       if (!extractRes.ok) throw new Error(`PDF extraction failed (${extractRes.status})`);
       const sentences: string[] = await extractRes.json();
       const items = sentences.map(s => ({ id: crypto.randomUUID(), lang: lang!, text: s }));
-      const results = await analyseBatch(items);
-      results.forEach((r, i) => addToThread(sentences[i], r, lang!));
+      await analyseStream(items, (i, r) => addToThread(sentences[i], r, lang!));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "PDF processing failed");
     } finally {
@@ -268,8 +267,7 @@ export default function Home() {
         return textIdx >= 0 ? cols[textIdx]?.replace(/^"|"$/g, "").trim() : cols[0]?.replace(/^"|"$/g, "").trim();
       }).filter(Boolean) as string[];
       const items = rows.map(s => ({ id: crypto.randomUUID(), lang: lang!, text: s }));
-      const results = await analyseBatch(items);
-      results.forEach((res, i) => addToThread(rows[i], res, lang!));
+      await analyseStream(items, (i, res) => addToThread(rows[i], res, lang!));
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "CSV processing failed");
     } finally {
