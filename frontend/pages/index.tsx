@@ -3,7 +3,7 @@ import Head from "next/head";
 import Sidebar, { LANGUAGES, EXAMPLES } from "../components/Sidebar";
 import ResultCard from "../components/ResultCard";
 import type { ExportRow } from "../components/ResultCard";
-import { analyse, analyseBatch, fetchMetrics } from "../lib/api";
+import { analyse, analyseStream, fetchMetrics } from "../lib/api";
 import type { AnalyseResponse, LanguageMetrics } from "../lib/api";
 import { saveToHistory } from "../lib/history";
 import type { HistoryEntry } from "../lib/history";
@@ -215,9 +215,10 @@ export default function Home() {
         const res = await analyse({ id: crypto.randomUUID(), lang, text: input });
         addToThread(input, res, lang);
       } else {
+        // Paragraph mode: stream results in as each sentence completes
+        // Results appear one by one instead of waiting for the slowest sentence
         const items = sentences.map(s => ({ id: crypto.randomUUID(), lang, text: s }));
-        const results = await analyseBatch(items);
-        results.forEach((res, i) => addToThread(sentences[i], res, lang));
+        await analyseStream(items, (i, res) => addToThread(sentences[i], res, lang));
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Analysis failed");
