@@ -136,11 +136,7 @@ def validate_correction(
     if lang in ("ha", "zu"):
         return "review", "HA/ZU correction — please verify"
 
-<<<<<<< HEAD
-    # SW / EN / FR: apply full numeric checks
-=======
     # SW / EN / FR / KI: apply full numeric checks
->>>>>>> 1180158 (fix(guardrails): restore HA/ZU bypass and identical-input check after linter revert)
     overlap = SemanticPreservationMetrics.calculate_token_overlap(original, corrected)
     if overlap < 0.30:
         return "review", f"low token overlap ({overlap:.2f})"
