@@ -87,14 +87,22 @@ async function _submitAndPoll(req: AnalyseRequest): Promise<AnalyseResponse> {
   throw new Error("Timed out waiting for result");
 }
 
-// Submit all sentences in parallel, resolve in order, call onResult as each arrives.
+// Submit sentences in parallel with a concurrency cap so the job queue never
+// backs up beyond CONCURRENCY × poll-time, keeping every sentence within the
+// 180s timeout even for large documents.
+const _CONCURRENCY = 8;
+
 export async function analyseStream(
   items: AnalyseRequest[],
   onResult: (index: number, result: AnalyseResponse) => void,
 ): Promise<void> {
-  await Promise.all(
-    items.map((item, i) =>
-      _submitAndPoll(item).then(result => onResult(i, result))
-    )
-  );
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      const result = await _submitAndPoll(items[i]);
+      onResult(i, result);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(_CONCURRENCY, items.length) }, worker));
 }
