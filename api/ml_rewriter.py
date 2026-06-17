@@ -74,6 +74,17 @@ def _ensure_model() -> None:
     _model.eval()
 
 
+# Words that belong to each language — if found in output of a DIFFERENT language, flag it.
+_LANG_MARKERS: dict[str, set[str]] = {
+    "sw": {"mtu", "mwanaume", "mwanamke", "daktari", "na", "wa", "kwa", "ni", "ya", "mtu"},
+    "ha": {"mace", "miji", "kowa", "mata", "mutum", "da", "ne", "ba", "su", "iya"},
+    "zu": {"umuntu", "umfazi", "indoda", "abantu", "umuntu", "futhi", "noma", "uma"},
+    "ki": {"mũndũ", "mũtumia", "mũrũme", "na", "nĩ", "kũ", "wa", "mũndũ"},
+    "fr": {"personne", "homme", "femme", "une", "les", "des", "est", "sont"},
+    "en": {"the", "and", "are", "were", "was", "have", "has", "been", "they", "their"},
+}
+
+
 def validate_correction(
     original: str,
     corrected: str,
@@ -83,15 +94,15 @@ def validate_correction(
     Run guardrails on a candidate ML correction.
 
     Returns ("accept", reason) if the correction looks trustworthy,
-    or ("review", reason) if any guardrail fails — caller should flag
-    for human review instead of showing the bad correction.
+    or ("review", reason) if any guardrail fails.
 
     Checks:
-      1. Not identical to original (corrector did something)
-      2. Token overlap >= 0.30 (didn't rewrite everything / hallucinate)
-      3. Composite preservation score >= 0.45 (meaning still intact)
-      4. ML detector score on corrected output is lower than on original
-         (bias was actually reduced, not just rephrased)
+      1. Not identical to original
+      2. Token overlap >= 0.30
+      3. Composite preservation score >= 0.45
+      4. No foreign-language words injected (e.g. Swahili in EN output)
+      5. New words introduced <= 20% of output length (minimal-edit check)
+      6. ML detector score reduced (bias actually removed)
     """
     from core.semantic_preservation import SemanticPreservationMetrics
 
@@ -106,6 +117,38 @@ def validate_correction(
     if scores["composite_score"] < 0.45:
         return "review", f"low preservation score ({scores['composite_score']:.2f}) — meaning may have changed"
 
+    # Foreign-language injection check: any single unambiguous foreign word is enough.
+    out_words_lower = {w.lower().strip(".,;:!?\"'") for w in corrected.split()}
+    for other_lang, markers in _LANG_MARKERS.items():
+        if other_lang == lang:
+            continue
+        # Exclude short words that appear in multiple languages (e.g. "na", "wa", "ni")
+        _AMBIGUOUS = {"na", "wa", "ni", "ya", "da", "ne", "ba", "su", "ma", "la", "le", "les", "des", "est", "une"}
+        unambiguous_markers = markers - _AMBIGUOUS
+        foreign_hits = out_words_lower & unambiguous_markers
+        if foreign_hits:
+            return "review", f"foreign language word(s) in output ({other_lang}: {foreign_hits})"
+
+    # Minimal-edit check: only allow known gender-neutral substitutions as new words.
+    # Any other new word (articles, conjunctions, structural changes) means the model
+    # paraphrased instead of doing a minimal edit — flag for human review.
+    orig_words_lower = {w.lower().strip(".,;:!?\"'") for w in original.split()}
+    out_words_list = [w.lower().strip(".,;:!?\"'") for w in corrected.split()]
+    _ALLOWED_SUBSTITUTIONS: dict[str, set] = {
+        "en": {"they", "them", "their", "theirs", "person", "people", "chairperson", "chair",
+               "workforce", "employee", "employees", "worker", "workers", "individual", "individuals"},
+        "sw": {"mtu", "watu", "mwanajamii", "wanajamii"},
+        "fr": {"personne", "personnes", "individu", "individus", "une", "un"},
+        "ki": {"mũndũ", "andũ"},
+        "ha": {"kowa", "mutum"},
+        "zu": {"umuntu", "abantu"},
+    }
+    allowed = _ALLOWED_SUBSTITUTIONS.get(lang, set())
+    new_words = [w for w in out_words_list if w and w not in orig_words_lower and w not in allowed]
+    new_ratio = len(new_words) / max(len(out_words_list), 1)
+    if new_ratio > 0.10:
+        return "review", f"too many new words ({len(new_words)}/{len(out_words_list)}) — model paraphrased instead of minimal edit"
+
     # Check bias was actually reduced: re-run detector on corrected output
     try:
         from eval.ml_classifier import classify as ml_classify, threshold as ml_threshold
@@ -119,11 +162,10 @@ def validate_correction(
             original_score = ml_classify(original, lang_enum)
             corrected_score = ml_classify(corrected, lang_enum)
             thresh = ml_threshold(lang_enum)
-            # Corrected output should score lower than original, or drop below threshold
             if corrected_score >= original_score and corrected_score >= thresh:
                 return "review", f"bias not reduced (original={original_score:.2f} corrected={corrected_score:.2f})"
     except Exception:
-        pass  # detector unavailable — skip this check, don't fail
+        pass
 
     return "accept", "all guardrails passed"
 

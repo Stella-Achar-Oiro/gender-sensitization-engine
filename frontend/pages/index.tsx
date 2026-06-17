@@ -383,11 +383,9 @@ export default function Home() {
             )}
           </div>
 
-          {/* Thread / Metrics panel */}
+          {/* Thread panel — MetricsPanel hidden for demo */}
           <div className="flex-1 overflow-y-auto">
-            {showMetrics ? (
-              <MetricsPanel metrics={metrics} onClose={() => setShowMetrics(false)} />
-            ) : thread.length === 0 ? (
+            {thread.length === 0 ? (
               <EmptyState lang={lang} onExample={async (ex) => {
                 if (!lang) return;
                 setText("");

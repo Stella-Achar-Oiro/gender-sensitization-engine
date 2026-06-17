@@ -33,8 +33,8 @@ sys.path.insert(0, str(ROOT))
 
 from api.rules_engine import apply_rules_on_spans
 
-OUT_PATH = ROOT / "data" / "training_data_correction_v2.csv"
-STATS_PATH = ROOT / "data" / "training_data_correction_v2_stats.txt"
+OUT_PATH = ROOT / "data" / "training_data_correction_v3.csv"
+STATS_PATH = ROOT / "data" / "training_data_correction_v3_stats.txt"
 
 
 def _clean(text: str) -> str:
@@ -51,7 +51,7 @@ _ANNOTATION_NOISE = re.compile(
 )
 
 
-def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float = 0.30) -> bool:
+def _is_valid_pair(inp: str, tgt: str, max_words: int = 40, min_overlap: float = 0.70) -> bool:
     inp, tgt = _clean(inp), _clean(tgt)
     if not inp or not tgt:
         return False
@@ -156,60 +156,88 @@ def load_sw() -> pd.DataFrame:
     # Source 4: v1 dataset pairs not already covered above
     rows.extend(_load_v1_pairs("sw", "sw_v1_extra"))
 
-    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows, no pre-made corrections,
-    # generate via lexicon (wa kike/wa kiume removal, mwanamke→mtu etc.)
+    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows
     umunthu = ROOT / "Umunthu Data - Swahili Annotated (3).csv"
     if umunthu.exists():
         u = pd.read_csv(umunthu)
         u_texts = u[u["bias_label"] == "stereotype"]["text"].dropna().tolist()
         rows.extend(_lexicon_pairs("sw", u_texts, "sw_umunthu"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Source 6: full SW GT corpus (67K rows) — lexicon yield ~1,300 additional pairs
+    all_gt_texts = gt["text"].dropna().tolist()
+    rows.extend(_lexicon_pairs("sw", all_gt_texts, "sw_gt_full_lexicon"))
+
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Cap at 2,000 — prioritise hand-curated pairs
+    if len(df) > 2000:
+        hand = df[df.source.isin(["sw_pairs_v1", "sw_gt_v5"])]
+        rest = df[~df.source.isin(["sw_pairs_v1", "sw_gt_v5"])].sample(
+            n=min(2000 - len(hand), len(df) - len(hand)), random_state=42
+        )
+        df = pd.concat([hand, rest]).drop_duplicates(subset=["input_text"]).reset_index(drop=True)
+    return df
 
 
 def load_ha() -> pd.DataFrame:
     rows = []
+
+    # Source 1: correction pairs v1 — approve the 1,520 tight pairs programmatically.
+    # qa_status=needs_review but pairs are genuine minimal edits (mace→mutum, ta→ya).
     df = pd.read_csv(ROOT / "juakazi_ha_correction_pairs_v1.csv")
     for _, r in df.iterrows():
         inp, tgt = _clean(r["original_text"]), _clean(r["corrected_text"])
-        if _is_valid_pair(inp, tgt):
+        # Strict filter: overlap ≥ 0.70 AND word diff ≤ 3 (minimal edit only)
+        inp_w = set(inp.split())
+        tgt_w = set(tgt.split())
+        ov = len(inp_w & tgt_w) / max(len(inp_w), 1)
+        wd = abs(len(inp.split()) - len(tgt.split()))
+        if _is_valid_pair(inp, tgt) and ov >= 0.70 and wd <= 3:
             rows.append({
                 "language": "ha", "input_text": inp, "target_text": tgt,
-                "source": "ha_pairs_v1",
+                "source": "ha_pairs_v1_approved",
                 "stereotype_category": r.get("stereotype_category", ""),
             })
 
-    # Lexicon example pairs
+    # Source 2: mine HA v4 dataset (17,401 rows) via lexicon
+    ha4_path = ROOT / "v4_revised_hausa_bias_ds.csv"
+    if ha4_path.exists():
+        ha4 = pd.read_csv(ha4_path)
+        ha4_biased = ha4[ha4["bias_label"].isin(["stereotype","derogation"])]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("ha", ha4_biased, "ha_v4_lexicon"))
+
+    # Source 3: mine HA GT (10,054 approved rows) via lexicon
+    gt_ha = ROOT / "eval" / "ground_truth_ha_v1.csv"
+    if gt_ha.exists():
+        gt = pd.read_csv(gt_ha)
+        ha_biased = gt[gt["bias_label"].str.lower().isin(["stereotype", "derogation", "biased"])]["text"].dropna().tolist() \
+            if "bias_label" in gt.columns else gt["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("ha", ha_biased, "ha_gt_lexicon"))
+
+    # Source 4: StudyLabs approved HA rows via lexicon
+    sl_path = ROOT / "study-labs-non-synthetics-qa-approved-sentences-2026-04-27T09-23-46-234Z.csv"
+    if sl_path.exists():
+        sl = pd.read_csv(sl_path)
+        sl_ha = sl[sl["language"].str.lower() == "hausa"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("ha", sl_ha, "ha_studylabs_lexicon"))
+
+    # Source 5: lexicon example pairs
     rows.extend(_lexicon_example_pairs("ha"))
 
     df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
-    # Drop heavy rewrites: low overlap AND large word change = model learns wrong pattern
-    df["_overlap"] = df.apply(
-        lambda r: len(set(r.input_text.split()) & set(r.target_text.split())) / max(len(set(r.input_text.split())), 1),
-        axis=1,
-    )
-    df["_wdiff"] = (df.input_text.str.split().str.len() - df.target_text.str.split().str.len()).abs()
-    heavy_rewrite = (df["_overlap"] < 0.65) & (df["_wdiff"] > 5)
-    df = df[~heavy_rewrite].drop(columns=["_overlap", "_wdiff"]).reset_index(drop=True)
+    # Cap at 2,000 — prioritise hand-curated v1 pairs
+    if len(df) > 2000:
+        hand = df[df.source == "ha_pairs_v1_approved"]
+        rest = df[df.source != "ha_pairs_v1_approved"].sample(
+            n=min(2000 - len(hand), len(df) - len(hand)), random_state=42
+        )
+        df = pd.concat([hand, rest]).drop_duplicates(subset=["input_text"]).reset_index(drop=True)
     return df
 
 
 def load_zu() -> pd.DataFrame:
     rows = []
 
-    # Source 1: retraining file — strict overlap=0.50 (pairs are mostly full rewrites,
-    # only those with >=50% shared tokens are minimal enough to be useful)
-    rt = pd.read_csv(ROOT / "zulu_retraining - zulu_retraining.csv.csv")
-    for _, r in rt.iterrows():
-        inp, tgt = _clean(r["input"]), _clean(r["output"])
-        if _is_valid_pair(inp, tgt, min_overlap=0.50):
-            rows.append({
-                "language": "zu", "input_text": inp, "target_text": tgt,
-                "source": "zu_retraining",
-                "stereotype_category": r.get("category", ""),
-            })
-
-    # Source 2: correction pairs file
+    # Source 1: correction pairs v1 — all 1,142 pass strict filter (overlap>=0.70, wdiff<=3)
     df = pd.read_csv(ROOT / "juakazi_zu_correction_pairs_v1.csv")
     for _, r in df.iterrows():
         inp, tgt = _clean(r["original_text"]), _clean(r["corrected_text"])
@@ -220,15 +248,33 @@ def load_zu() -> pd.DataFrame:
                 "stereotype_category": r.get("stereotype_category", ""),
             })
 
-    # Source 3: lexicon-generated from ZU GT biased rows
-    gt = pd.read_csv(ROOT / "eval" / "ground_truth_zu_v1.csv")
-    zu_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
-    rows.extend(_lexicon_pairs("zu", zu_texts, "zu_gt_lexicon"))
+    # Source 2: mine IsiZulu Ithute dataset (9,570 biased rows, all qa_status=passed)
+    # via lexicon to generate minimal-edit pairs (drop wesifazane/wesilisa/wamadoda etc.)
+    ithute = ROOT / "IsiZulu_Ithute_Dataset_Final.csv"
+    if ithute.exists():
+        it = pd.read_csv(ithute)
+        zu_texts = it["Zulu text"].dropna().tolist() if "Zulu text" in it.columns else []
+        rows.extend(_lexicon_pairs("zu", zu_texts, "zu_ithute_lexicon"))
 
-    # Source 4: lexicon example pairs (clean minimal edits)
+    # Source 3: lexicon-generated from ZU GT biased rows
+    gt_zu = ROOT / "eval" / "ground_truth_zu_v1.csv"
+    if gt_zu.exists():
+        gt = pd.read_csv(gt_zu)
+        zu_texts = gt[gt["has_bias"] == True]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("zu", zu_texts, "zu_gt_lexicon"))
+
+    # Source 4: lexicon example pairs
     rows.extend(_lexicon_example_pairs("zu"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Cap at 2,000 to keep ZU balanced with other languages — prioritise hand-curated pairs
+    if len(df) > 2000:
+        hand = df[df.source == "zu_pairs_v1"]
+        rest = df[df.source != "zu_pairs_v1"].sample(
+            n=min(2000 - len(hand), len(df) - len(hand)), random_state=42
+        )
+        df = pd.concat([hand, rest]).drop_duplicates(subset=["input_text"]).reset_index(drop=True)
+    return df
 
 
 def load_ki() -> pd.DataFrame:

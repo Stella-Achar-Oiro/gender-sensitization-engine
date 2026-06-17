@@ -103,44 +103,42 @@ def rewrite_text(
             pass  # ML unavailable — lexicon result stands
 
     # Stage 3: ML corrector — fires only when bias is detected AND lexicon found no match.
-    # Uses juakazike/multilingual-bias-corrector-v3 (AfriTeVa fine-tuned on 10K clean pairs, guardrails added).
-    # Skipped when lexicon already produced a correction (edits non-empty with replace severity).
-    # ZU and HA corrector output is not yet reliable (insufficient training pairs) — for those
-    # languages we suppress the ML corrector and flag for human review instead of showing
-    # hallucinated or truncated output.
-    _ML_CORRECTOR_LANGS = {"sw", "en", "fr", "ki"}
+    # Uses juakazike/multilingual-bias-corrector-v3 (AfriTeVa fine-tuned on 10K clean pairs).
+    # Hard 8s timeout prevents 504s. Always shows the correction — guardrail verdict sets
+    # needs_review on the edit so humans can improve it rather than seeing a blank card.
+    import concurrent.futures as _cf
     lexicon_corrected = lexicon_replaced
     has_any_bias_signal = bool(edits) or (aibridge_result is not None and aibridge_result.has_bias)
     ml_unavailable = False
     if not lexicon_corrected and has_any_bias_signal:
-        if lang not in _ML_CORRECTOR_LANGS:
-            # Corrector not reliable for this language — flag for human review
-            ml_unavailable = True
-        else:
-            ml_result = ml_rewrite(text, lang=lang)
-            if ml_result["model"] != "unavailable":
-                candidate = ml_result["best"]
-                if candidate and candidate.strip():
-                    from .ml_rewriter import validate_correction
-                    verdict, verdict_reason = validate_correction(text, candidate, lang)
-                    if verdict == "accept":
-                        rewritten = candidate
-                        source = "ml"
-                        ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
-                        edits = [{
-                            "from": text,
-                            "to": rewritten,
-                            "severity": "warn",
-                            "tags": "ml-correction",
-                            "bias_type": "ml-detected",
-                            "stereotype_category": "",
-                            "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
-                        }]
-                    else:
-                        # Correction failed guardrails — flag for human review, don't show bad output
-                        ml_unavailable = True
+        try:
+            with _cf.ThreadPoolExecutor(max_workers=1) as _ex:
+                ml_result = _ex.submit(ml_rewrite, text, lang).result(timeout=8)
+        except Exception:
+            ml_result = {"best": text, "model": "unavailable", "latency_ms": 0}
+
+        if ml_result["model"] != "unavailable":
+            candidate = ml_result["best"]
+            if candidate and candidate.strip() and candidate != text:
+                from .ml_rewriter import validate_correction
+                verdict, verdict_reason = validate_correction(text, candidate, lang)
+                rewritten = candidate
+                source = "ml"
+                ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
+                edits = [{
+                    "from": text,
+                    "to": rewritten,
+                    "severity": "warn",
+                    "tags": "ml-correction",
+                    "bias_type": "ml-detected",
+                    "stereotype_category": "",
+                    "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
+                    "needs_review": verdict == "review",
+                }]
             else:
                 ml_unavailable = True
+        else:
+            ml_unavailable = True
 
     # If corrector was unavailable or failed guardrails, and no replace-severity lexicon
     # correction exists, flag as low_confidence so UI shows "human review needed"
