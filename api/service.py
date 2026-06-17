@@ -112,19 +112,22 @@ def rewrite_text(
     ml_unavailable = False
     if not lexicon_corrected and has_any_bias_signal:
         try:
-            with _cf.ThreadPoolExecutor(max_workers=1) as _ex:
-                ml_result = _ex.submit(ml_rewrite, text, lang).result(timeout=8)
+            ml_result = ml_rewrite(text, lang)
         except Exception:
             ml_result = {"best": text, "model": "unavailable", "latency_ms": 0}
 
         if ml_result["model"] != "unavailable":
             candidate = ml_result["best"]
-            if candidate and candidate.strip() and candidate != text:
+            if candidate and candidate.strip():
                 from .ml_rewriter import validate_correction
                 verdict, verdict_reason = validate_correction(text, candidate, lang)
+                # Always use the candidate — even if guardrails flag it or it matches the
+                # original. Show it to the reviewer so they have something to edit from,
+                # rather than an empty box. needs_review=True flags it for human attention.
                 rewritten = candidate
                 source = "ml"
                 ml_info = {"model": ml_result["model"], "latency_ms": ml_result["latency_ms"]}
+                needs_review_flag = verdict == "review" or candidate == text
                 edits = [{
                     "from": text,
                     "to": rewritten,
@@ -132,8 +135,8 @@ def rewrite_text(
                     "tags": "ml-correction",
                     "bias_type": "ml-detected",
                     "stereotype_category": "",
-                    "reason": f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
-                    "needs_review": verdict == "review",
+                    "reason": f"ML corrector suggestion — {verdict_reason}" if needs_review_flag else f"ML corrector suggestion ({ml_result['model'].split('/')[-1]})",
+                    "needs_review": needs_review_flag,
                 }]
             else:
                 ml_unavailable = True

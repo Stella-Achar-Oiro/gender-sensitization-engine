@@ -278,8 +278,15 @@ export default function ResultCard({ result, onExportData }: Props) {
         <div className={`relative px-5 py-4 border-b border-slate-100/60 ${
           action === "rejected" ? "opacity-50" : ""
         }`}>
-          <div className="text-xs font-semibold uppercase tracking-widest text-emerald-600 mb-2">
-            {action === "edited" ? "Your correction" : "Suggested correction"}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
+              {action === "edited" ? "Your correction" : "Suggested correction"}
+            </span>
+            {result.needs_review && action === "pending" && (
+              <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                Needs review
+              </span>
+            )}
           </div>
 
           {isEditing ? (
