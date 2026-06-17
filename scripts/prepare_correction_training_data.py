@@ -156,15 +156,26 @@ def load_sw() -> pd.DataFrame:
     # Source 4: v1 dataset pairs not already covered above
     rows.extend(_load_v1_pairs("sw", "sw_v1_extra"))
 
-    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows, no pre-made corrections,
-    # generate via lexicon (wa kike/wa kiume removal, mwanamke→mtu etc.)
+    # Source 5: Umunthu Dataset — 5,174 SW stereotype rows
     umunthu = ROOT / "Umunthu Data - Swahili Annotated (3).csv"
     if umunthu.exists():
         u = pd.read_csv(umunthu)
         u_texts = u[u["bias_label"] == "stereotype"]["text"].dropna().tolist()
         rows.extend(_lexicon_pairs("sw", u_texts, "sw_umunthu"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Source 6: full SW GT corpus (67K rows) — lexicon yield ~1,300 additional pairs
+    all_gt_texts = gt["text"].dropna().tolist()
+    rows.extend(_lexicon_pairs("sw", all_gt_texts, "sw_gt_full_lexicon"))
+
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Cap at 2,000 — prioritise hand-curated pairs
+    if len(df) > 2000:
+        hand = df[df.source.isin(["sw_pairs_v1", "sw_gt_v5"])]
+        rest = df[~df.source.isin(["sw_pairs_v1", "sw_gt_v5"])].sample(
+            n=min(2000 - len(hand), len(df) - len(hand)), random_state=42
+        )
+        df = pd.concat([hand, rest]).drop_duplicates(subset=["input_text"]).reset_index(drop=True)
+    return df
 
 
 def load_ha() -> pd.DataFrame:
@@ -187,7 +198,14 @@ def load_ha() -> pd.DataFrame:
                 "stereotype_category": r.get("stereotype_category", ""),
             })
 
-    # Source 2: mine HA GT (10,054 approved rows) via lexicon to top up to ~2,000
+    # Source 2: mine HA v4 dataset (17,401 rows) via lexicon
+    ha4_path = ROOT / "v4_revised_hausa_bias_ds.csv"
+    if ha4_path.exists():
+        ha4 = pd.read_csv(ha4_path)
+        ha4_biased = ha4[ha4["bias_label"].isin(["stereotype","derogation"])]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("ha", ha4_biased, "ha_v4_lexicon"))
+
+    # Source 3: mine HA GT (10,054 approved rows) via lexicon
     gt_ha = ROOT / "eval" / "ground_truth_ha_v1.csv"
     if gt_ha.exists():
         gt = pd.read_csv(gt_ha)
@@ -195,10 +213,25 @@ def load_ha() -> pd.DataFrame:
             if "bias_label" in gt.columns else gt["text"].dropna().tolist()
         rows.extend(_lexicon_pairs("ha", ha_biased, "ha_gt_lexicon"))
 
-    # Source 3: lexicon example pairs
+    # Source 4: StudyLabs approved HA rows via lexicon
+    sl_path = ROOT / "study-labs-non-synthetics-qa-approved-sentences-2026-04-27T09-23-46-234Z.csv"
+    if sl_path.exists():
+        sl = pd.read_csv(sl_path)
+        sl_ha = sl[sl["language"].str.lower() == "hausa"]["text"].dropna().tolist()
+        rows.extend(_lexicon_pairs("ha", sl_ha, "ha_studylabs_lexicon"))
+
+    # Source 5: lexicon example pairs
     rows.extend(_lexicon_example_pairs("ha"))
 
-    return pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    df = pd.DataFrame(rows).drop_duplicates(subset=["input_text"])
+    # Cap at 2,000 — prioritise hand-curated v1 pairs
+    if len(df) > 2000:
+        hand = df[df.source == "ha_pairs_v1_approved"]
+        rest = df[df.source != "ha_pairs_v1_approved"].sample(
+            n=min(2000 - len(hand), len(df) - len(hand)), random_state=42
+        )
+        df = pd.concat([hand, rest]).drop_duplicates(subset=["input_text"]).reset_index(drop=True)
+    return df
 
 
 def load_zu() -> pd.DataFrame:
