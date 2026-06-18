@@ -5,15 +5,15 @@
     "recall": 0.986,
     "samples": 349,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   },
   "sw": {
-    "f1": 0.951,
-    "precision": 0.878,
-    "recall": 0.948,
+    "f1": 0.946,
+    "precision": 0.952,
+    "recall": 0.941,
     "samples": 6629,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   },
   "fr": {
     "f1": 0.891,
@@ -21,7 +21,7 @@
     "recall": 0.941,
     "samples": 761,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   },
   "ki": {
     "f1": 0.865,
@@ -29,7 +29,7 @@
     "recall": 0.791,
     "samples": 1154,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   },
   "ha": {
     "f1": 0.800,
@@ -37,7 +37,7 @@
     "recall": 0.887,
     "samples": 2380,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   },
   "zu": {
     "f1": 0.996,
@@ -45,6 +45,6 @@
     "recall": 1.000,
     "samples": 1655,
     "source": "kaggle-val",
-    "model": "juakazike/multilingual-bias-classifier-v1"
+    "model": "juakazike/multilingual-bias-classifier-v2"
   }
 }
