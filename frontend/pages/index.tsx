@@ -514,13 +514,13 @@ export default function Home() {
           </div>
 
           {/* Fixed bottom input */}
-          <div className="flex-shrink-0 bg-white border-t border-slate-200 px-5 py-4">
+          <div className="flex-shrink-0 bg-white border-t border-slate-200 px-5 py-2">
             <div className="max-w-3xl mx-auto">
               <div className={`rounded-2xl border-2 transition-colors bg-[#f5f5f0] ${
                 noLang ? "border-slate-200 opacity-60" : "border-slate-300 focus-within:border-[#00a651]"
               }`}>
                 {/* Textarea */}
-                <div className="px-4 pt-3 pb-1">
+                <div className="px-4 pt-2 pb-1">
                   <textarea
                     ref={textareaRef}
                     disabled={noLang || loading}
