@@ -273,50 +273,61 @@ export default function ResultCard({ result, onExportData }: Props) {
         )}
       </div>
 
-      {/* Corrected / ML-only */}
+      {/* Corrected path — what was detected + suggested correction */}
       {corrected && (
-        <div className={`relative px-5 py-4 border-b border-slate-100/60 ${
-          action === "rejected" ? "opacity-50" : ""
-        }`}>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
-              {action === "edited" ? "Your correction" : "Suggested correction"}
-            </span>
-            {result.needs_review && action === "pending" && (
-              <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
-                Needs review
-              </span>
-            )}
-          </div>
-
-          {isEditing ? (
-            <textarea
-              autoFocus
-              className="w-full text-base border-2 border-indigo-300 rounded-lg px-3 py-2.5 bg-white
-                         focus:outline-none focus:border-indigo-400 resize-none text-[#1a1a2e] leading-relaxed"
-              rows={3}
-              value={editedText}
-              onChange={(e) => setEditedText(e.target.value)}
-            />
-          ) : (
-            <p className={`text-base leading-relaxed ${action === "rejected" ? "line-through text-slate-400" : ""}`}>
-              <CorrectedDiff original={original_text} corrected={displayText} />
-            </p>
-          )}
-
-          {replaceEdits.length > 0 && action === "pending" && !isEditing && (
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
-              {replaceEdits.filter(e => e.from && e.to).map((edit, i) => (
-                <span key={i} className="inline-flex items-center gap-1.5 text-xs bg-slate-50
-                                         border border-slate-200 rounded-full px-2.5 py-1">
-                  <span className="text-red-500 line-through font-mono">{edit.from}</span>
-                  <span className="text-slate-300 mx-0.5">→</span>
-                  <span className="text-emerald-600 font-mono font-semibold">{edit.to || "∅"}</span>
-                </span>
-              ))}
+        <>
+          {/* What was detected */}
+          {replaceEdits.length > 0 && action === "pending" && (
+            <div className="relative px-5 py-3.5 border-b border-red-100/40 bg-red-50/20">
+              <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">What was detected</div>
+              <div className="flex flex-wrap gap-1.5">
+                {replaceEdits.filter(e => e.from).map((edit, i) => (
+                  <span key={i}
+                    title={edit.reason ?? undefined}
+                    className="inline-flex items-center gap-1.5 text-sm bg-red-50 border border-red-200
+                               text-red-700 rounded-lg px-3 py-1.5 font-mono font-semibold cursor-help">
+                    &ldquo;{edit.from}&rdquo;
+                    {edit.stereotype_category && (
+                      <span className="text-xs font-sans text-red-400 font-normal">· {edit.stereotype_category.replace(/_/g, " ")}</span>
+                    )}
+                    <span className="text-emerald-600 font-sans">→ &ldquo;{edit.to || "∅"}&rdquo;</span>
+                  </span>
+                ))}
+              </div>
             </div>
           )}
-        </div>
+
+          {/* Suggested correction */}
+          <div className={`relative px-5 py-4 border-b border-slate-100/60 ${
+            action === "rejected" ? "opacity-50" : ""
+          }`}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-semibold uppercase tracking-widest text-emerald-600">
+                {action === "edited" ? "Your correction" : "Suggested correction"}
+              </span>
+              {result.needs_review && action === "pending" && (
+                <span className="text-xs font-semibold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                  Needs human review
+                </span>
+              )}
+            </div>
+
+            {isEditing ? (
+              <textarea
+                autoFocus
+                className="w-full text-base border-2 border-indigo-300 rounded-lg px-3 py-2.5 bg-white
+                           focus:outline-none focus:border-indigo-400 resize-none text-[#1a1a2e] leading-relaxed"
+                rows={3}
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+              />
+            ) : (
+              <p className={`text-base leading-relaxed ${action === "rejected" ? "line-through text-slate-400" : ""}`}>
+                <CorrectedDiff original={original_text} corrected={displayText} />
+              </p>
+            )}
+          </div>
+        </>
       )}
 
       {/* ML-only — flagged for human review */}
@@ -392,16 +403,6 @@ export default function ResultCard({ result, onExportData }: Props) {
         );
       })()}
 
-      {/* Reason */}
-      {replaceEdits.some(e => e.reason) && action === "pending" && !isEditing && (
-        <div className="relative px-5 py-3 border-b border-slate-100/60 bg-slate-50/40">
-          <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1.5">Reason</div>
-          {replaceEdits.filter(e => e.reason).map((edit, i) => (
-            <p key={i} className="text-sm text-[#475569] leading-relaxed">{edit.reason}</p>
-          ))}
-        </div>
-      )}
-
       {/* Flag note */}
       {action === "flagged" && savedFlag && (
         <div className="relative px-5 py-3 border-b border-amber-100/50 bg-amber-50/30">
@@ -414,7 +415,7 @@ export default function ResultCard({ result, onExportData }: Props) {
       {isFlagging && (
         <div className="relative px-5 py-4 border-b border-amber-200/50 bg-amber-50/30">
           <div className="text-xs font-semibold uppercase tracking-widest text-amber-600 mb-2">
-            Flag for review — add a note (optional)
+            Flag for human review — add a note (optional)
           </div>
           <textarea
             autoFocus
