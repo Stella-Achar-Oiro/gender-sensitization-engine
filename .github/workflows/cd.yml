@@ -75,7 +75,7 @@ jobs:
               --query "Service.Status" --output text)
             echo "App Runner status: $STATUS"
             if [ "$STATUS" = "RUNNING" ]; then break; fi
-            if [ $i -eq 20 ]; then echo "Timed out waiting for RUNNING"; exit 1; fi
+            if [ $i -eq 40 ]; then echo "Timed out waiting for RUNNING"; exit 1; fi
             sleep 30
           done
           aws apprunner update-service \
