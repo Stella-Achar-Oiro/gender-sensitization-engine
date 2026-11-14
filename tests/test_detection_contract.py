@@ -215,3 +215,23 @@ def test_next_training_data_has_no_frozen_leaks():
     for lang in FROZEN_LANGS:
         leaks = find_leaks([r["text"] for r in load_frozen(lang)], by_lang.get(lang, []))
         assert not leaks, f"{lang}: {len(leaks)} training rows leak from the frozen test set"
+
+
+def test_next_training_data_does_not_label_counter_stereotypes_as_biased():
+    """
+    Project decision (2026-11-14): only stereotype and derogation count as biased.
+    A counter-stereotype ("women can lead too") is not bias and must not be trained as one.
+    """
+    import csv as _csv
+
+    path = ROOT / "data" / "training_data_multilingual_v3.csv"
+    if not path.exists():
+        pytest.skip("data/training_data_multilingual_v3.csv not built (run scripts/rebuild_training_data.py)")
+    wrong: dict = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in _csv.DictReader(f):
+            biased = r["has_bias"].strip().lower() == "true"
+            if biased != (r["bias_label"] in ("stereotype", "derogation")):
+                key = (r["language"], r["bias_label"], r["has_bias"])
+                wrong[key] = wrong.get(key, 0) + 1
+    assert not wrong, f"rows whose has_bias disagrees with the decision: {wrong}"

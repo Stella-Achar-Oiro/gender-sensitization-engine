@@ -28,7 +28,13 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 OUT_COLS = ["text", "language", "has_bias", "bias_label", "stereotype_category", "source"]
 
+# Labels other than neutral that the sources use.
 BIAS_LABELS_POSITIVE = {"stereotype", "derogation", "counter-stereotype"}
+# Project decision (2026-11-14): only these count as biased. A counter-stereotype
+# ("women can lead too") is not bias. The sources disagreed (HA/ZU/FR marked
+# counter-stereotypes biased, SW/KI/EN did not), so has_bias is set from the
+# label for every row at the end of main().
+BIASED_LABELS = {"stereotype", "derogation"}
 QA_OK = {"approved", "passed", "gold"}
 
 
@@ -211,6 +217,11 @@ def main():
     # ── Combine and final dedup ───────────────────────────────────────────────
     combined = pd.concat(parts, ignore_index=True)
     combined = combined.drop_duplicates(subset=["text", "language"])
+
+    # ── One definition of "biased" for every language ────────────────────────
+    relabelled = int((combined["has_bias"] != combined["bias_label"].isin(BIASED_LABELS)).sum())
+    combined["has_bias"] = combined["bias_label"].isin(BIASED_LABELS)
+    print(f"\nSet has_bias from bias_label ({sorted(BIASED_LABELS)}): {relabelled:,} rows changed")
 
     # ── Remove frozen test sentences and their near-duplicates ───────────────
     # eval/frozen_test_{lang}_v1.csv is held out for evaluation and must never

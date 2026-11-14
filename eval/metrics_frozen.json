@@ -1,5 +1,6 @@
 {
   "frozen_version": "v1",
+  "biased_definition": "strict (stereotype + derogation; counter-stereotype is not bias)",
   "classifier": "juakazike/multilingual-bias-classifier-v2",
   "detection": {
     "sw": {

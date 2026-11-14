@@ -12,9 +12,11 @@ training (`seen_by_classifier_v2`); a score on seen rows is only a valid test
 for models trained after the frozen sets were created.
 
 Labels keep the four classes (neutral / stereotype / counter-stereotype /
-derogation). Scores are reported under both readings of "biased":
-  strict     = stereotype + derogation
-  as_trained = stereotype + derogation + counter-stereotype
+derogation). Project decision (2026-11-14): only stereotype and derogation are
+biased; a counter-stereotype is not. So:
+  strict     = stereotype + derogation                        <- the score that counts
+  as_trained = stereotype + derogation + counter-stereotype   <- how classifier v2 was
+               trained in HA/ZU/FR; kept only to explain v2's behaviour
 """
 from __future__ import annotations
 
@@ -210,9 +212,13 @@ def evaluate_correction(lang: str) -> dict | None:
 
 def main(correction: bool = False) -> dict:
     results = {"frozen_version": FROZEN_VERSION,
+               "biased_definition": "strict (stereotype + derogation; counter-stereotype is not bias)",
                "classifier": os.environ.get("JUAKAZI_ML_MODEL") or "juakazike/multilingual-bias-classifier-v2",
                "detection": {}, "correction": {}}
-    print(f"{'lang':4} {'rows':>5} {'unseen':>6} | pipeline strict P/R/F1  | as-trained P/R/F1    | flagged by label")
+    if not correction and OUT_PATH.exists():
+        # A detection-only run keeps the corrector scores from the last full run.
+        results["correction"] = json.loads(OUT_PATH.read_text(encoding="utf-8")).get("correction", {})
+    print(f"{'lang':4} {'rows':>5} {'unseen':>6} | pipeline P/R/F1 (strict) | (as v2 was trained)  | flagged by label")
     for lang in LANGS:
         if not frozen_path(lang).exists():
             print(f"{lang:4} (no frozen test set)")
