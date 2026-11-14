@@ -287,3 +287,35 @@ def test_guardrails_all_languages():
                 )
 
     assert not failures, "Guardrail failures:\n" + "\n".join(failures)
+
+
+def test_ml_corrector_stops_at_end_of_sentence():
+    """
+    The ML corrector must stop generating at its end-of-sentence token.
+
+    Without an eos_token_id, generation runs to max_new_tokens and the text after the
+    first </s> is glued onto the output: the sentence is duplicated ("X. X"), or the
+    repetition filter cuts it down to a single word.
+    """
+    from api.ml_rewriter import _CORRECTOR_MODEL, ml_rewrite
+
+    try:
+        from huggingface_hub import try_to_load_from_cache
+        cached = isinstance(try_to_load_from_cache(_CORRECTOR_MODEL, "model.safetensors"), str)
+    except ImportError:
+        cached = False
+    if not cached:
+        pytest.skip(f"{_CORRECTOR_MODEL} not in local HF cache")
+
+    cases = [
+        ("ha", "Wannan matsala ce mai girma"),
+        ("sw", "Wanawake hawawezi kuongoza kampuni."),
+        ("en", "She works as a secretary"),
+    ]
+    for lang, text in cases:
+        result = ml_rewrite(text, lang)
+        if result["model"] == "unavailable":
+            pytest.skip("ML corrector unavailable (torch/transformers not installed)")
+        n_in, n_out = len(text.split()), len(result["best"].split())
+        assert n_out <= n_in * 1.5, f"{lang}: output repeats itself: {result['best']!r}"
+        assert n_out >= n_in * 0.5, f"{lang}: output cut short: {result['best']!r}"

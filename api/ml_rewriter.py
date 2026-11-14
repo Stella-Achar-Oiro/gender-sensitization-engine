@@ -213,6 +213,10 @@ def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
                 early_stopping=True,
                 decoder_start_token_id=0,
                 forced_eos_token_id=1,
+                # The model's saved generation config has no eos_token_id, so without
+                # this, generation never stops at </s> and runs to max_new_tokens.
+                eos_token_id=_tokenizer.eos_token_id,
+                pad_token_id=_tokenizer.pad_token_id,
             )
         corrected = _tokenizer.decode(out[0], skip_special_tokens=True)
         corrected = _clean_output(corrected, text, lang=lang)
