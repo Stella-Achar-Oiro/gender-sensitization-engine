@@ -124,22 +124,13 @@ def _load_correction_pairs(lang_code: str, max_rows: int = SAMPLE_SIZE):
 
 
 def _run_correction(text: str, lang_code: str) -> str:
-    """Run the current correction pipeline on a single text."""
+    """Run the lexicon-rule correction stage on a single text.
+
+    These contract tests cover the rules only. The ML corrector is covered by the
+    test_ml_corrector_* tests below.
+    """
     corrected, _, _, _ = apply_rules_on_spans(text, lang_code)
-    if corrected != text:
-        return corrected
-
-    # Try MT5 corrector if rules found nothing
-    try:
-        from eval.mt5_corrector import MT5BiasCorrector
-        corrector = MT5BiasCorrector()
-        result = corrector.correct(text, LANG_ENUM[lang_code])
-        if result and result != text:
-            return result
-    except Exception:
-        pass
-
-    return text
+    return corrected
 
 
 def _evaluate_corrections(lang_code: str):

@@ -103,16 +103,17 @@ def metrics_endpoint():
 def health():
     """Health check — returns system status and loaded lexicon counts."""
     import csv
-    from pathlib import Path
+    from config import lexicon_filename
+    rules_dir = Path(__file__).parent.parent / "rules"
     lexicon_counts = {}
-    for lang in ("en", "sw", "fr", "ki"):
-        p = Path(f"rules/lexicon_{lang}_v3.csv")
+    for lang in ("en", "sw", "fr", "ki", "ha", "zu"):
+        p = rules_dir / lexicon_filename(lang)
         if p.exists():
             with open(p, newline="", encoding="utf-8") as f:
                 lexicon_counts[lang] = sum(1 for _ in csv.DictReader(f))
         else:
             lexicon_counts[lang] = 0
-    return {"status": "ok", "version": "0.3", "lexicon_entries": lexicon_counts}
+    return {"status": "ok", "version": app.version, "lexicon_entries": lexicon_counts}
 
 
 def _aibridge_background(req_dump: dict, resp_dump: dict, audit_info: dict) -> None:

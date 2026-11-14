@@ -146,3 +146,15 @@ def test_api_confidence_field_present(client):
     conf = data.get("confidence")
     assert conf is not None, "Response missing confidence field"
     assert 0.0 <= float(conf) <= 1.0, f"Confidence out of range: {conf}"
+
+
+def test_health_reports_all_six_languages():
+    """/health must report a loaded lexicon for every supported language."""
+    from fastapi.testclient import TestClient
+    from api.main import app
+
+    body = TestClient(app).get("/health").json()
+    assert body["status"] == "ok"
+    assert body["version"] == app.version
+    assert set(body["lexicon_entries"]) == {"en", "sw", "fr", "ki", "ha", "zu"}
+    assert all(n > 0 for n in body["lexicon_entries"].values()), body["lexicon_entries"]
