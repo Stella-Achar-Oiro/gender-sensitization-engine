@@ -9,6 +9,7 @@ Output: corrected/neutral sentence
 Falls back gracefully when model unavailable (local dev, unit tests).
 """
 import os
+import re
 import time
 from typing import Any, Literal
 
@@ -183,6 +184,69 @@ def validate_correction(
     return "accept", "all guardrails passed"
 
 
+# ── Polarity guard ───────────────────────────────────────────────────────────
+# A correction must not add or remove a negation ("cannot lead" -> "should lead").
+# Word lists are deliberately small and conservative: they only need to notice a
+# negation appearing or disappearing, not parse the language. Gĩkũyũ has no list yet.
+_NEGATION_WORDS: dict[str, set[str]] = {
+    "en": {"not", "no", "never", "cannot", "without", "neither", "nor", "none", "nobody", "nothing"},
+    "fr": {"ne", "pas", "jamais", "rien", "aucun", "aucune", "ni", "sans", "non"},
+    "sw": {"si", "sio", "siyo", "sivyo", "hapana", "hakuna", "hamna", "kamwe", "bila", "wala"},
+    "ha": {"ba", "bai", "bata", "basu", "ban", "baka", "baki", "bamu", "baku", "kada", "babu"},
+    "zu": {"cha", "hhayi", "angeke", "ngeke", "akukho", "akekho",
+           # aba- forms other than abakwazi are left out: "abafanele"/"abamele" are also
+           # relative forms ("those who are suitable"), not only negatives.
+           "abakwazi", "akakwazi", "awukwazi", "angikwazi", "asikwazi",
+           "akufanele", "akafanele", "akumele", "akamele"},
+}
+# Swahili negative verbs: ha-/hawa-/hatu-/ham- + stem ending in -i, or + ku/ta/ja tense marker.
+_SW_NEGATIVE_VERB = re.compile(r"^(?:hawa|hatu|ham|ha)(?:\w{2,}i|(?:ku|ta|ja)\w{2,})$")
+_SW_NOT_NEGATIVE = {"hali", "haki", "hadi", "hasi", "hati", "hatari", "hatua", "hakika", "hawaii"}
+_WORD = re.compile(r"[^\W\d_]+(?:'[^\W\d_]+)?")
+
+
+def _has_negation(text: str, lang: str) -> bool:
+    words = _NEGATION_WORDS.get(lang)
+    if words is None:
+        return False
+    for token in _WORD.findall(text.lower().replace("\u2019", "'")):
+        if token in words:
+            return True
+        if lang == "en" and token.endswith("n't"):
+            return True
+        if lang == "fr" and token.startswith("n'"):
+            return True
+        if lang == "sw" and token not in _SW_NOT_NEGATIVE and _SW_NEGATIVE_VERB.match(token):
+            return True
+    return False
+
+
+def changes_polarity(original: str, corrected: str, lang: str) -> bool:
+    """True if the correction adds or removes a negation relative to the original."""
+    return _has_negation(original, lang) != _has_negation(corrected, lang)
+
+
+# ── Vocabulary guard ─────────────────────────────────────────────────────────
+_letter_supported: dict[str, bool] = {}
+
+
+def _has_unsupported_letters(text: str) -> bool:
+    """True if the text contains a letter the corrector's vocabulary cannot represent.
+
+    The tokenizer maps such letters to <unk>, which is dropped on decode, so the
+    output loses them ("mũndũ" -> "mnd"). Emoji and symbols are ignored.
+    """
+    for ch in set(text):
+        if ch.isascii() or not ch.isalpha():
+            continue
+        if ch not in _letter_supported:
+            ids = _tokenizer(f"a{ch}a", add_special_tokens=False)["input_ids"]
+            _letter_supported[ch] = _tokenizer.unk_token_id not in ids
+        if not _letter_supported[ch]:
+            return True
+    return False
+
+
 def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
     """
     Returns {"best": corrected_text, "model": model_id, "latency_ms": int}.
@@ -196,6 +260,9 @@ def ml_rewrite(text: str, lang: str = "sw", **_kwargs) -> dict[str, Any]:
     try:
         _ensure_model()
     except Exception:
+        return _unavailable
+
+    if _has_unsupported_letters(text):
         return _unavailable
 
     t0 = time.time()

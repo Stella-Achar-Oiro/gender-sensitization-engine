@@ -310,3 +310,70 @@ def test_ml_corrector_stops_at_end_of_sentence():
         n_in, n_out = len(text.split()), len(result["best"].split())
         assert n_out <= n_in * 1.5, f"{lang}: output repeats itself: {result['best']!r}"
         assert n_out >= n_in * 0.5, f"{lang}: output cut short: {result['best']!r}"
+
+
+POLARITY_CASES = [
+    # (lang, original, corrected, polarity_changed)
+    ("sw", "Wanawake hawawezi kuongoza kampuni.", "Mtu anapaswa kuongoza kampuni", True),
+    ("sw", "Mwanamke hawezi kuwa kiongozi", "Mtu hawezi kuwa kiongozi", False),
+    ("sw", "Wanawake hawawezi kuongoza kampuni.", "Watu hawawezi kuongoza kampuni", False),
+    ("en", "A woman cannot lead a company", "A person can lead a company", True),
+    ("en", "She can't drive a truck", "They can't drive a truck", False),
+    ("en", "The chairman opened the meeting", "The chair opened the meeting", False),
+    ("fr", "Une femme ne peut pas diriger une entreprise.", "Une personne ne peut pas diriger une entreprise", False),
+    ("fr", "Une femme ne peut pas diriger une entreprise.", "Une personne peut diriger une entreprise", True),
+    ("ha", "Mata ba su iya shugabanci ba.", "Mutane ba su iya shugabanci ba", False),
+    ("ha", "Mata ba su iya shugabanci ba.", "Mutane suna iya shugabanci", True),
+    ("zu", "Abesifazane abakwazi ukuhola.", "Abantu abakwazi ukuhola.", False),
+    ("zu", "Abesifazane abakwazi ukuhola.", "Abantu bayakwazi ukuhola.", True),
+    ("zu", "Abafazi kufanele bahlale ekhaya", "Abantu kufanele bahlale ekhaya", False),
+    ("zu", "Lona unjiniyela wesifazane ohlakaniphile, akubona njengabesilisa abajwayelekile.",
+     "Lona unjiniyela ohlakaniphile, akubona njengabesilisa abafanele", False),
+]
+
+
+@pytest.mark.parametrize("lang,original,corrected,expected", POLARITY_CASES)
+def test_polarity_guard(lang, original, corrected, expected):
+    """A correction that adds or removes a negation changes the meaning and must be caught."""
+    from api.ml_rewriter import changes_polarity
+
+    assert changes_polarity(original, corrected, lang) is expected
+
+
+def test_service_withholds_polarity_flipping_correction(monkeypatch):
+    """If the ML corrector flips the polarity, the service keeps the original text."""
+    import api.service as service
+
+    text = "Wanawake hawawezi kuongoza kampuni."
+    warn_edit = {"from": "", "to": "", "severity": "warn", "bias_type": "ml-detected",
+                 "stereotype_category": "", "reason": "test", "source": "ml"}
+    monkeypatch.setattr(service, "apply_rules_on_spans", lambda t, lang, flags=None: (t, [warn_edit], [], []))
+    monkeypatch.setattr(service, "_ML_DETECTOR_ENABLED", False)
+    monkeypatch.setattr(service, "ml_rewrite", lambda t, lang: {
+        "best": "Mtu anapaswa kuongoza kampuni", "candidates": [], "model": "test-model", "latency_ms": 1})
+
+    response, _ = service.rewrite_text(id="t", text=text, lang="sw")
+    assert response.rewrite == text
+    assert response.source == "low_confidence"
+
+
+def test_ml_corrector_skips_text_it_cannot_spell():
+    """
+    The corrector's vocabulary has no ĩ/ũ, so Gĩkũyũ words come back with letters dropped.
+    Text containing letters the tokenizer cannot represent must not be rewritten.
+    """
+    from api.ml_rewriter import _CORRECTOR_MODEL, ml_rewrite
+
+    try:
+        from huggingface_hub import try_to_load_from_cache
+        cached = isinstance(try_to_load_from_cache(_CORRECTOR_MODEL, "model.safetensors"), str)
+    except ImportError:
+        cached = False
+    if not cached:
+        pytest.skip(f"{_CORRECTOR_MODEL} not in local HF cache")
+
+    text = "Mũtumia nĩ wa kũruga na gũthambia nyũmba."
+    result = ml_rewrite(text, "ki")
+    assert result["model"] == "unavailable" and result["best"] == text
+    # Text the tokenizer can represent is still corrected (emoji must not block it).
+    assert ml_rewrite("Wanawake hawawezi kuongoza kampuni 😂", "sw")["model"] != "unavailable"

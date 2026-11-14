@@ -118,7 +118,9 @@ def rewrite_text(
 
         if ml_result["model"] != "unavailable":
             candidate = ml_result["best"]
-            if candidate and candidate.strip():
+            from .ml_rewriter import changes_polarity
+            # A candidate that adds or removes a negation changes the meaning: withhold it.
+            if candidate and candidate.strip() and not changes_polarity(text, candidate, lang):
                 from .ml_rewriter import validate_correction
                 verdict, verdict_reason = validate_correction(text, candidate, lang)
                 # Always use the candidate — even if guardrails flag it or it matches the
