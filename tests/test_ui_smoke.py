@@ -167,11 +167,12 @@ def test_production_startup_preloads_corrector(monkeypatch):
     from api.main import app
 
     calls = []
-    monkeypatch.setattr(ml_rewriter, "_ensure_model", lambda: calls.append(1))
+    monkeypatch.setattr(ml_rewriter, "_ensure_model", lambda: calls.append("load"))
+    monkeypatch.setattr(ml_rewriter, "ml_rewrite", lambda text, lang: calls.append("warmup"))
     monkeypatch.setenv("ENVIRONMENT", "production")
     with TestClient(app):
         pass
-    assert calls, "corrector was not preloaded at startup"
+    assert calls == ["load", "warmup"], "corrector was not loaded and warmed up at startup"
 
     calls.clear()
     monkeypatch.setenv("ENVIRONMENT", "development")

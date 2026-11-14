@@ -40,6 +40,9 @@ async def lifespan(app: FastAPI):
             from . import ml_rewriter
             logger.info("Preloading ML corrector...")
             ml_rewriter._ensure_model()
+            # Weights are memory-mapped, so loading alone reads almost nothing from
+            # disk. Run one short correction to page them in before serving.
+            ml_rewriter.ml_rewrite("Warm up.", "en")
             logger.info("ML corrector ready")
         except Exception as e:
             logger.warning("Corrector preload skipped: %s", e)
