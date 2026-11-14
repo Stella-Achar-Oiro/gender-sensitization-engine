@@ -1,67 +1,67 @@
 id,language,text,bias_label,expected_correction,source_file,source_id,label_origin,seen_by_classifier_v2,native_review,reviewer_id
-frozen-en-0001,en,The chairman will lead the meeting,stereotype,chairperson,eval/ground_truth_en_v5.csv,en-00001,needs_review|ann_legacy,false,,
-frozen-en-0002,en,She is a great nurse,stereotype,They are a great nurse,eval/ground_truth_en_v5.csv,en-00002,needs_review|ann_legacy,false,,
-frozen-en-0003,en,The policeman arrested the suspect,stereotype,police officer,eval/ground_truth_en_v5.csv,en-00003,needs_review|ann_legacy,false,,
-frozen-en-0004,en,Ask the waitress for the menu,stereotype,server,eval/ground_truth_en_v5.csv,en-00004,needs_review|ann_legacy,false,,
-frozen-en-0005,en,The businessman closed the deal,stereotype,businessperson,eval/ground_truth_en_v5.csv,en-00005,needs_review|ann_legacy,false,,
-frozen-en-0006,en,Every doctor should update his records,stereotype,their records,eval/ground_truth_en_v5.csv,en-00006,needs_review|ann_legacy,false,,
-frozen-en-0007,en,The fireman saved the cat,stereotype,firefighter,eval/ground_truth_en_v5.csv,en-00007,needs_review|ann_legacy,false,,
-frozen-en-0008,en,She works as a secretary,stereotype,They work as a secretary,eval/ground_truth_en_v5.csv,en-00008,needs_review|ann_legacy,false,,
-frozen-en-0009,en,The mailman delivered the package,stereotype,mail carrier,eval/ground_truth_en_v5.csv,en-00009,needs_review|ann_legacy,false,,
-frozen-en-0010,en,The stewardess served drinks,stereotype,flight attendant,eval/ground_truth_en_v5.csv,en-00010,needs_review|ann_legacy,false,,
-frozen-en-0011,en,He is the best salesman,stereotype,salesperson,eval/ground_truth_en_v5.csv,en-00011,needs_review|ann_legacy,false,,
-frozen-en-0012,en,The cleaning lady comes on Fridays,stereotype,cleaner,eval/ground_truth_en_v5.csv,en-00012,needs_review|ann_legacy,false,,
-frozen-en-0013,en,Ask your congressman about the bill,stereotype,representative,eval/ground_truth_en_v5.csv,en-00013,needs_review|ann_legacy,false,,
-frozen-en-0014,en,The weatherman predicted rain,stereotype,meteorologist,eval/ground_truth_en_v5.csv,en-00014,needs_review|ann_legacy,false,,
-frozen-en-0015,en,She is just a housewife,stereotype,They manage the household,eval/ground_truth_en_v5.csv,en-00015,needs_review|ann_legacy,false,,
-frozen-en-0016,en,The repairman fixed the sink,stereotype,repair technician,eval/ground_truth_en_v5.csv,en-00016,needs_review|ann_legacy,false,,
-frozen-en-0017,en,Every nurse knows her patients,stereotype,their patients,eval/ground_truth_en_v5.csv,en-00017,needs_review|ann_legacy,false,,
-frozen-en-0018,en,The doorman checked IDs,stereotype,door attendant,eval/ground_truth_en_v5.csv,en-00018,needs_review|ann_legacy,false,,
-frozen-en-0019,en,She works as a receptionist,stereotype,They work as a receptionist,eval/ground_truth_en_v5.csv,en-00019,needs_review|ann_legacy,false,,
-frozen-en-0020,en,The garbage man comes early,stereotype,sanitation worker,eval/ground_truth_en_v5.csv,en-00020,needs_review|ann_legacy,false,,
-frozen-en-0021,en,The anchorman read the news,stereotype,news anchor,eval/ground_truth_en_v5.csv,en-00021,needs_review|ann_legacy,false,,
-frozen-en-0022,en,Every teacher loves her students,stereotype,their students,eval/ground_truth_en_v5.csv,en-00022,needs_review|ann_legacy,false,,
-frozen-en-0023,en,The deliveryman was late,stereotype,delivery driver,eval/ground_truth_en_v5.csv,en-00023,needs_review|ann_legacy,false,,
-frozen-en-0024,en,She is a talented seamstress,stereotype,They are a talented tailor,eval/ground_truth_en_v5.csv,en-00024,needs_review|ann_legacy,false,,
-frozen-en-0025,en,The handyman repaired the door,stereotype,maintenance worker,eval/ground_truth_en_v5.csv,en-00025,needs_review|ann_legacy,false,,
-frozen-en-0026,en,We need a strong policeman for this job,stereotype,police officer,eval/ground_truth_en_v5.csv,en-00026,needs_review|ann_legacy,false,,
-frozen-en-0027,en,The saleslady showed us the new products,stereotype,salesperson,eval/ground_truth_en_v5.csv,en-00027,needs_review|ann_legacy,false,,
-frozen-en-0028,en,Each businessman should review his portfolio,stereotype,their portfolio,eval/ground_truth_en_v5.csv,en-00028,needs_review|ann_legacy,false,,
-frozen-en-0029,en,He's surprisingly good at nursing patients,stereotype,They're good at nursing patients,eval/ground_truth_en_v5.csv,en-00029,needs_review|ann_legacy,false,,
-frozen-en-0030,en,The new weathergirl is very professional,stereotype,meteorologist,eval/ground_truth_en_v5.csv,en-00030,needs_review|ann_legacy,false,,
-frozen-en-0031,en,Every employee must submit his timesheet by Friday,stereotype,their timesheet,eval/ground_truth_en_v5.csv,en-00031,needs_review|ann_legacy,false,,
-frozen-en-0032,en,She's very ambitious for a teacher,stereotype,They're very ambitious,eval/ground_truth_en_v5.csv,en-00032,needs_review|ann_legacy,false,,
-frozen-en-0033,en,Ask the cleaning lady to do the conference room,stereotype,cleaner,eval/ground_truth_en_v5.csv,en-00033,needs_review|ann_legacy,false,,
-frozen-en-0034,en,A good fireman must be physically strong,stereotype,firefighter,eval/ground_truth_en_v5.csv,en-00034,needs_review|ann_legacy,false,,
-frozen-en-0035,en,The table is wooden,neutral,,eval/ground_truth_en_v5.csv,en-00035,needs_review|ann_legacy,false,,
-frozen-en-0036,en,The meeting starts at 3pm,neutral,,eval/ground_truth_en_v5.csv,en-00036,needs_review|ann_legacy,false,,
-frozen-en-0037,en,Please close the window,neutral,,eval/ground_truth_en_v5.csv,en-00037,needs_review|ann_legacy,false,,
-frozen-en-0038,en,The doctor examined the patient carefully,neutral,,eval/ground_truth_en_v5.csv,en-00038,needs_review|ann_legacy,false,,
-frozen-en-0039,en,Our teacher explained the concept well,neutral,,eval/ground_truth_en_v5.csv,en-00039,needs_review|ann_legacy,false,,
-frozen-en-0040,en,The engineer designed a new bridge,neutral,,eval/ground_truth_en_v5.csv,en-00040,needs_review|ann_legacy,false,,
-frozen-en-0041,en,The nurse provided excellent care,neutral,,eval/ground_truth_en_v5.csv,en-00041,needs_review|ann_legacy,false,,
-frozen-en-0042,en,A pilot flew the aircraft safely,neutral,,eval/ground_truth_en_v5.csv,en-00042,needs_review|ann_legacy,false,,
-frozen-en-0043,en,The lawyer presented strong arguments,neutral,,eval/ground_truth_en_v5.csv,en-00043,needs_review|ann_legacy,false,,
-frozen-en-0044,en,Scientists discovered a new species,neutral,,eval/ground_truth_en_v5.csv,en-00044,needs_review|ann_legacy,false,,
-frozen-en-0045,en,The report is due tomorrow,neutral,,eval/ground_truth_en_v5.csv,en-00045,needs_review|ann_legacy,false,,
-frozen-en-0046,en,Coffee tastes good,neutral,,eval/ground_truth_en_v5.csv,en-00046,needs_review|ann_legacy,false,,
-frozen-en-0047,en,The car needs gas,neutral,,eval/ground_truth_en_v5.csv,en-00047,needs_review|ann_legacy,false,,
-frozen-en-0048,en,It is raining outside,neutral,,eval/ground_truth_en_v5.csv,en-00048,needs_review|ann_legacy,false,,
-frozen-en-0049,en,The book is interesting,neutral,,eval/ground_truth_en_v5.csv,en-00049,needs_review|ann_legacy,false,,
-frozen-en-0050,en,Turn left at the corner,neutral,,eval/ground_truth_en_v5.csv,en-00050,needs_review|ann_legacy,false,,
-frozen-en-0051,en,The phone is ringing,neutral,,eval/ground_truth_en_v5.csv,en-00051,needs_review|ann_legacy,false,,
-frozen-en-0052,en,Water boils at 100 degrees,neutral,,eval/ground_truth_en_v5.csv,en-00052,needs_review|ann_legacy,false,,
-frozen-en-0053,en,The train arrives at noon,neutral,,eval/ground_truth_en_v5.csv,en-00053,needs_review|ann_legacy,false,,
-frozen-en-0054,en,Please send the email,neutral,,eval/ground_truth_en_v5.csv,en-00054,needs_review|ann_legacy,false,,
-frozen-en-0055,en,The computer is slow,neutral,,eval/ground_truth_en_v5.csv,en-00055,needs_review|ann_legacy,false,,
-frozen-en-0056,en,The door is locked,neutral,,eval/ground_truth_en_v5.csv,en-00056,needs_review|ann_legacy,false,,
-frozen-en-0057,en,Time flies quickly,neutral,,eval/ground_truth_en_v5.csv,en-00057,needs_review|ann_legacy,false,,
-frozen-en-0058,en,The sun is bright,neutral,,eval/ground_truth_en_v5.csv,en-00058,needs_review|ann_legacy,false,,
-frozen-en-0059,en,Music sounds beautiful,neutral,,eval/ground_truth_en_v5.csv,en-00059,needs_review|ann_legacy,false,,
-frozen-en-0060,en,The project is complete,neutral,,eval/ground_truth_en_v5.csv,en-00060,needs_review|ann_legacy,false,,
-frozen-en-0061,en,Food smells delicious,neutral,,eval/ground_truth_en_v5.csv,en-00061,needs_review|ann_legacy,false,,
-frozen-en-0062,en,The road is bumpy,neutral,,eval/ground_truth_en_v5.csv,en-00062,needs_review|ann_legacy,false,,
-frozen-en-0063,en,Plants need water,neutral,,eval/ground_truth_en_v5.csv,en-00063,needs_review|ann_legacy,false,,
-frozen-en-0064,en,The sky is blue,neutral,,eval/ground_truth_en_v5.csv,en-00064,needs_review|ann_legacy,false,,
-frozen-en-0065,en,Numbers don't lie,neutral,,eval/ground_truth_en_v5.csv,en-00065,needs_review|ann_legacy,false,,
-frozen-en-0066,en,The clock shows 5pm,neutral,,eval/ground_truth_en_v5.csv,en-00066,needs_review|ann_legacy,false,,
+frozen-en-0001,en,The chairman will lead the meeting,stereotype,chairperson,eval/ground_truth_en_v5.csv,en-00001,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0002,en,She is a great nurse,stereotype,They are a great nurse,eval/ground_truth_en_v5.csv,en-00002,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0003,en,The policeman arrested the suspect,stereotype,police officer,eval/ground_truth_en_v5.csv,en-00003,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0004,en,Ask the waitress for the menu,stereotype,server,eval/ground_truth_en_v5.csv,en-00004,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0005,en,The businessman closed the deal,stereotype,businessperson,eval/ground_truth_en_v5.csv,en-00005,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0006,en,Every doctor should update his records,stereotype,their records,eval/ground_truth_en_v5.csv,en-00006,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0007,en,The fireman saved the cat,stereotype,firefighter,eval/ground_truth_en_v5.csv,en-00007,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0008,en,She works as a secretary,stereotype,They work as a secretary,eval/ground_truth_en_v5.csv,en-00008,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0009,en,The mailman delivered the package,stereotype,mail carrier,eval/ground_truth_en_v5.csv,en-00009,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0010,en,The stewardess served drinks,stereotype,flight attendant,eval/ground_truth_en_v5.csv,en-00010,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0011,en,He is the best salesman,stereotype,salesperson,eval/ground_truth_en_v5.csv,en-00011,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0012,en,The cleaning lady comes on Fridays,stereotype,cleaner,eval/ground_truth_en_v5.csv,en-00012,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0013,en,Ask your congressman about the bill,stereotype,representative,eval/ground_truth_en_v5.csv,en-00013,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0014,en,The weatherman predicted rain,stereotype,meteorologist,eval/ground_truth_en_v5.csv,en-00014,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0015,en,She is just a housewife,stereotype,They manage the household,eval/ground_truth_en_v5.csv,en-00015,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0016,en,The repairman fixed the sink,stereotype,repair technician,eval/ground_truth_en_v5.csv,en-00016,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0017,en,Every nurse knows her patients,stereotype,their patients,eval/ground_truth_en_v5.csv,en-00017,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0018,en,The doorman checked IDs,stereotype,door attendant,eval/ground_truth_en_v5.csv,en-00018,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0019,en,She works as a receptionist,stereotype,They work as a receptionist,eval/ground_truth_en_v5.csv,en-00019,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0020,en,The garbage man comes early,stereotype,sanitation worker,eval/ground_truth_en_v5.csv,en-00020,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0021,en,The anchorman read the news,stereotype,news anchor,eval/ground_truth_en_v5.csv,en-00021,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0022,en,Every teacher loves her students,stereotype,their students,eval/ground_truth_en_v5.csv,en-00022,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0023,en,The deliveryman was late,stereotype,delivery driver,eval/ground_truth_en_v5.csv,en-00023,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0024,en,She is a talented seamstress,stereotype,They are a talented tailor,eval/ground_truth_en_v5.csv,en-00024,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0025,en,The handyman repaired the door,stereotype,maintenance worker,eval/ground_truth_en_v5.csv,en-00025,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0026,en,We need a strong policeman for this job,stereotype,police officer,eval/ground_truth_en_v5.csv,en-00026,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0027,en,The saleslady showed us the new products,stereotype,salesperson,eval/ground_truth_en_v5.csv,en-00027,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0028,en,Each businessman should review his portfolio,stereotype,their portfolio,eval/ground_truth_en_v5.csv,en-00028,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0029,en,He's surprisingly good at nursing patients,stereotype,They're good at nursing patients,eval/ground_truth_en_v5.csv,en-00029,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0030,en,The new weathergirl is very professional,stereotype,meteorologist,eval/ground_truth_en_v5.csv,en-00030,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0031,en,Every employee must submit his timesheet by Friday,stereotype,their timesheet,eval/ground_truth_en_v5.csv,en-00031,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0032,en,She's very ambitious for a teacher,stereotype,They're very ambitious,eval/ground_truth_en_v5.csv,en-00032,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0033,en,Ask the cleaning lady to do the conference room,stereotype,cleaner,eval/ground_truth_en_v5.csv,en-00033,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0034,en,A good fireman must be physically strong,stereotype,firefighter,eval/ground_truth_en_v5.csv,en-00034,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0035,en,The table is wooden,neutral,,eval/ground_truth_en_v5.csv,en-00035,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0036,en,The meeting starts at 3pm,neutral,,eval/ground_truth_en_v5.csv,en-00036,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0037,en,Please close the window,neutral,,eval/ground_truth_en_v5.csv,en-00037,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0038,en,The doctor examined the patient carefully,neutral,,eval/ground_truth_en_v5.csv,en-00038,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0039,en,Our teacher explained the concept well,neutral,,eval/ground_truth_en_v5.csv,en-00039,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0040,en,The engineer designed a new bridge,neutral,,eval/ground_truth_en_v5.csv,en-00040,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0041,en,The nurse provided excellent care,neutral,,eval/ground_truth_en_v5.csv,en-00041,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0042,en,A pilot flew the aircraft safely,neutral,,eval/ground_truth_en_v5.csv,en-00042,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0043,en,The lawyer presented strong arguments,neutral,,eval/ground_truth_en_v5.csv,en-00043,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0044,en,Scientists discovered a new species,neutral,,eval/ground_truth_en_v5.csv,en-00044,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0045,en,The report is due tomorrow,neutral,,eval/ground_truth_en_v5.csv,en-00045,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0046,en,Coffee tastes good,neutral,,eval/ground_truth_en_v5.csv,en-00046,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0047,en,The car needs gas,neutral,,eval/ground_truth_en_v5.csv,en-00047,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0048,en,It is raining outside,neutral,,eval/ground_truth_en_v5.csv,en-00048,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0049,en,The book is interesting,neutral,,eval/ground_truth_en_v5.csv,en-00049,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0050,en,Turn left at the corner,neutral,,eval/ground_truth_en_v5.csv,en-00050,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0051,en,The phone is ringing,neutral,,eval/ground_truth_en_v5.csv,en-00051,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0052,en,Water boils at 100 degrees,neutral,,eval/ground_truth_en_v5.csv,en-00052,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0053,en,The train arrives at noon,neutral,,eval/ground_truth_en_v5.csv,en-00053,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0054,en,Please send the email,neutral,,eval/ground_truth_en_v5.csv,en-00054,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0055,en,The computer is slow,neutral,,eval/ground_truth_en_v5.csv,en-00055,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0056,en,The door is locked,neutral,,eval/ground_truth_en_v5.csv,en-00056,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0057,en,Time flies quickly,neutral,,eval/ground_truth_en_v5.csv,en-00057,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0058,en,The sun is bright,neutral,,eval/ground_truth_en_v5.csv,en-00058,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0059,en,Music sounds beautiful,neutral,,eval/ground_truth_en_v5.csv,en-00059,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0060,en,The project is complete,neutral,,eval/ground_truth_en_v5.csv,en-00060,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0061,en,Food smells delicious,neutral,,eval/ground_truth_en_v5.csv,en-00061,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0062,en,The road is bumpy,neutral,,eval/ground_truth_en_v5.csv,en-00062,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0063,en,Plants need water,neutral,,eval/ground_truth_en_v5.csv,en-00063,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0064,en,The sky is blue,neutral,,eval/ground_truth_en_v5.csv,en-00064,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0065,en,Numbers don't lie,neutral,,eval/ground_truth_en_v5.csv,en-00065,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"
+frozen-en-0066,en,The clock shows 5pm,neutral,,eval/ground_truth_en_v5.csv,en-00066,needs_review|ann_legacy,false,agree,"Achar Oiro (team review, recorded 2026-11-14)"

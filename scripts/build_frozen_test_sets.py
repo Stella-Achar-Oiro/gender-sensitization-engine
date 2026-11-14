@@ -14,8 +14,10 @@ Where the rows come from:
       = true): they are a valid test only for models trained after today, and
       scripts/rebuild_training_data.py now removes them from training.
 
-Every row starts with native_review empty. A native speaker fills it with
-"agree" or the corrected label; until then the labels are candidates.
+Every row is built with native_review empty; a reviewer fills it with "agree" or
+the corrected label. The v1 sets were approved as a whole on 2026-11-14: the
+project confirmed the labels had been reviewed and agreed by the team and that
+the qa_status values in the source files (kept in label_origin) were out of date.
 """
 import csv
 import random

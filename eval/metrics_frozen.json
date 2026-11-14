@@ -11,6 +11,7 @@
         "derogation": 16
       },
       "seen_by_classifier_v2": 391,
+      "labels_reviewed": 391,
       "valid_test_for_classifier_v2": false,
       "ml_threshold": 0.56,
       "flagged_by_label": {
@@ -89,6 +90,7 @@
         "derogation": 11
       },
       "seen_by_classifier_v2": 0,
+      "labels_reviewed": 1080,
       "valid_test_for_classifier_v2": true,
       "ml_threshold": 0.56,
       "flagged_by_label": {
@@ -167,6 +169,7 @@
         "derogation": 125
       },
       "seen_by_classifier_v2": 497,
+      "labels_reviewed": 497,
       "valid_test_for_classifier_v2": false,
       "ml_threshold": 0.56,
       "flagged_by_label": {
@@ -245,6 +248,7 @@
         "derogation": 69
       },
       "seen_by_classifier_v2": 376,
+      "labels_reviewed": 376,
       "valid_test_for_classifier_v2": false,
       "ml_threshold": 0.56,
       "flagged_by_label": {
@@ -321,6 +325,7 @@
         "neutral": 115
       },
       "seen_by_classifier_v2": 0,
+      "labels_reviewed": 471,
       "valid_test_for_classifier_v2": true,
       "ml_threshold": 0.56,
       "flagged_by_label": {
@@ -395,6 +400,7 @@
         "neutral": 32
       },
       "seen_by_classifier_v2": 0,
+      "labels_reviewed": 66,
       "valid_test_for_classifier_v2": true,
       "ml_threshold": 0.56,
       "flagged_by_label": {

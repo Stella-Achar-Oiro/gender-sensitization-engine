@@ -132,6 +132,7 @@ def evaluate_detection(lang: str) -> dict:
         "rows": len(rows),
         "labels": dict(Counter(labels)),
         "seen_by_classifier_v2": seen,
+        "labels_reviewed": sum(bool(r.get("native_review", "").strip()) for r in rows),
         "valid_test_for_classifier_v2": seen == 0,
         "ml_threshold": threshold,
         "flagged_by_label": {
