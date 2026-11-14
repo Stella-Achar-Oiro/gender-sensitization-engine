@@ -1,0 +1,532 @@
+{
+  "frozen_version": "v1",
+  "classifier": "juakazike/multilingual-bias-classifier-v2",
+  "detection": {
+    "sw": {
+      "rows": 391,
+      "labels": {
+        "neutral": 125,
+        "stereotype": 125,
+        "counter-stereotype": 125,
+        "derogation": 16
+      },
+      "seen_by_classifier_v2": 391,
+      "valid_test_for_classifier_v2": false,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "27/125",
+        "stereotype": "122/125",
+        "counter-stereotype": "58/125",
+        "derogation": "15/16"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.617,
+          "recall": 0.972,
+          "f1": 0.755,
+          "tp": 137,
+          "fp": 85,
+          "fn": 4,
+          "positives": 141
+        },
+        "as_trained": {
+          "precision": 0.878,
+          "recall": 0.733,
+          "f1": 0.799,
+          "tp": 195,
+          "fp": 27,
+          "fn": 71,
+          "positives": 266
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 0.621,
+          "recall": 0.872,
+          "f1": 0.726,
+          "tp": 123,
+          "fp": 75,
+          "fn": 18,
+          "positives": 141
+        },
+        "as_trained": {
+          "precision": 0.864,
+          "recall": 0.643,
+          "f1": 0.737,
+          "tp": 171,
+          "fp": 27,
+          "fn": 95,
+          "positives": 266
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.887,
+          "recall": 0.943,
+          "f1": 0.914,
+          "tp": 133,
+          "fp": 17,
+          "fn": 8,
+          "positives": 141
+        },
+        "as_trained": {
+          "precision": 0.993,
+          "recall": 0.56,
+          "f1": 0.716,
+          "tp": 149,
+          "fp": 1,
+          "fn": 117,
+          "positives": 266
+        }
+      }
+    },
+    "ha": {
+      "rows": 1080,
+      "labels": {
+        "counter-stereotype": 511,
+        "neutral": 348,
+        "stereotype": 210,
+        "derogation": 11
+      },
+      "seen_by_classifier_v2": 0,
+      "valid_test_for_classifier_v2": true,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "160/348",
+        "stereotype": "148/210",
+        "counter-stereotype": "385/511",
+        "derogation": "7/11"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.221,
+          "recall": 0.701,
+          "f1": 0.337,
+          "tp": 155,
+          "fp": 545,
+          "fn": 66,
+          "positives": 221
+        },
+        "as_trained": {
+          "precision": 0.771,
+          "recall": 0.738,
+          "f1": 0.754,
+          "tp": 540,
+          "fp": 160,
+          "fn": 192,
+          "positives": 732
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 0.111,
+          "recall": 0.005,
+          "f1": 0.009,
+          "tp": 1,
+          "fp": 8,
+          "fn": 220,
+          "positives": 221
+        },
+        "as_trained": {
+          "precision": 0.889,
+          "recall": 0.011,
+          "f1": 0.022,
+          "tp": 8,
+          "fp": 1,
+          "fn": 724,
+          "positives": 732
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.222,
+          "recall": 0.701,
+          "f1": 0.337,
+          "tp": 155,
+          "fp": 544,
+          "fn": 66,
+          "positives": 221
+        },
+        "as_trained": {
+          "precision": 0.771,
+          "recall": 0.736,
+          "f1": 0.753,
+          "tp": 539,
+          "fp": 160,
+          "fn": 193,
+          "positives": 732
+        }
+      }
+    },
+    "zu": {
+      "rows": 497,
+      "labels": {
+        "neutral": 125,
+        "stereotype": 122,
+        "counter-stereotype": 125,
+        "derogation": 125
+      },
+      "seen_by_classifier_v2": 497,
+      "valid_test_for_classifier_v2": false,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "1/125",
+        "stereotype": "122/122",
+        "counter-stereotype": "125/125",
+        "derogation": "125/125"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.662,
+          "recall": 1.0,
+          "f1": 0.797,
+          "tp": 247,
+          "fp": 126,
+          "fn": 0,
+          "positives": 247
+        },
+        "as_trained": {
+          "precision": 0.997,
+          "recall": 1.0,
+          "f1": 0.999,
+          "tp": 372,
+          "fp": 1,
+          "fn": 0,
+          "positives": 372
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 0.682,
+          "recall": 0.676,
+          "f1": 0.679,
+          "tp": 167,
+          "fp": 78,
+          "fn": 80,
+          "positives": 247
+        },
+        "as_trained": {
+          "precision": 1.0,
+          "recall": 0.659,
+          "f1": 0.794,
+          "tp": 245,
+          "fp": 0,
+          "fn": 127,
+          "positives": 372
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.662,
+          "recall": 1.0,
+          "f1": 0.797,
+          "tp": 247,
+          "fp": 126,
+          "fn": 0,
+          "positives": 247
+        },
+        "as_trained": {
+          "precision": 0.997,
+          "recall": 1.0,
+          "f1": 0.999,
+          "tp": 372,
+          "fp": 1,
+          "fn": 0,
+          "positives": 372
+        }
+      }
+    },
+    "ki": {
+      "rows": 376,
+      "labels": {
+        "neutral": 125,
+        "stereotype": 125,
+        "counter-stereotype": 57,
+        "derogation": 69
+      },
+      "seen_by_classifier_v2": 376,
+      "valid_test_for_classifier_v2": false,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "12/125",
+        "stereotype": "110/125",
+        "counter-stereotype": "52/57",
+        "derogation": "67/69"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.734,
+          "recall": 0.912,
+          "f1": 0.814,
+          "tp": 177,
+          "fp": 64,
+          "fn": 17,
+          "positives": 194
+        },
+        "as_trained": {
+          "precision": 0.95,
+          "recall": 0.912,
+          "f1": 0.931,
+          "tp": 229,
+          "fp": 12,
+          "fn": 22,
+          "positives": 251
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 0.753,
+          "recall": 0.691,
+          "f1": 0.72,
+          "tp": 134,
+          "fp": 44,
+          "fn": 60,
+          "positives": 194
+        },
+        "as_trained": {
+          "precision": 0.949,
+          "recall": 0.673,
+          "f1": 0.788,
+          "tp": 169,
+          "fp": 9,
+          "fn": 82,
+          "positives": 251
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.759,
+          "recall": 0.845,
+          "f1": 0.8,
+          "tp": 164,
+          "fp": 52,
+          "fn": 30,
+          "positives": 194
+        },
+        "as_trained": {
+          "precision": 0.981,
+          "recall": 0.845,
+          "f1": 0.908,
+          "tp": 212,
+          "fp": 4,
+          "fn": 39,
+          "positives": 251
+        }
+      }
+    },
+    "fr": {
+      "rows": 471,
+      "labels": {
+        "stereotype": 356,
+        "neutral": 115
+      },
+      "seen_by_classifier_v2": 0,
+      "valid_test_for_classifier_v2": true,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "25/115",
+        "stereotype": "340/356"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.932,
+          "recall": 0.955,
+          "f1": 0.943,
+          "tp": 340,
+          "fp": 25,
+          "fn": 16,
+          "positives": 356
+        },
+        "as_trained": {
+          "precision": 0.932,
+          "recall": 0.955,
+          "f1": 0.943,
+          "tp": 340,
+          "fp": 25,
+          "fn": 16,
+          "positives": 356
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 0.924,
+          "recall": 0.478,
+          "f1": 0.63,
+          "tp": 170,
+          "fp": 14,
+          "fn": 186,
+          "positives": 356
+        },
+        "as_trained": {
+          "precision": 0.924,
+          "recall": 0.478,
+          "f1": 0.63,
+          "tp": 170,
+          "fp": 14,
+          "fn": 186,
+          "positives": 356
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.948,
+          "recall": 0.823,
+          "f1": 0.881,
+          "tp": 293,
+          "fp": 16,
+          "fn": 63,
+          "positives": 356
+        },
+        "as_trained": {
+          "precision": 0.948,
+          "recall": 0.823,
+          "f1": 0.881,
+          "tp": 293,
+          "fp": 16,
+          "fn": 63,
+          "positives": 356
+        }
+      }
+    },
+    "en": {
+      "rows": 66,
+      "labels": {
+        "stereotype": 34,
+        "neutral": 32
+      },
+      "seen_by_classifier_v2": 0,
+      "valid_test_for_classifier_v2": true,
+      "ml_threshold": 0.56,
+      "flagged_by_label": {
+        "neutral": "3/32",
+        "stereotype": "34/34"
+      },
+      "pipeline": {
+        "strict": {
+          "precision": 0.919,
+          "recall": 1.0,
+          "f1": 0.958,
+          "tp": 34,
+          "fp": 3,
+          "fn": 0,
+          "positives": 34
+        },
+        "as_trained": {
+          "precision": 0.919,
+          "recall": 1.0,
+          "f1": 0.958,
+          "tp": 34,
+          "fp": 3,
+          "fn": 0,
+          "positives": 34
+        }
+      },
+      "rules_only": {
+        "strict": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 34,
+          "fp": 0,
+          "fn": 0,
+          "positives": 34
+        },
+        "as_trained": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp": 34,
+          "fp": 0,
+          "fn": 0,
+          "positives": 34
+        }
+      },
+      "classifier_only": {
+        "strict": {
+          "precision": 0.906,
+          "recall": 0.853,
+          "f1": 0.879,
+          "tp": 29,
+          "fp": 3,
+          "fn": 5,
+          "positives": 34
+        },
+        "as_trained": {
+          "precision": 0.906,
+          "recall": 0.853,
+          "f1": 0.879,
+          "tp": 29,
+          "fp": 3,
+          "fn": 5,
+          "positives": 34
+        }
+      }
+    }
+  },
+  "correction": {
+    "sw": {
+      "pairs": 142,
+      "source": {
+        "low_confidence": 11,
+        "ml": 40,
+        "rules": 91
+      },
+      "changed": 126,
+      "exact_match": 72,
+      "chrf_vs_reference": 0.79,
+      "chrf_vs_input_when_changed": 0.899,
+      "still_flagged_after_change": 22
+    },
+    "zu": {
+      "pairs": 372,
+      "source": {
+        "ml": 115,
+        "low_confidence": 12,
+        "rules": 245
+      },
+      "changed": 352,
+      "exact_match": 0,
+      "chrf_vs_reference": 0.445,
+      "chrf_vs_input_when_changed": 0.882,
+      "still_flagged_after_change": 260
+    },
+    "ki": {
+      "pairs": 130,
+      "source": {
+        "rules": 112,
+        "ml": 2,
+        "low_confidence": 16
+      },
+      "changed": 104,
+      "exact_match": 72,
+      "chrf_vs_reference": 0.959,
+      "chrf_vs_input_when_changed": 0.905,
+      "still_flagged_after_change": 39
+    },
+    "fr": {
+      "pairs": 48,
+      "source": {
+        "rules": 45,
+        "ml": 2,
+        "preserved": 1
+      },
+      "changed": 47,
+      "exact_match": 2,
+      "chrf_vs_reference": 0.76,
+      "chrf_vs_input_when_changed": 0.868,
+      "still_flagged_after_change": 9
+    },
+    "en": {
+      "pairs": 34,
+      "source": {
+        "rules": 32,
+        "ml": 2
+      },
+      "changed": 32,
+      "exact_match": 1,
+      "chrf_vs_reference": 0.537,
+      "chrf_vs_input_when_changed": 0.754,
+      "still_flagged_after_change": 19
+    }
+  }
+}

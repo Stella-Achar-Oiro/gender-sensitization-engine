@@ -168,3 +168,50 @@ def test_fr_detection():
     metrics = _evaluate("fr", max_rows=2000)
     print(f"\nFR metrics: {metrics}")
     _assert_thresholds("fr", metrics)
+
+
+# ── Frozen test sets (Phase A): held-out data that must never enter training ──
+
+FROZEN_LANGS = ("sw", "ha", "zu", "ki", "fr", "en")
+FROZEN_LABELS = {"neutral", "stereotype", "counter-stereotype", "derogation"}
+
+
+def test_find_leaks_catches_exact_and_near_duplicates():
+    from eval.frozen_eval import find_leaks
+
+    test_texts = ["Owesifazane akakwazi ukuba ngumphathi wenkampani enkulu."]
+    pool = [
+        "owesifazane akakwazi ukuba ngumphathi wenkampani enkulu",           # same, punctuation/case
+        "Owesifazane akakwazi ukuba ngumphathi wenkampani enkulu kakhulu.",  # one word added
+        "Indoda kufanele ibe yinhloko yomuzi njalo.",                        # unrelated
+    ]
+    assert find_leaks(test_texts, pool) == {pool[0], pool[1]}
+
+
+@pytest.mark.parametrize("lang", FROZEN_LANGS)
+def test_frozen_test_set_is_well_formed(lang):
+    from eval.frozen_eval import load_frozen
+
+    rows = load_frozen(lang)
+    assert len(rows) >= 60, f"{lang}: frozen test set too small ({len(rows)})"
+    assert {r["bias_label"] for r in rows} <= FROZEN_LABELS
+    texts = [r["text"] for r in rows]
+    assert len(set(texts)) == len(texts), f"{lang}: duplicate sentences in frozen test set"
+    assert all(r["seen_by_classifier_v2"] in ("true", "false") for r in rows)
+
+
+def test_next_training_data_has_no_frozen_leaks():
+    """The next training file must not contain frozen test sentences or near-duplicates of them."""
+    import csv as _csv
+    from eval.frozen_eval import find_leaks, load_frozen
+
+    path = ROOT / "data" / "training_data_multilingual_v3.csv"
+    if not path.exists():
+        pytest.skip("data/training_data_multilingual_v3.csv not built (run scripts/rebuild_training_data.py)")
+    by_lang: dict = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in _csv.DictReader(f):
+            by_lang.setdefault(r["language"], []).append(r["text"])
+    for lang in FROZEN_LANGS:
+        leaks = find_leaks([r["text"] for r in load_frozen(lang)], by_lang.get(lang, []))
+        assert not leaks, f"{lang}: {len(leaks)} training rows leak from the frozen test set"

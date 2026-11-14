@@ -18,11 +18,14 @@ Sources:
   EN: existing multilingual CSV EN rows — downsampled to ~20% bias ratio
 """
 
+import sys
+
 import pandas as pd
 from pathlib import Path
 from collections import Counter
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 OUT_COLS = ["text", "language", "has_bias", "bias_label", "stereotype_category", "source"]
 
 BIAS_LABELS_POSITIVE = {"stereotype", "derogation", "counter-stereotype"}
@@ -209,6 +212,19 @@ def main():
     combined = pd.concat(parts, ignore_index=True)
     combined = combined.drop_duplicates(subset=["text", "language"])
 
+    # ── Remove frozen test sentences and their near-duplicates ───────────────
+    # eval/frozen_test_{lang}_v1.csv is held out for evaluation and must never
+    # be trained on (tests/test_detection_contract.py enforces this).
+    from eval.frozen_eval import LANGS, find_leaks, frozen_path, load_frozen
+    print("\nRemoving frozen test rows:")
+    for lang in LANGS:
+        if not frozen_path(lang).exists():
+            continue
+        mask = combined["language"] == lang
+        leaks = find_leaks([r["text"] for r in load_frozen(lang)], combined.loc[mask, "text"].tolist())
+        combined = combined[~(mask & combined["text"].isin(leaks))]
+        print(f"  {lang.upper()}: removed {len(leaks):,} rows (exact or near-duplicate of a frozen test sentence)")
+
     print(f"\n=== FINAL TRAINING DATA ===")
     print(f"Total rows: {len(combined):,}")
     for lang in ["sw", "ha", "zu", "ki", "fr", "en"]:
@@ -221,7 +237,9 @@ def main():
                 top = dict(cats.most_common(6))
                 print(f"         categories: {top}")
 
-    out = ROOT / "data/training_data_multilingual.csv"
+    # v3: the first training file with the frozen test sets held out. The v2 file
+    # (what classifier v2 was trained on) is kept as the input for SW/KI/EN above.
+    out = ROOT / "data/training_data_multilingual_v3.csv"
     combined.to_csv(out, index=False)
     print(f"\nWritten: {out}")
     print(f"Total size: {out.stat().st_size / 1e6:.1f} MB")

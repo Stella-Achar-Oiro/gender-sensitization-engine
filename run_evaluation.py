@@ -103,7 +103,17 @@ def main():
                         help="Enable ML fallback (rules + sw-bias-classifier-v2). Slow — downloads model on first run.")
     parser.add_argument("--tag", metavar="TAG",
                         help="Save a named snapshot to eval/results/model_registry.json")
+    parser.add_argument("--frozen", action="store_true",
+                        help="Evaluate on the held-out frozen test sets (eval/frozen_test_*_v1.csv) "
+                             "and write eval/metrics_frozen.json.")
+    parser.add_argument("--correction", action="store_true",
+                        help="With --frozen: also score the corrector on rows that have an expected correction.")
     args = parser.parse_args()
+
+    if args.frozen:
+        from eval.frozen_eval import main as frozen_main
+        frozen_main(correction=args.correction)
+        return
 
     if args.fairness:
         from run_aibridge_evaluation import main as fairness_main
