@@ -94,7 +94,6 @@ function CorrectedDiff({ original, corrected }: { original: string; corrected: s
 const SOURCE_LABEL: Record<string, string> = {
   rules: "Lexicon",
   ml: "ML",
-  disambiguated: "ML+Lexicon",
   low_confidence: "ML",
   preserved: "Rules",
 };

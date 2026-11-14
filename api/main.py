@@ -3,6 +3,7 @@
 import io
 import json
 import logging
+import os
 import re
 from pathlib import Path
 
@@ -32,6 +33,16 @@ async def lifespan(app: FastAPI):
         logger.info("ML classifier ready")
     except Exception as e:
         logger.warning("ML preload skipped: %s", e)
+    # The corrector takes 1-2 minutes to load on small CPUs. In production load it
+    # here so the first visitor does not wait; in development keep startup fast.
+    if os.environ.get("ENVIRONMENT") == "production":
+        try:
+            from . import ml_rewriter
+            logger.info("Preloading ML corrector...")
+            ml_rewriter._ensure_model()
+            logger.info("ML corrector ready")
+        except Exception as e:
+            logger.warning("Corrector preload skipped: %s", e)
     from .job_queue import start_worker
     start_worker()
     yield

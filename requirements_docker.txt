@@ -1,14 +1,19 @@
-fastapi>=0.110.0
-uvicorn>=0.29.0
-huggingface_hub>=0.23.4
-requests>=2.28.0
-pandas>=2.0.0
-transformers>=4.40.0
-torch>=2.2.2
-accelerate>=0.27.0
-sentencepiece>=0.2.0
-scikit-learn>=1.4.0
-numpy<2.0.0
-pydantic>=2.0.0
-python-multipart>=0.0.9
-pypdf>=4.0.0
+# Pinned 2026-11-14 to the versions a fresh linux/py3.11 build resolved that day
+# (the build verified on the staging and live Spaces). To upgrade: change a pin,
+# deploy to the staging Space, rerun the checks, then promote.
+fastapi==0.162.7
+uvicorn==0.54.0
+huggingface-hub==2.4.0
+requests==2.34.2
+pandas==3.0.6
+transformers==5.23.0
+tokenizers==0.23.3
+safetensors==0.8.0
+torch==2.15.0
+accelerate==1.15.0
+sentencepiece==0.2.3
+scikit-learn==1.9.1
+numpy==1.26.4
+pydantic==2.14.3
+python-multipart==0.0.33
+pypdf==7.1.0

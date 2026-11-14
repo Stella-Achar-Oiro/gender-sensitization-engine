@@ -8,7 +8,6 @@ SOURCE_BADGE = {
     "rules": "🟢 rules",
     "ml": "🟡 ml",
     "preserved": "🔵 preserved",
-    "disambiguated": "🟣 disambiguated",
     "aibridge_preserved": "⬜ aibridge",
 }
 

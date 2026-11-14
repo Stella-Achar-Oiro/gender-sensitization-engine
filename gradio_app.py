@@ -154,45 +154,6 @@ EXAMPLES = {
 }
 
 
-def _run_ollama_disambiguate(sentence: str) -> str | None:
-    """Call local Ollama with llama3.2 for SW bias classification. Returns 'BIAS'/'NEUTRAL'/None."""
-    try:
-        import requests as _req
-        prompt = (
-            "You are a Swahili gender bias classifier. Decide if the sentence contains gender bias.\n"
-            "Gender bias means the sentence PRESCRIBES, RESTRICTS, or STEREOTYPES a person based on gender.\n"
-            f"Sentence: {sentence[:400]}\n"
-            "Reply with exactly one word: BIAS or NEUTRAL.\nAnswer:"
-        )
-        resp = _req.post(
-            "http://localhost:11434/api/generate",
-            json={"model": "llama3.2", "prompt": prompt, "stream": False},
-            timeout=8,
-        )
-        if resp.status_code == 200:
-            import re
-            text_out = resp.json().get("response", "").strip().upper()
-            first = re.split(r'\W+', text_out)[0] if text_out else ""
-            return first if first in ("BIAS", "NEUTRAL") else None
-    except Exception:
-        pass
-    return None
-
-
-def _run_hf_disambiguate(sentence: str) -> str | None:
-    """Call HF router Llama 3.1 8B for SW bias classification."""
-    try:
-        from api.disambiguator import disambiguate
-        result = disambiguate(sentence)
-        if result is True:
-            return "BIAS"
-        if result is False:
-            return "NEUTRAL"
-    except Exception:
-        pass
-    return None
-
-
 def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[str, str, str]:
     if not text.strip():
         return "⚠️ Please enter some text.", "", ""
@@ -230,26 +191,6 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
     except Exception as e:
         corrected, edits, n_replaced, skipped, reason = text, [], 0, [], str(e)
 
-    # LLM disambiguation for warn-only SW cases (hf_llm / ollama models)
-    llm_verdict_note = ""
-    warn_only = not result.has_bias_detected and len(result.warn_edits) > 0
-    if warn_only and lang_code == "sw" and model_key in ("hf_llm", "ollama"):
-        if model_key == "ollama":
-            llm_result = _run_ollama_disambiguate(text.strip())
-            llm_src = "Ollama/llama3.2"
-        else:
-            llm_result = _run_hf_disambiguate(text.strip())
-            llm_src = "HF/Llama-3.1-8B"
-
-        if llm_result == "BIAS":
-            result.has_bias_detected = True
-            llm_verdict_note = f" *(LLM confirmed by {llm_src})*"
-        elif llm_result == "NEUTRAL":
-            result.warn_edits = []
-            llm_verdict_note = f" *(LLM cleared by {llm_src})*"
-        else:
-            llm_verdict_note = f" *(LLM inconclusive — {llm_src} unavailable)*"
-
     # Verdict
     has_bias = result.has_bias_detected
     has_warn = len(result.warn_edits) > 0
@@ -267,7 +208,7 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
             f'<div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;'
             f'padding:14px 18px;margin-bottom:8px">'
             f'🔴 <strong>Gender bias detected</strong> — '
-            f'{len(result.detected_edits)} rule(s) matched{llm_verdict_note}'
+            f'{len(result.detected_edits)} rule(s) matched'
             f'{conf_str}{model_badge}{flag_str}</div>'
         )
     elif ml_edits:
@@ -284,14 +225,14 @@ def analyse(text: str, lang_name: str, model_label: str | None = None) -> tuple[
             f'padding:14px 18px;margin-bottom:8px">'
             f'🟡 <strong>Advisory</strong> — '
             f'{len(rules_warn)} gendered term(s) noted (no correction applied)'
-            f'{llm_verdict_note}{model_badge}</div>'
+            f'{model_badge}</div>'
         )
     else:
         verdict = (
             f'<div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;'
             f'padding:14px 18px;margin-bottom:8px">'
             f'🟢 <strong>No bias detected</strong> — '
-            f'text passes all checks{llm_verdict_note}{model_badge}</div>'
+            f'text passes all checks{model_badge}</div>'
         )
 
     verdict += ml_fallback_note

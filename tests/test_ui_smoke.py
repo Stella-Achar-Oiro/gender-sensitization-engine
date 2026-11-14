@@ -158,3 +158,23 @@ def test_health_reports_all_six_languages():
     assert body["version"] == app.version
     assert set(body["lexicon_entries"]) == {"en", "sw", "fr", "ki", "ha", "zu"}
     assert all(n > 0 for n in body["lexicon_entries"].values()), body["lexicon_entries"]
+
+
+def test_production_startup_preloads_corrector(monkeypatch):
+    """In production the corrector must load at startup, not on the first user's request."""
+    from fastapi.testclient import TestClient
+    import api.ml_rewriter as ml_rewriter
+    from api.main import app
+
+    calls = []
+    monkeypatch.setattr(ml_rewriter, "_ensure_model", lambda: calls.append(1))
+    monkeypatch.setenv("ENVIRONMENT", "production")
+    with TestClient(app):
+        pass
+    assert calls, "corrector was not preloaded at startup"
+
+    calls.clear()
+    monkeypatch.setenv("ENVIRONMENT", "development")
+    with TestClient(app):
+        pass
+    assert not calls, "corrector must not be loaded at startup outside production"

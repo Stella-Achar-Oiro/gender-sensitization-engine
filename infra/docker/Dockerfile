@@ -20,7 +20,7 @@ RUN uv pip install --system --no-cache -r requirements_docker.txt
 FROM python:3.11-slim AS model-downloader
 COPY --from=python-builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=python-builder /usr/local/bin /usr/local/bin
-RUN python3 -c "from transformers import pipeline; pipeline('text-classification', model='juakazike/multilingual-bias-classifier-v1', device=-1, truncation=True, max_length=128)"
+RUN python3 -c "from huggingface_hub import snapshot_download; [snapshot_download(m) for m in ('juakazike/multilingual-bias-classifier-v2', 'juakazike/multilingual-bias-corrector-v4')]"
 
 # Stage 4: Runtime (non-root)
 FROM python:3.11-slim
@@ -38,5 +38,8 @@ COPY --from=node-builder /frontend/out ./static
 RUN chown -R juakazi /app && chown -R juakazi /home/juakazi/.cache
 USER juakazi
 ENV HF_HOME=/home/juakazi/.cache/huggingface
+ENV ENVIRONMENT=production \
+    JUAKAZI_ML_MODEL=juakazike/multilingual-bias-classifier-v2 \
+    JUAKAZI_CORRECTOR_MODEL=juakazike/multilingual-bias-corrector-v4
 EXPOSE 8000
 CMD ["python", "-m", "uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
